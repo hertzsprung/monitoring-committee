@@ -31,7 +31,7 @@
 \makeatletter
 \AtBeginDocument{
   \hypersetup{
-    pdftitle = {\@title},
+    pdftitle = {Monitoring Committee Progress Report \#2},
     pdfauthor = {James Shaw}
   }
 }
@@ -42,6 +42,22 @@
 \newcommand{\exner}{\Pi}
 \newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
 \maketitle
+
+
+I am reaching the end of the first year of my PhD, having started in January 2015.  Most of my research so far has been comparing numerical accuracy between terrain following and cut cell grids.
+At the time of our last monitoring committee meeting in June 2015, Hilary and I had documented our findings and submitted a first draft of the manuscript to Monthly Weather Review.  Following reviewer comments, we have performed additional tests which prompted us to make improvements to the numerical model.  We submitted a revised manuscript at the end of October 2015.
+
+In the first monitoring committee report, we proposed the formulation of a Charney--Phillips staggering on cut cell grids as an area for future work.  While the first draft was under review, we made some preliminary progress in this area.  We have implemented this new formulation in a finite volume model, but more work is required before test results can be obtained.
+
+I also spent some time learning about mountain meteorology and considering how improvements to numerics and grid generation might improve models of atmospheric flow around mountains.  First, a terrain following/cut cell blended grid, identified as an item of further work in the first report, might be used to improve the representation of slope flows and cold air pooling.  Second, \citet{adcroft2013} describes a technique for improving modelled ocean flows using sub-grid statistics of bathymetry, and we believe that the same technique might be applied to terrain to improve atmospheric flows.
+
+\section{Comparison of terrain following and cut cell grids}
+Terrain has an impact on all scales of atmospheric flow, generating planetary waves and gravity waves, retarding frontal systems, and forcing flow through channels and along slopes and valleys.  Extreme weather can be induced by flow over mountains, creating downslope windstorms and affecting local precipitation.  An accurate representation of orography is necessary to accurately model all these processes.
+
+Terrain following (TF) layers are the most common way to represent orography, in which the lowest model layers follow the terrain, while layers are gradually flattened with increasing height.  TF layers are attractive because their rectangular structure is simple to process by computer and link with parameterisations, and boundary layer resolution can be increased with variable spacing of vertical layers \citep{schaer2002}.
+However, increasing horizontal resolution can lead to steeper slopes and more non-orthogonal grids which reduce the accuracy of pressure gradient calculations and generate spurious circulations \citep{dempsey-davis1998,klemp2011}.
+
+\TODO{cut cells offer an alternative}
 
 
 \bibliographystyle{ametsoc2014}                                                 
