@@ -1,8 +1,3 @@
-- summary of work to date
-- progress since last mc meeting
-  - just resubmitted paper
-  - not Lorenz computational mode, advection errors
-  - new advection test to demonstrate this
   - new GW tests prompted improvements to advection scheme
 - future plans
   - Charney--Phillips on unstructured grids

@@ -2,4 +2,5 @@ $(eval $(call LaTeXWithBibTeX,src/mc-report-2015-12,build,mc-report-2015-12))
 
 build/mc-report-2015-12/mc-report-2015-12.pdf: \
   src/mc-report-2015-12/ametsoc2014.bst \
-  src/mc-report-2015-12/references.bib
+  src/mc-report-2015-12/references.bib \
+  build/gravityWaves-diagnostics/sampleLine.tex

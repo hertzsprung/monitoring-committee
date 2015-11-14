@@ -1,0 +1,10 @@
+$(eval $(call Gnuplot,build/gravityWaves-diagnostics,sampleLine.tex,src/mc-report-2015-12/gravityWaves-sampleLine.plt))
+
+build/gravityWaves-diagnostics/sampleLine.tex: \
+  $(ATMOSTESTS_DIR)/build/gravityWaves-btf-250m-300dz/18000/sampleLine.dat \
+  $(ATMOSTESTS_DIR)/build/gravityWaves-cutCell-250m-300dz/18000/sampleLine.dat \
+  $(ATMOSTESTS_DIR)/build/thermalAdvection-btf-250m-300dz/18000/sampleLine.dat \
+  $(ATMOSTESTS_DIR)/build/thermalAdvection-cutCell-250m-300dz/18000/sampleLine.dat \
+  | build/gravityWaves-diagnostics
+
+$(eval $(call MakeDir,build/gravityWaves-diagnostics))

@@ -17,6 +17,7 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows}
 \usetikzlibrary{patterns}
+\usepackage{bm}
 
 \title{Monitoring Committee Progress Report \#2\\
 \vspace*{1em}
@@ -44,7 +45,9 @@
 \maketitle
 
 
-I am reaching the end of the first year of my PhD, having started in January 2015.  Most of my research so far has been comparing numerical accuracy between terrain following and cut cell grids.
+I am reaching the end of the first year of my PhD, having started in January 2015.
+The PhD aims to find ways of improving the accuracy of dynamical cores in the presence of orography.
+Most of my research so far has been comparing numerical accuracy between terrain following and cut cell grids.
 At the time of our last monitoring committee meeting in June 2015, Hilary and I had documented our findings and submitted a first draft of the manuscript to Monthly Weather Review.  Following reviewer comments, we have performed additional tests which prompted us to make improvements to the numerical model.  We submitted a revised manuscript at the end of October 2015.
 
 In the first monitoring committee report, we proposed the formulation of a Charney--Phillips staggering on cut cell grids as an area for future work.  While the first draft was under review, we made some preliminary progress in this area.  We have implemented this new formulation in a finite volume model, but more work is required before test results can be obtained.
@@ -52,13 +55,98 @@ In the first monitoring committee report, we proposed the formulation of a Charn
 I also spent some time learning about mountain meteorology and considering how improvements to numerics and grid generation might improve models of atmospheric flow around mountains.  First, a terrain following/cut cell blended grid, identified as an item of further work in the first report, might be used to improve the representation of slope flows and cold air pooling.  Second, \citet{adcroft2013} describes a technique for improving modelled ocean flows using sub-grid statistics of bathymetry, and we believe that the same technique might be applied to terrain to improve atmospheric flows.
 
 \section{Comparison of terrain following and cut cell grids}
-Terrain has an impact on all scales of atmospheric flow, generating planetary waves and gravity waves, retarding frontal systems, and forcing flow through channels and along slopes and valleys.  Extreme weather can be induced by flow over mountains, creating downslope windstorms and affecting local precipitation.  An accurate representation of orography is necessary to accurately model all these processes.
+Terrain has an impact on all scales of atmospheric flow, generating planetary waves and gravity waves, retarding frontal systems, and forcing flow through channels and along slopes and valleys.  Extreme weather can be induced by flow over mountains, creating downslope windstorms and affecting local precipitation.  An accurate representation of orography is necessary to accurately model these processes.
 
-Terrain following (TF) layers are the most common way to represent orography, in which the lowest model layers follow the terrain, while layers are gradually flattened with increasing height.  TF layers are attractive because their rectangular structure is simple to process by computer and link with parameterisations, and boundary layer resolution can be increased with variable spacing of vertical layers \citep{schaer2002}.
+Terrain following (TF) layers are the most common way to represent orography, in which the lowest model layers follow the terrain, while layers are gradually flattened with increasing height.  There are several choices of decay function that govern how layers are flattened aloft, and our experiments use two: the Basic Terrain Following (BTF) coordinate \citep{galchen-somerville1975}, and the Smooth LEvel VErtical (SLEVE) coordinate \citep{schaer2002}.  TF layers are attractive because their rectangular structure is simple to process by computer and link with parametrizations, and boundary layer resolution can be increased with variable spacing of vertical layers \citep{schaer2002}.
 However, increasing horizontal resolution can lead to steeper slopes and more non-orthogonal grids which reduce the accuracy of pressure gradient calculations and generate spurious circulations \citep{dempsey-davis1998,klemp2011}.
 
-\TODO{cut cells offer an alternative}
+The cut cell method is an alternative to TF layers in which the terrain is intersected with an rectangular, orthogonal grid and cells \citep{adcroft1997}.  Cells below the surface are removed and cells that are intersected by the terrain are `cut', modifying their shape and size.  Cut cell grids reduce errors in calculating pressure gradients because they are more orthogonal than equivalent terrain following grids, but the cut cell method can create some very small cells that constrain the timestep for explicit advection schemes \citep{klein2009}.
 
+\subsection{Results}
+The first monitoring committee report (hereafter MC1) described a series of two-dimensional test cases that we used to evaluate model accuracy on TF and cut cell grids:
+\begin{description}
+	\item[Horizontal tracer advection]{Following \citet{schaer2002}, a tracer is advected above a mountain.  Results were most accurate on the cut cell grid.}
+	\item[Terrain-following tracer advection]{In order to challenge advection on the cut cell grid, the velocity field is specified by a streamfunction so that flow is parallel to terrain following layers.  Results were most accurate on the BTF grid.  From these two advection tests, we conclude that accuracy is primarily dependent on alignment of flow with the grid rather than grid distortions.}
+	\item[Resting atmosphere]{Following \citet{klemp2011}, a mountain is submerged in a stably stratified atmosphere initially at rest.  Errors in the pressure gradient calculation generate spurious circulations that are greatest on the BTF grid but two orders of magnitude smaller on the cut cell grid.  These results were in agreement with \citet{good2014}.}
+	\item[Mountain waves]{Following \citet{schaer2002}, gravity waves are induced by flow over orography.  Grid-scale stripes of error in potential temperature were observed in the lowest layers in the lee of the mountain on the cut cell grid.}
+\end{description}
+
+\begin{figure}
+	\centering
+	\footnotesize
+	\input{../gravityWaves-diagnostics/sampleLine}
+%
+	\caption{Vertical profiles of potential temperature differences between the start and end of the gravity waves test on (a) the BTF grids, and (b) the cut cell grids.  Results are compared with thermal advection tests results, showing differences in tracer density between the numeric and analytic solutions at the end of the simulation on (c) the BTF grids, and (d) the cut cell grids.  The results are convergent, except for errors found in the lowest layers on the cut cell grids.}
+	\label{fig:sampleLines}
+\end{figure}
+
+Having seen grid-scale oscillations in potential temperature on the cut cell grid in the mountain waves test, MC1 concluded that this demonstrated the presence of the Lorenz computational mode.  In August 2015, we received a request for major corrections to the Monthly Weather Review manuscript.  A reviewer suggested instead that these stripes of error could be due to errors in the advection of potential temperature.
+In response, we have performed some additional tests:
+\begin{description}
+	\item[Mountain waves tests at a variety of resolutions]{Keeping the mountain height fixed at \SI{250}{\meter}, several further tests were performed at resolutions from $\Delta z = \SI{50}{\meter}$ to $\Delta z = \SI{500}{\meter}$, resulting in different configurations of cut cells.  Vertical profiles of potential temperature anomalies were taken in the lee of the mountain and are shown in figures~\ref{fig:sampleLines}a and \ref{fig:sampleLines}b for TF and cut cell grids respectively.  Results were convergent on the TF grids.  A variety of error structures were found on the cut cell grids, not just grid-scale oscillations.}
+	\item[Terrain following advection of a thermal profile]{The initial thermal profile was taken from the mountain waves test and advected in a prescribed, terrain-following flow.  For comparison with the mountain waves tests, vertical profiles of the error field were taken at the same position, and results are shown in figures~\ref{fig:sampleLines}c and \ref{fig:sampleLines}d for TF and cut cell grids respectively.  Errors were negligible on the TF grids.  Error structures on the cut cell grids are similar to those in the mountain waves test, but greater in magnitude.}
+\end{description}
+These new results lead us to reject our original conclusion and instead we concur with the reviewer, finding that potential temperature errors in the mountain waves test are due to numerical errors in the advection of potential temperature.
+
+\section{Charney-Phillips staggering on unstructured grids}
+We have spent a few weeks working on a numerical formulation for unstructured grids that is equivalent to Charney--Phillips staggering on uniform rectangular grids.  The prognostic thermodynamic variable, $b_f$, is a buoyancy-like quantity stored at cell faces such that $b_f = \theta_f \bm{\hat{g}}$ where $\theta_f$ is the potential temperature at the face and $\bm{\hat{g}}$ is the unit vector of gravitational acceleration.  Where potential temperature is required at cell centres, it is reconstructed from the surrounding values of $b_f$.  $\theta_f$ is transported in advective form using a second order scheme.
+
+We have performed some preliminary tests in OpenFOAM and obtained acceptable results.  Further tests will be needed to expose the Lorenz computational mode in the Lorenz formulation, and we will use the same tests to verify that the computational mode is not present in the Charney--Phillips formulation.
+
+\section{Future research}
+We have further developed our ideas for future work since MC1.  We consider potential improvements fall into three categories: numerics, grids, and sub-grid scale representations.  We have agreed to prioritise tasks that focus on numerics because, first, it is Hilary's area of expertise and, second, I believe it is the most valuable for me to study.
+
+\begin{description}
+	\item[Comparisons of existing results with Met Office models]{Following a meeting with the Met Office, we agreed that it would be valuable to compare our resting atmosphere and mountain waves test results with EndGame or BLASIUS.}
+	\item[Further mountain waves tests]{Following discussions at the GungHo conference, many were interested in potential advantages of alternative grid techniques over very steep orography.  Following \citet{yamazaki-satomura2010}, we could examine the numerical stability and accuracy of our model in 2D flow over semi-circular hills or sharp cliffs.  It was also suggested that flow of a neutrally stable atmosphere over orography would better reveal numerical errors.}
+	\item[Thermal advection schemes on Charney--Phillips staggered unstructured grids]{}
+	\item[Upwind-biased advection for cut cell grids]{Since MC1, we have made a number of improvements to the upwind-biased cubic advection scheme to ensure that advection remains upwind-biased around cut cells.  This was necessary to maintain stability in new cut cell configurations and led to much smaller errors in all mountain waves tests.  The technique is currently implemented in OpenFOAM but is otherwise undocumented.  We could test variants of the advection scheme on cut cell grids to demonstrate the utility of this technique.  We would expect the results of this work to lead to a new journal article.}
+\end{description}
+
+We are also interested in developing new types of grid.  MC1 proposed blending elements of TF and cut cell techniques to create a new grid that performs well over high mountains and near steep mountains.  More recently, I have considered how a new grid formulation might improve various mountain flows.  For example, a test might be constructed in which cold air runs down a slope pooling in a basin.  We might construct a grid that has high-resolution terrain-following layers along slopes and has cut cells in the basin.  Such a grid should improve accuracy of both advection-dominated and stagnant flows.
+This research would be less directly useful to the Met Office since they intend to continue using TF grids.  Nevertheless, if we ensure that cells are aligned in columns then new types of grid might be implemented in Dynamo.
+
+We have some other research items that we may not pursue during the PhD, but we shall nevertheless document them here for completeness:
+\begin{description}
+	\item[`Adcroft for the atmosphere']{\citet{adcroft2013} described a technique for improving the representation of bathymetry.  The approach is designed to model narrow channels without requiring manual intervention, and capture sub-grid scale effects of flow around bathymetry.  \citet{gohm2004} found that very high resolution was required to accurately model gap flows in the atmosphere.  We could apply Adcroft's technique to the land, and we might hope to see improvements to gap flows at coarser resolutions.}
+	\item[Modulating flow with resistance terms]{Terry Davies put forward an idea for controlling sub-grid and near-grid scale flow by adding a resistance term to the horizontal momentum equation.  The term would be controlled by a coefficient that is a function of space.  The sign of the coefficient in the forcing term determines whether flow is accelerated, decelerated or, in the limit, blocked entirely.  We would have to formulate some heuristics for calculating this scalar field.}
+\end{description}
+
+MC1 also identified three further areas of research:
+\begin{itemize}
+	\item 3D tests on different grids to investigate flow blocking
+	\item Large scale tests with Coriolis forces
+	\item Mass coordinates and moving meshes
+\end{itemize}
+We no longer intend to pursue these items: 3D and large-scale tests are not well-motivated by our current work, and we do not have sufficient expertise to investigate mass coordinates.
+
+\section{Training and development}
+
+\subsection{Taught modules}
+In MC1, I had intended to enrol in several modules this year.  These decisions have changed as follows:
+\begin{description}
+\item[MA3NA2 Numerical Analysis II]{This module has been replaced with MA3NAT which spans two terms.  I would like to attend the second term which covers direct and iterative linear algebra solvers.  This will help me understand more about how matrix equations are solved in OpenFOAM and other atmospheric models.}
+\item[MAMCDE Partial Differential Equations]{I will drop this module because I lack the prerequisite knowledge}
+\item[MAMB10 Theory and Techniques of Data Assimilation]{I hope to attend Amos Lawless' Data Assimilation Short Course instead}
+\end{description}
+Finite elements are beginning to be used in atmospheric science and they are widely-used elsewhere, and so I might also consider taking M5MA47 Finite Elements in the spring.
+
+\subsection{Training}
+I will be attending more RRDP modules this academic year:
+\begin{description}
+	\item[Open access for research publications]{}
+	\item[Understanding the UK HE context]{Explains funding and assessment of university teaching and research}
+	\item[IPR and copyright and intellectual property rights]{}
+	\item[An essential guide to critical academic writing]{}
+	\item[Preparing to teach]{This course will be mandatory for demonstrators as of September 2016}
+\end{description}
+I hope that the first three modules in particular will be helpful should I pursue a career in academia.
+
+\subsection{Conferences and presentations}
+I attended the GungHo conference on Next Generation Weather and Climate Prediction in November 2015 and took the opportunity to discuss my work with researchers in my field.  In October 2015, I gave a presentation at HHH and spoke about what I've learnt about mountain meteorology and some of my ideas for future research.
+
+\subsection{Teaching}
+I was a teaching assistant for the NCAS Climate Modelling Summer School 2015, helping students implement linear advection and shallow water models.  This term, I am demonstrating for MTMG02 Atmospheric Physics.
 
 \bibliographystyle{ametsoc2014}                                                 
 \bibliography{references}
