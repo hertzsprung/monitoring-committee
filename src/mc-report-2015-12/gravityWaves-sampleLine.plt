@@ -1,4 +1,4 @@
-set term epslatex color size 5,4
+set term epslatex color size 5,7
 set style data linespoints
 
 set multiplot layout 2,2 margins 0.05,0.9,0.1,0.9 spacing 0.1
