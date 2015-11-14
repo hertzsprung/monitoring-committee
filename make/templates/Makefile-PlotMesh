@@ -1,0 +1,17 @@
+# $1 -- case
+# $2 -- gmtDict
+define PlotMesh
+
+$1/constant/mesh.pdf: \
+  $1/$(gmtDicts)/mesh \
+  $(addprefix $1/,$(meshFiles)) \
+  $(addprefix $1/,$(systemFiles)) \
+  gmt.conf \
+| $1/$(gmtDicts)
+	$(gmtFoam) -case $1 -constant mesh
+
+$(eval $(call CopyFile,$2,$1/$(gmtDicts)/mesh))
+$(eval $(call MakeDir,$1/$(gmtDicts)))
+
+endef
+

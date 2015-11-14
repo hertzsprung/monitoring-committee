@@ -1,0 +1,11 @@
+$(eval $(call PlotMesh,build/gravityWaves-mesh-cutCell-250m-250dz,src/mc-report-2015-12/gwMesh))
+$(eval $(call PlotMesh,build/gravityWaves-mesh-cutCell-250m-200dz,src/mc-report-2015-12/gwMesh))
+
+$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/gravityWaves-mesh-cutCell-250m-250dz,$(meshFiles) $(systemFiles),build/gravityWaves-mesh-cutCell-250m-250dz))
+$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/gravityWaves-mesh-cutCell-250m-200dz,$(meshFiles) $(systemFiles),build/gravityWaves-mesh-cutCell-250m-200dz))
+
+$(eval $(call MakeDir,build/gravityWaves-mesh-cutCell-250m-250dz/$(polyMesh)))
+$(eval $(call MakeDir,build/gravityWaves-mesh-cutCell-250m-200dz/$(polyMesh)))
+
+$(eval $(call MakeDir,build/gravityWaves-mesh-cutCell-250m-250dz/system))
+$(eval $(call MakeDir,build/gravityWaves-mesh-cutCell-250m-200dz/system))

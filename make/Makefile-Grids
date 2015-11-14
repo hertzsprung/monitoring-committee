@@ -1,0 +1,10 @@
+$(eval $(call MakeDir,build/fig-grids))
+
+$(eval $(call Gnuplot,build/fig-grids,cut-cell.tex,src/mc-report-2015-12/cut-cell.plt))
+$(eval $(call CopyFile,src/mc-report-2015-12/shave-curve.dat,build/fig-grids/shave-curve.dat))
+build/fig-grids/cut-cell.tex: build/fig-grids/shave-curve.dat
+
+$(eval $(call Gnuplot,build/fig-grids,btf.tex,src/mc-report-2015-12/btf.plt))
+$(eval $(call Gnuplot,build/fig-grids,sleve.tex,src/mc-report-2015-12/sleve.plt))
+$(eval $(call CopyNamedFile,src/mc-report-2015-12,tf.plt,build/fig-grids))
+build/fig-grids/btf.tex build/fig-grids/sleve.tex: build/fig-grids/tf.plt
