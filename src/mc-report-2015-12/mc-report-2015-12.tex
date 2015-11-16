@@ -1,5 +1,5 @@
 \documentclass[a4paper]{article}
-\usepackage{fullpage}
+\usepackage[cm]{fullpage}
 \usepackage{standalone}
 \usepackage[utf8]{inputenc}
 \usepackage[british]{babel}
@@ -48,16 +48,21 @@
 I am reaching the end of the first year of my PhD, having started in January 2015.
 The PhD aims to find ways of improving the accuracy of dynamical cores in the presence of orography.
 Most of my research so far has involved comparing numerical accuracy between terrain following and cut cell grids.
-At the time of our last monitoring committee meeting in June 2015, Hilary and I had documented our findings and submitted a first draft of the manuscript to Monthly Weather Review.  Following reviewer comments, we have performed additional tests which prompted us to make improvements to the numerical model.  We submitted a revised manuscript at the end of October 2015.
+At the time of our last monitoring committee meeting in June 2015, Hilary and I had documented our findings and submitted a first draft to Monthly Weather Review.  A key result was that thermal errors were present on the cut cell grid in a two-dimensional mountain waves test.  Following reviewer comments, we have performed additional tests to establish that the thermal errors are caused by errors in the advection of potential temperature.  We submitted a revised manuscript in October 2015.
 
-In the first monitoring committee report, we proposed the formulation of a Charney--Phillips staggering on cut cell grids as an area for future work.  While the first draft was under review, we made some preliminary progress in this area.  We have implemented this new formulation in a finite volume model, but more testing is required to verify correctness and assess the accuracy of the scheme.
+The new test results also prompted us to improve the advection scheme so that it remains upwind-biased even when the downwind cell is very small.  Combined with a novel grid generation technique, this offers a new approach for avoiding the `small cell problem' associated with explicit numerical schemes on cut cell grids.
 
-I have also spent some time learning about mountain meteorology and considering how improvements to numerics and grid generation might improve models of atmospheric flow around mountains.  First, a terrain following/cut cell blended grid, identified as an item of further work in the first report, might be used to improve the representation of slope flows and cold air pooling.  Second, \citet{adcroft2013} describes a technique for improving modelled ocean flows using sub-grid statistics of bathymetry, and we believe that the same technique might be applied to terrain to improve atmospheric flows.
+There is no existing formulation of a Charney--Phillips staggering for arbitrary grids, and the first monitoring committee report identified this as an area for future work.  We have since made some preliminary progress, having implemented a new formulation in a finite volume model, but more testing is required to verify correctness and assess the accuracy of the scheme.
+
+I have also been learning about mountain meteorology and considering how improvements to numerics and grid generation might improve models of atmospheric flow around mountains.  A terrain following/cut cell blended grid could improve the representation of slope flows and cold air pooling, and the technique developed by \citet{adcroft2013} for modelling narrow ocean channel flows could be applied to an atmospheric model of gap flows.
 
 In November 2015 I attended the GungHo conference at the Met Office.  GungHo is a project to develop a new numerical weather prediction model, which includes a new dynamical core named Dynamo.  I have spoken with Met Office scientists about how I might align my research to assist with this project.
 
 \section{Comparison of terrain following and cut cell grids}
 Terrain has an impact on all scales of atmospheric flow, generating planetary waves and gravity waves, retarding frontal systems, and forcing flow through channels and along slopes and valleys.  Extreme weather can be induced by flow over mountains, creating downslope windstorms and affecting local precipitation.  An accurate representation of orography is necessary to model these processes correctly.
+
+Terrain following (TF) layers are the most common way to represent orography, in which the lowest model layers follow the terrain, while layers are gradually flattened with increasing height.  There are several choices of decay function that govern how layers are flattened aloft, and our experiments use two: the Basic Terrain Following (BTF) coordinate \citep{galchen-somerville1975}, and the Smooth LEvel VErtical (SLEVE) coordinate \citep{schaer2002}, examples of which are shown in figures~\ref{fig:btf} and \ref{fig:sleve} respectively.  TF layers are attractive because their rectangular structure is simple to process by computer and link with parametrizations, and boundary layer resolution can be increased with variable spacing of vertical layers \citep{schaer2002}.
+However, increasing horizontal resolution can lead to steeper slopes and more non-orthogonal grids which reduce the accuracy of pressure gradient calculations and generate spurious circulations \citep{dempsey-davis1998,klemp2011}.
 
 \begin{figure}
 	\centering
@@ -69,10 +74,7 @@ Terrain has an impact on all scales of atmospheric flow, generating planetary wa
 	\label{fig:grids}
 \end{figure}
 
-Terrain following (TF) layers are the most common way to represent orography, in which the lowest model layers follow the terrain, while layers are gradually flattened with increasing height.  There are several choices of decay function that govern how layers are flattened aloft, and our experiments use two: the Basic Terrain Following (BTF) coordinate \citep{galchen-somerville1975}, and the Smooth LEvel VErtical (SLEVE) coordinate \citep{schaer2002}, examples of which are shown in figures~\ref{fig:btf} and \ref{fig:sleve} respectively.  TF layers are attractive because their rectangular structure is simple to process by computer and link with parametrizations, and boundary layer resolution can be increased with variable spacing of vertical layers \citep{schaer2002}.
-However, increasing horizontal resolution can lead to steeper slopes and more non-orthogonal grids which reduce the accuracy of pressure gradient calculations and generate spurious circulations \citep{dempsey-davis1998,klemp2011}.
-
-The cut cell method is an alternative to TF layers in which the terrain is intersected with an rectangular, orthogonal grid.  Cells below the surface are removed and cells that are intersected by the terrain are `cut', modifying their shape and size \citep{adcroft1997}.  Cut cell grids reduce errors in calculating pressure gradients because they are more orthogonal than equivalent terrain following grids, but the cut cell method can create some very small cells that constrain the timestep for explicit advection schemes \citep{klein2009}.  Figure~\ref{fig:cutCell} shows an example cut cell grid with small cells indicated by asterisks.
+The cut cell method is an alternative to TF layers in which the terrain is intersected with a rectangular, orthogonal grid.  Cells below the surface are removed and cells that are intersected by the terrain are `cut', modifying their shape and size \citep{adcroft1997}.  Cut cell grids reduce errors in calculating pressure gradients because they are more orthogonal than equivalent terrain following grids, but the cut cell method can create some very small cells that constrain the timestep for explicit advection schemes \citep{klein2009}.  Figure~\ref{fig:cutCell} shows an example cut cell grid with small cells indicated by asterisks.
 
 \subsection{Results}
 We used a finite volume model of the fully-compressible Euler equations originally documented by \citet{weller-shahrokhi2014} to evaluate accuracy on TF and cut cell grids in a series of two-dimensional test cases.  The model has a C-grid staggering in the horizontal and a Lorenz staggering in the vertical, and uses a cubic upwind-biased multidimensional advection scheme and a curl-free pressure gradient formulation.  Modifications have been made to improve stability and accuracy in small cut cells and around steep slopes and these are documented in our forthcoming publication.
@@ -94,17 +96,18 @@ The first monitoring committee report (hereafter referred to as MC1) analysed re
 	\label{fig:sampleLines}
 \end{figure}
 
-Having seen grid-scale oscillations in potential temperature on the cut cell grid in the mountain waves test, MC1 concluded that this demonstrated the presence of the Lorenz computational mode and this was the conclusion we made in our initial submission to Monthly Weather Review.  In August 2015, we received a request for major corrections, in which a reviewer suggested instead that these stripes of error could be due to errors in the advection of potential temperature.
+Having seen grid-scale oscillations in potential temperature on the cut cell grid in the mountain waves test, MC1 concluded that this demonstrated the presence of the Lorenz computational mode and this was the conclusion we made in our initial submission to Monthly Weather Review.  In August 2015, we received a request for major corrections, in which a reviewersuggested instead that these stripes of error could be due to errors in the advection of potential temperature.
 In response, we have performed some additional tests:
 \begin{description}
 	\item[Mountain waves tests at a variety of resolutions]{Keeping the peak mountain height fixed at \SI{250}{\meter}, several further tests were performed at resolutions from $\Delta z = \SI{50}{\meter}$ to $\Delta z = \SI{500}{\meter}$, resulting in different configurations of cut cells.  Vertical profiles of potential temperature anomalies were taken in the lee of the mountain and are shown in figures~\ref{fig:sampleLines}a and \ref{fig:sampleLines}b for TF and cut cell grids respectively.  Results were convergent on the TF grids.  A variety of error structures were found on the cut cell grids, not just grid-scale oscillations.}
 	\item[Terrain following advection of a thermal profile]{The initial thermal profile was taken from the mountain waves test and advected in a prescribed, terrain-following flow.  The error field was calculated by differencing the numerical and analytic solutions.  For comparison with the mountain waves tests, vertical profiles of the error field were taken at the same position, and results are shown in figures~\ref{fig:sampleLines}c and \ref{fig:sampleLines}d for TF and cut cell grids respectively.  Errors were negligible on the TF grids.  Error structures on the cut cell grids are similar to those in the mountain waves test, but greater in magnitude.}
 \end{description}
-These new results lead us to reject our original conclusion and instead we concur with the reviewer, finding that potential temperature errors in the mountain waves test are due to numerical errors in the advection of potential temperature.
+These new results led us to modify our original conclusion and instead we concur with the reviewer, finding that potential temperature errors in the mountain waves test are primarily due to numerical errors in the advection of potential temperature.
 
-\section{Charney-Phillips staggering on unstructured grids}
+\section{Charney-Phillips staggering on arbitrary grids}
 \label{sec:cp}
-We have spent a few weeks formulating a scheme for unstructured grids that is equivalent to Charney--Phillips staggering on uniform rectangular grids.  The prognostic thermodynamic variable, $b_f$, is a buoyancy-like quantity stored at cell faces such that $b_f = \theta_f \bm{\hat{g}}$ where $\theta_f$ is the potential temperature at the face and $\bm{\hat{g}}$ is the unit vector of gravitational acceleration.  On a uniform rectangular grid, this formulation reduces to a Charney--Phillips staggering with $b_f = 0$ on all vertically-oriented faces.  $\theta_f$ is currently transported in advective form using an explicit Eulerian second order scheme.  We identify necessary future work for this formulation in the following section.
+  We have spent a few weeks formulating a new scheme for arbitrary grids that is equivalent to Charney--Phillips staggering on uniform rectangular grids.  The prognostic thermodynamic variable, $b_f$, is a buoyancy-like quantity stored at cell faces such that $b_f = \theta_f \bm{\hat{g}}$ where $\theta_f$ is the potential temperature at the face and $\bm{\hat{g}}$ is the unit vector of gravitational acceleration.  On a uniform rectangular grid, this formulation reduces to a Charney--Phillips staggering with $b_f = 0$ on all vertically-oriented faces.  $\theta_f$ is currently transported in advective form using an explicit Eulerian second order scheme.  We identify necessary future work for this formulation in the following section.
+
 
 \section{Future research}
 
@@ -113,13 +116,15 @@ We have further developed our ideas for future work since MC1.  We consider pote
 \begin{description}
 	\item[Comparisons of existing results with Met Office models]{Following a meeting with the Met Office, we agreed that it would be valuable to compare our resting atmosphere and mountain waves test results with EndGame or BLASIUS.}
 	\item[Further mountain waves tests]{Following discussions at a conference hosted by the Met Office, many were interested in potential advantages of alternative grid techniques over very steep orography.  Following \citet{yamazaki-satomura2010}, we could examine the numerical stability and accuracy of our model in 2D flow over semi-circular hills or sharp cliffs.  It was also suggested that flow of a neutrally stable atmosphere over orography would better reveal numerical errors.}
-	\item[Upwind-biased advection for cut cell grids]{Since MC1, we have made a number of improvements to the upwind-biased cubic advection scheme to ensure that advection remains upwind-biased around cut cells.  This was necessary to maintain stability in different cut cell configurations and led to much smaller errors in all mountain waves tests.  The technique is currently implemented in OpenFOAM but is otherwise undocumented.  We could test variants of the advection scheme on cut cell grids to demonstrate the utility of this technique.  We would expect the results of this work to lead to a new journal article.}
+	\item[Upwind-biased advection for cut cell grids]{Since MC1, we have improved the upwind-biased cubic advection scheme to ensure that advection remains upwind-biased even when the downwind cell is very small.  This was necessary to maintain stability in different cut cell configurations and led to much smaller errors in all mountain waves tests.  The technique is currently implemented in OpenFOAM but is otherwise undocumented.  We could test variants of the advection scheme on cut cell grids to demonstrate the utility of this technique.  We would expect the results of this work to lead to a new journal article.}
 \end{description}
 
-\subsection*{Thermal advection schemes on Charney--Phillips staggered unstructured grids}
+\subsection*{Thermal advection schemes on Charney--Phillips staggered arbitrary grids}
 A brief description of the new Charney--Phillips formulation was provided in section~\ref{sec:cp}.  We have performed some preliminary tests in OpenFOAM to establish that the scheme produces stable, realistic results.  Further tests will be needed to expose the Lorenz computational mode in the Lorenz formulation, and we will use the same tests to verify that the computational mode is not present in the Charney--Phillips formulation.
 		
-Further modifications to the scheme are expected to be necessary.  In particular, we believe that a more accurate advection scheme will be required.  The Met Office are keen for us to investigate Eulerian schemes for thermal transport, and our results will inform design decisions for their new Dynamo dynamical core.  
+Further modifications to the scheme are expected to be necessary.  In particular, we believe that a more accurate advection scheme will be required.
+Existing schemes are designed to advect temperature on grids that are fully-structured in the vertical and horizontal.  We intend to develop new schemes that are suitable for arbitrary grids with Charney--Phillips staggering.
+The Met Office are keen for us to investigate Eulerian schemes for thermal advection, and our results will inform design decisions for their new Dynamo dynamical core.  
 
 \subsection*{TF/cut cell blended grids}
 \begin{figure}
@@ -137,6 +142,7 @@ More recently, I have considered how new grid formulations might improve various
 
 This research would be less directly useful to the Met Office since they intend to continue using TF grids.  Nevertheless, if we ensure that cells are aligned in columns then new types of grid might be implemented in Dynamo.
 
+\newpage
 \subsection*{Additional future directions}
 We have some other research items that we may not pursue during the PhD, but we shall nevertheless document them here for completeness:
 \begin{description}
@@ -151,7 +157,7 @@ MC1 identified three further areas of research:
 	\item Large scale tests with Coriolis forces
 	\item Mass coordinates with moving meshes to improve upper boundary treatment
 \end{itemize}
-We no longer intend to pursue these items: 3D and large-scale tests are not well-motivated by our current work, and we do not have sufficient expertise to investigate upper boundary conditions.
+We no longer intend to pursue these items: 3D and large-scale tests are not well-motivated by our current work, and we do not have a clear plan how we would improve on existing approaches which use mass coordinates. 
 
 \section{Training and development}
 
