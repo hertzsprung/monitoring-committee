@@ -1,15 +1,14 @@
-set term epslatex color size 5,7
+set term epslatex color size 6,5
 set style data linespoints
 
-set multiplot layout 2,2 margins 0.05,0.9,0.1,0.9 spacing 0.1
+set multiplot layout 2,2 margins 0.05,0.8,0.1,0.9 spacing 0.1
 
 set xrange [-0.1:0.1]
 set yrange [0:1200]
 set ylabel "$z$ (\\si{\\meter})" offset 3
 set yzeroaxis
 
-set key at 0.1875,1350 title "$\\Delta z$"
-unset key
+set key at 0.5,1100 title "$\\Delta z$"
 
 set label 1 "(a)" at -0.085,1100 center front
 set title "Gravity waves BTF" offset 0,-1
@@ -38,8 +37,7 @@ plot "`echo $ATMOSTESTS_DIR`/build/gravityWaves-cutCell-250m-500dz/18000/sampleL
      "`echo $ATMOSTESTS_DIR`/build/gravityWaves-cutCell-250m-75dz/18000/sampleLine.dat" using 2:1, \
      "`echo $ATMOSTESTS_DIR`/build/gravityWaves-cutCell-250m-50dz/18000/sampleLine.dat" using 2:1
 
-set key at 0.1875,2130 title ""
-unset key
+set key at 0.5,1920 title ""
 set xlabel "$\\theta$ (\\si{\\kelvin})" offset 0,0.5
 set ytics format "% h"
 set ylabel "$z$ (\\si{\\meter})" offset 3
