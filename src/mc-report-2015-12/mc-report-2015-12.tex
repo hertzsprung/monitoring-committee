@@ -142,9 +142,9 @@ We plan to further explore advection schemes for transporting temperature: to an
 		
 We will avoid the avoid the vertex-snapping heuristics previously used to generate cut cell grids, instead preferring a more straightforward grid generation method that still retains the long, thin cells from the old method.  The report will include a complete description of the new technique.}
 
-\item[Thermal advection schemes on Charney--Phillips staggered arbitrary grids]{A overview of the new Charney--Phillips formulation was provided in section~\ref{sec:cp}.  We have performed some preliminary tests in OpenFOAM to establish that the scheme produces stable, realistic results.
+\item[Thermal advection schemes on Charney--Phillips staggered arbitrary grids]{An overview of the new Charney--Phillips formulation was provided in section~\ref{sec:cp}.  We have performed some preliminary tests in OpenFOAM to establish that the scheme produces stable, realistic results.
 		
-\cite{arakawa-konor1996} presented vertical slice tests that exposed the unphysical behaviour of the Lorenz computational mode.  We will use these same tests to analyse the behaviour of our Lorenz model, and to verify that the computational mode is not present in the Charney--Phillips formulation.
+\cite{arakawa-konor1996} presented vertical slice tests that exposed the unphysical behaviour of the Lorenz computational mode.  We will use these same tests to assess the behaviour of our Lorenz model, and to verify that the computational mode is not present in the Charney--Phillips formulation.
 		
 Further modifications to the scheme are expected to be necessary.  In particular, we believe that a more accurate advection scheme will be required.
 Existing schemes are designed to advect temperature on grids that are fully-structured in the vertical and horizontal.  We intend to develop new schemes that are suitable for arbitrary grids with Charney--Phillips staggering.
@@ -154,7 +154,7 @@ The Met Office are keen for us to investigate Eulerian schemes for thermal advec
 \subsection*{Additional future directions}
 \begin{description}
 	\item[Comparisons of existing results with Met Office models]{Following a meeting with the Met Office, we agreed that it might be valuable to compare our resting atmosphere and mountain waves test results with the vertical slice versions of EndGame or BLASIUS.}
-	\item[Further mountain waves tests]{Following discussions at a workshop hosted by the Met Office, many were interested in potential advantages of alternative grid techniques over very steep orography.  Following \citet{yamazaki-satomura2010}, we could examine the numerical stability and accuracy of our model in 2D flow over semi-circular hills or sharp cliffs.  It was also suggested that flow of a neutrally stable atmosphere over orography would better reveal numerical errors.}
+	\item[Further mountain waves tests]{Following discussions at a workshop hosted by the Met Office, many were interested in potential advantages of alternative grid techniques over very steep orography.  Following \citet{yamazaki-satomura2010}, we could examine the numerical stability and accuracy of our model in 2D flow over semi-circular hills.  It was also suggested that flow of a neutrally stable atmosphere over orography would better reveal numerical errors.}
 	\item[TF/cut cell blended grids]{
 MC1 proposed blending elements of TF and cut cell techniques to create a new grid that performs well over high mountains and near steep mountains.
 More recently, I have considered how new grid formulations might improve various mountain flows.  For example, a test might be constructed in which cold air runs down a slope pooling in a basin.  We might construct a grid that has high-resolution terrain-following layers along slopes and has cut cells in the basin.  Such a grid should improve accuracy of both advection-dominated and stagnant flows.
