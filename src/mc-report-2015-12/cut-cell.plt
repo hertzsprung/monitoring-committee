@@ -15,9 +15,10 @@ set ytics format ""
 set style fill pattern border
 
 set parametric
-set label "$\\ast$" at 1.5,0.5 center front
-set label "$\\ast$" at 2.5,0.5 center front
-set label "$\\ast$" at 3.5,1.5 center front
+set arrow from 2.1,1.3 to 1.95,0.95 filled
+set label "$\\ast$" at 2.15,1.4 center front
+set label "$\\ast$" at 2.2,0.95 center front
+set label "$\\ast$" at 3.9,1.9 center front
 
 plot '-' using 1:2 with filledcurves fillcolor rgbcolor '#999999' notitle, \
      'shave-curve.dat' using 1:2 smooth csplines notitle lt -1 lw 2
