@@ -1,9 +1,12 @@
-  - new GW tests prompted improvements to advection scheme
-- future plans
-  - Charney--Phillips on unstructured grids
-  - testing and analysis of advection scheme
-- training and development
-  - NCAS Summer School
-  - HHH talk
- 
-where to incorporate mountain weather?  can say a bit in progress and future plans section
+- paper accepted
+- advection scheme work
+- Quo Vadis runner up
+- reviewed a MWR paper
+- collaborating occassionally with ASAM group
+- met Mattijs Janssens
+- attended (almost) every departmental and lunchtime seminar
+- active on twitter, website and blog (thanks to SCENARIO meeting)
+- became RMetS member
+- attended spring term MA3NAT lectures, covered matrix decompositions, including SVD (which I use), iterative methods and numerical stability
+- DCMIP, Ram Nair
+- presented at mesoscale group and PhD group
