@@ -2,6 +2,7 @@
 - advection scheme work
 - Quo Vadis runner up
 - reviewed a MWR paper
+- contributing to Yumeng's paper
 - collaborating occassionally with ASAM group
 - met Mattijs Janssens
 - attended (almost) every departmental and lunchtime seminar
