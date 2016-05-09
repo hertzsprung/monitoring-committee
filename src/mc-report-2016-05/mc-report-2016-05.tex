@@ -9,6 +9,7 @@
 \usepackage{natbib}
 \usepackage[final,babel]{microtype}
 \usepackage[hidelinks]{hyperref}
+\usepackage{doi}
 \usepackage{siunitx}
 \usepackage[margin=3pt]{subcaption}
 \usepackage{xcolor}
@@ -40,9 +41,26 @@
 \makeatother
 
 
+\newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
 \begin{document}
 \newcommand{\exner}{\Pi}
 \maketitle
+
+Atmospheric models solve the equations of motion in a discrete form on a three-dimensional mesh, with the lower boundary representing the terrain surface.
+My PhD project seeks to make numerical weather and climate predictions more accurate by improving the mesh's representation of the terrain, and by improving the numerical schemes that operate on these meshes.
+
+Most operational models apply a transformation to the vertical coordinate so that the mesh's lower boundary represents the terrain.  This terrain-following coordinate transformation reduces numerical accuracy in the calculation of horizontal pressure gradients \citep{gary1973,zaengl2012} and advection terms \citep{schaer2002}.  Inaccuracies are larger near steep terrain.  Since the basic terrain following coordinate was developed by \citet{galchen-somerville1975a}, there have been proposals to make coordinate transformations that are increasingly orthogonal \citep{simmons-burridge1981,schaer2002,leuenberger2010,klemp2011}.
+The cut cell method is an alternative to terrain-following coordinates.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.
+To illustrate the two different methods, a wave-shaped mountain is represented using a basic terrain following mesh (figure~\ref{fig:btf-mesh}) and a cut cell mesh (figure~\ref{fig:cutcell-mesh}).
+
+\begin{figure}
+	\centering
+	\subcaptionbox{Basic terrain following mesh \label{fig:btf-mesh}}[.3\linewidth]{\TODO{btf mesh}}
+	\subcaptionbox{Cut cell mesh \label{fig:cutcell-mesh}}[.3\linewidth]{\TODO{cut cell mesh}}
+	\caption{\TODO{btf and cut cell meshes}}
+	\label{fig:meshes}
+\end{figure}
+
 
 \section{Training}
 \subsection*{Mathematics modules}
@@ -113,6 +131,6 @@ Yumeng, Leibniz Institute for Tropospheric Research, Mattijs Janssens, Christian
 Visiting NCAR, hosted by Ram Nair
 
 \bibliographystyle{ametsoc2014}                                                 
-\bibliography{references}
+\small{\bibliography{references}}
 
 \end{document}

@@ -11,6 +11,7 @@
 @STRING{AO        = "Atmos.--Ocean"}			% Atmosphere--Ocean, published by Canadian Meteorological Society (CMOS)
 @STRING{AR        = "Atmos.\ Res."}			% Atmospheric Research
 @STRING{ARFM      = "Annu.\ Rev.\ Fluid Mech."}
+@STRING{ASL       = "Atmos. Sci. Lett."}		% added by jshaw
 @STRING{AUMET     = "Aust.\ Meteor.\ Mag."}
 @STRING{BAMS      = "Bull.\ Amer.\ Meteor.\ Soc."}
 @STRING{CAP       = "Contrib.\ Atmos.\ Phys."}
@@ -87,88 +88,35 @@
 @STRING{WF        = "Wea.\ Forecasting"}
 @STRING{WMOB      = "WMO Bull."}
 
-@article{adcroft1997,
-	title={Representation of topography by shaved cells in a height coordinate ocean model},
-	author={Adcroft, Alistair and Hill, Chris and Marshall, John},
-	journal=MWR,
-	volume={125},
-	pages={2293--2315},
-	year={1997}
-}
-
-@article{adcroft2013,
-	title={Representation of topography by porous barriers and objective interpolation of topographic data},
-	author={Adcroft, Alistair},
-	journal={Ocean Modelling},
-	volume={67},
-	pages={13--27},
-	year={2013},
-	publisher={Elsevier}
-}
-
-@article{arakawa-konor1996,
-	title={Vertical Differencing of the Primitive Equations Based on the {C}harney--{P}hillips Grid in Hybrid $\sigma$--$p$ Vertical Coordinates},
-	author={Arakawa, Akio and Konor, Celal S},
-	journal=MWR,
-	volume={124},
-	pages={511--528},
-	year={1996}
-}
-
-@article{davies2005,
-	title={A new dynamical core for the Met Office's global and regional modelling of the atmosphere},
-	author={Davies, T and Cullen, MJP and Malcolm, AJ and Mawson, MH and Staniforth, A and White, AA and Wood, N},
-	journal=QJRMS,
-	volume={131},
-	pages={1759--1782},
-	year={2005},
-	publisher={Wiley Online Library}
-}
-
-@inproceedings{dempsey-davis1998,
-	author={Dave Dempsey and Chris Davis},
-	title={Error analyses and test of pressure gradient force schemes in nonhydrostatic, mesoscale model},
-	year={1998},
-	pages={236--239},
-	organisation=AMS,
-	booktitle={{\rm Preprints,} 12th Conf.\ on Numerical Weather Prediction},
-	address={Phoenix, AZ}
-}
-
-@article{galchen-somerville1975,
+@article{galchen-somerville1975a,
 	title={On the Use of a Coordinate Transformation for the Solution of the Navier-Stokes Equations},
 	author={Gal-Chen, Tzvi and Somerville, Richard CJ},
 	journal=JCP,
 	volume={17},
 	pages={209--228},
-	year={1975}
+	year={1975},
+	publisher={Elsevier},
+	doi={10.1016/0021-9991(75)90037-6}
 }
 
-@article{gohm2004,
-	title={South foehn in the {W}ipp {V}alley on 24 {O}ctober 1999 ({MAP IOP} 10): Verification of high-resolution numerical simulations with observations},
-	author={Gohm, Alexander and Z{\"a}ngl, G{\"u}nther and Mayr, Georg J},
-	journal=MWR,
-	volume={132},
-	pages={78--102},
-	year={2004}
+@article{gary1973,
+	title={Estimate of Truncation Error in Transformed Coordinate, Primitive Equation Atmospheric Models},
+	author={Gary, John M},
+	journal=JAS,
+	volume={30},
+	pages={223--233},
+	year={1973},
+	doi={10.1175/1520-0469(1973)030<0223:EOTEIT>2.0.CO;2}
 }
 
 @article{good2014,
 	author = {Good, Beth and Gadian, Alan and Lock, Sarah-Jane and Ross, Andrew},
 	title = {Performance of the cut-cell method of representing orography in idealized simulations},
-	journal = {Atmos. Sci. Lett.},
-	year = {2014},
-	volume = {15},
-	pages = {44--49}
-}
-
-@article{klein2009,
-	title={Well-balanced compressible cut-cell simulation of atmospheric flow},
-	author={Klein, R and Bates, K.R. and Nikiforakis, N},
-	journal=PTRS,
-	volume={367},
-	pages={4559--4575},
-	year={2009}
+	Journal = ASL,
+	Year = {2014},
+	Volume = {15},
+	Pages = {44--49},
+	DOI = {10.1002/asl2.465}
 }
 
 @article{klemp2011,
@@ -177,7 +125,28 @@
 	journal=MWR,
 	volume={139},
 	pages={2163--2169},
-	year={2011}
+	year={2011},
+	doi={dx.doi.org/10.1175/MWR-D-10-05046.1}
+}
+
+@article{leuenberger2010,
+	title={A Generalization of the SLEVE Vertical Coordinate},
+	author={Leuenberger, Daniel and Koller, Marcel and Fuhrer, Oliver and Sch{\"a}r, Christoph},
+	journal=MWR,
+	volume={138},
+	pages={3683--3689},
+	year={2010},
+	doi={10.1175/2010MWR3307.1}
+}
+
+@article{lock2012,
+	title={Demonstration of a Cut-Cell Representation of 3D Orography for Studies of Atmospheric Flows over Very Steep Hills},
+	author={Lock, Sarah-Jane and Bitzer, Heinz-Werner and Coals, Alison and Gadian, Alan and Mobbs, Stephen},
+	journal=MWR,
+	volume={140},
+	pages={411--424},
+	year={2012},
+	doi={10.1175/MWR-D-11-00069.1}
 }
 
 @article{schaer2002,
@@ -186,23 +155,26 @@
 	journal=MWR,
 	volume={130},
 	pages={2459--2480},
-	year={2002}
+	year={2002},
+	doi={10.1175/1520-0493(2002)130<2459:ANTFVC>2.0.CO;2}
 }
 
-@article{weller-shahrokhi2014,
-	title={Curl free pressure gradients over orography in a solution of the fully compressible {Euler} equations with implicit treatment of acoustic and gravity waves},
-	author={Hilary Weller and Ava Shahrokhi},
+@article{simmons-burridge1981,
+	title={An energy and angular-momentum conserving vertical finite-difference scheme and hybrid vertical coordinates},
+	author={Simmons, Adrian J and Burridge, David M},
 	journal=MWR,
-	year={2014},
-	volume={142},
-	pages={4439--4457}
+	volume={109},
+	pages={758--766},
+	year={1981},
+	doi={10.1175/1520-0493(1981)109<0758:AEAAMC>2.0.CO;2}
 }
 
-@article{yamazaki-satomura2010,
-	title={Nonhydrostatic Atmospheric Modeling Using a Combined {Cartesian} Grid},
-	author={Yamazaki, Hiroe and Satomura, Takehiko},
+@article{zaengl2012,
+	title={Extending the numerical stability limit of terrain-following coordinate models over steep slopes},
+	author={Z{\"a}ngl, G{\"u}nther},
 	journal=MWR,
-	volume={138},
-	pages={3932--3945},
-	year={2010}
+	volume={140},
+	pages={3722--3733},
+	year={2012},
+	doi={10.1175/MWR-D-12-00049.1}
 }
