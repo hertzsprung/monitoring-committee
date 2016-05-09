@@ -14,3 +14,4 @@
 - presented at mesoscale group and PhD group
 - organising visit from Exeter University PhD student and YouTube videographer, Simon Clark
 - attended peer review workshop hosted by Sense about Science
+- read Eloquent Science
