@@ -5,6 +5,9 @@
 \usepackage[british]{babel}
 \usepackage{csquotes}
 \usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
 \usepackage{mathptmx}
 \usepackage{natbib}
 \usepackage[final,babel]{microtype}
@@ -47,20 +50,65 @@
 \maketitle
 
 Atmospheric models solve the equations of motion in a discrete form on a three-dimensional mesh, with the lower boundary representing the terrain surface.
-My PhD project seeks to make numerical weather and climate predictions more accurate by improving the mesh's representation of the terrain, and by improving the numerical schemes that operate on these meshes.
+Next-generation atmospheric models are being designed to be more flexible than previous models, so that the choice of mesh and choices of numerical schemes can be deferred or changed during operation \citep{ford2013,theurich2015}.
+My PhD project seeks to make numerical weather and climate predictions more accurate by developing new meshes and improved numerical schemes that are suitable for next-generation models.
+The project focuses on two aspects: first, how to model atmospheric flows accurately on arbitrary meshes and, second, how terrain is best represented by a mesh.
 
-Most operational models apply a transformation to the vertical coordinate so that the mesh's lower boundary represents the terrain.  This terrain-following coordinate transformation reduces numerical accuracy in the calculation of horizontal pressure gradients \citep{gary1973,zaengl2012} and advection terms \citep{schaer2002}.  Inaccuracies are larger near steep terrain.  Since the basic terrain following coordinate was developed by \citet{galchen-somerville1975a}, there have been proposals to make coordinate transformations that are increasingly orthogonal \citep{simmons-burridge1981,schaer2002,leuenberger2010,klemp2011}.
-The cut cell method is an alternative to terrain-following coordinates.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.
-To illustrate the two different methods, a wave-shaped mountain is represented using a basic terrain following mesh (figure~\ref{fig:btf-mesh}) and a cut cell mesh (figure~\ref{fig:cutcell-mesh}).
+% let's follow the same order: first talk about advection accuracy
+
+There are two main mesh generation methods used in atmospheric models: terrain-following layers and cut cells.
+Most operational models use terrain-following layers, in which the vertical coordinate is transformed so that the mesh's lower boundary represents the terrain.
+Terrain-following coordinates reduce numerical accuracy in the calculation of horizontal pressure gradients \citep{gary1973,zaengl2012} and advection terms \citep{schaer2002}.  Inaccuracies are larger near steep terrain.  Since the basic terrain-following coordinate was developed by \citet{galchen-somerville1975a}, there have been proposals to make coordinate transformations that are increasingly orthogonal \citep{simmons-burridge1981,schaer2002,leuenberger2010,klemp2011}.
+
+The cut cell method is an alternative to terrain-following coordinates.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.  While the cut cell method can reduce numerical errors, cut cell meshes can have arbitrarily small cells which impose severe constraints on the timestep for explicit methods \citep{almgren1997}.
+
+To illustrate the two different mesh generation methods, a wave-shaped mountain is represented using a basic terrain-following mesh (figure~\ref{fig:btf-mesh}) and a cut cell mesh (figure~\ref{fig:cutcell-mesh}).  \TODO{say something about them}
 
 \begin{figure}
 	\centering
-	\subcaptionbox{Basic terrain following mesh \label{fig:btf-mesh}}[.3\linewidth]{\TODO{btf mesh}}
+	\subcaptionbox{Basic terrain-following mesh \label{fig:btf-mesh}}[.3\linewidth]{\TODO{btf mesh}}
 	\subcaptionbox{Cut cell mesh \label{fig:cutcell-mesh}}[.3\linewidth]{\TODO{cut cell mesh}}
-	\caption{\TODO{btf and cut cell meshes}}
+	\subcaptionbox{Slanted cell mesh \label{fig:slantedcell-mesh}}[.3\linewidth]{\TODO{cut cell mesh}}
+	\caption{\TODO{btf, cut cell and slanted cell meshes.  the cut cell mesh was generated using the ASAM grid generator, courtesy of TROPOS}}
 	\label{fig:meshes}
 \end{figure}
 
+\section{Improving advection on slanted cell meshes}
+My current work focuses on improving the stability and accuracy of a multidimensional advection scheme that is suitable for arbitrary meshes \citep{weller-shahrokhi2014}.  The performance of the advection scheme will be evaluated over steep slopes on terrain-following, cut cell and slanted cell meshes.
+In the second monitoring committee report (hereafter referred to as MC2), the slanted cell method was referred to as the cut cell method.  While there are strong similarities between the two methods, the resulting meshes have differences: compare the representation of the same terrain profile using a cut cell mesh (figure~\ref{fig:cutcell-mesh}) with a slanted cell mesh (figure~\ref{fig:slantedcell-mesh}).
+
+The slanted cell method has several advantages over the cut cell method.  First, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}, since MC2 was written, I have developed a new technique that makes slanted cell meshes straightforward to construct \citep{shaw-weller2016}.  Second, the slanted cell method does not severely constrain the timestep because thin cells are created that are long in the direction of flow.
+
+The multidimensional advection scheme is an explicit, Eulerian, finite-volume scheme that has a cubic upwind-biased stencil.  Fluxes across faces are approximated using a least squares polynomial fit onto the stencil point values.
+On a two-dimensional quadrilateral mesh, the stencil has $4 \times 3$ points in the domain interior (figure~\ref{fig:stencil-interior}), but may include fewer points near the boundaries.  This is a particular concern at the lower boundary where stencils may be smaller and highly distorted (figure~\ref{fig:stencil-lower-boundary}).
+
+\begin{figure}
+	\centering
+	\subcaptionbox{Interior stencil \label{fig:stencil-interior}}[.48\linewidth]{\TODO{A $3 \times 4$ stencil on a quadrilateral mesh for a face in the domain interior}}
+	\subcaptionbox{Lower boundary stencil \label{fig:stencil-lower-boundary}}[.48\linewidth]{\TODO{A $m \times n$ stencil for a face near the lower boundary of a slanted cell mesh}}
+	\caption{\TODO{Two-dimensional cubicUpwindCPCFit stencils}}
+	\label{fig:stencils}
+\end{figure}
+
+In the interior of a two-dimensional domain, we fit a polynomial surface to a stencil of a discrete scalar field $\phi$:
+\begin{align}
+	\phi = a_1 + a_2 x + a_3 y + a_4 x^2 + a_5 x y + a_6 y^2 + a_7 x^3 + a_8 x^2 y + a_9 x y^2
+\end{align}
+where $a_1 \ldots a_9$ are the unknown coefficients that are calculated from the least squares fit.  It may not be possible to fit all the polynomial terms to a stencil near the lower boundary because it will include fewer points that may be non-uniformly distributed.  With help from Philip Browne, I have developed a mathematical technique that removes certain high-order terms based on the stencil geometry.  We call this technique an `adaptive polynomial fit'.
+
+The adaptive polynomial fit alone is not enough to ensure numerical stability.  I am developing a new procedure that will stabilise the polynomial fit for troublesome stencils.  It is based on constraints derived from a one-dimensional von Neumann analysis of a simplified version of the spatial discretisation.  Compared to the original version of the advection scheme by \citet{weller-shahrokhi2014}, the improved version is stable for a wider range of test cases and has accuracy that is comparable to the original version.
+
+% future work: more stabilisation, 1D tests/comparisons with other schemes, e.g. WENO,
+
+% now say a few words about what I've done to the advection scheme:
+% adaptive polynomial fit
+% 
+
+\section{Future research}
+
+% timescales?
+% stabilise advection scheme on arbitrary 2D meshes
+% Charney--Phillips
 
 \section{Training}
 \subsection*{Mathematics modules}
