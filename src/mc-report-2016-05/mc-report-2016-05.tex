@@ -73,11 +73,18 @@ To illustrate the two different mesh generation methods, a wave-shaped mountain 
 	\label{fig:meshes}
 \end{figure}
 
-\section{Improving advection on slanted cell meshes}
-My current work focuses on improving the stability and accuracy of a multidimensional advection scheme that is suitable for arbitrary meshes \citep{weller-shahrokhi2014}.  The performance of the advection scheme will be evaluated over steep slopes on terrain-following, cut cell and slanted cell meshes.
-In the second monitoring committee report (hereafter referred to as MC2), the slanted cell method was referred to as the cut cell method.  While there are strong similarities between the two methods, the resulting meshes have differences: compare the representation of the same terrain profile using a cut cell mesh (figure~\ref{fig:cutcell-mesh}) with a slanted cell mesh (figure~\ref{fig:slantedcell-mesh}).
+\section{Comparison of terrain-following and slanted cell meshes}
+The first year of my PhD concentrated on comparing the numerical accuracy on terrain-following and slanted cell meshes.
+In the second monitoring committee report (hereafter referred to as MC2), the slanted cell method was referred to as the cut cell method, but it is necessary to make a distinction between the two methods.  While they share strong similarities, cut cell and slanted cell meshes have differences: compare the representation of the same terrain profile using cut cells (figure~\ref{fig:cutcell-mesh}) and slanted cells (figure~\ref{fig:slantedcell-mesh}).
 
-The slanted cell method has several advantages over the cut cell method.  First, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}, since MC2 was written, I have developed a new technique that makes slanted cell meshes straightforward to construct \citep{shaw-weller2016}.  Second, the slanted cell method does not severely constrain the timestep because thin cells are created that are long in the direction of flow.
+The slanted cell method has several advantages over the cut cell method.  First, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}, I have developed a new technique that makes slanted cell meshes straightforward to construct \citep{shaw-weller2016}.  Second, the slanted cell method does not severely constrain the timestep because thin cells are created that are long in the direction of flow.
+
+Since the previous meeting, the Leibniz Institute for Tropospheric Research have kindly provided me with their cut cell mesh generator used in the All Scale Atmospheric Model \citep{jaehn2015}.  This generates true cut cell meshes and will enable me to compare test results for cut cell and slanted cell meshes.
+
+Our submission to Monthly Weather Review underwent a third round of revisions after our previous monitoring committee meeting.  These revisions included the development of a new slanted cell mesh generation method which avoided the complex heuristics employed by the previous method (see MC2, section 3).  The article was accepted for publication in February 2016 and is now undergoing prepress proofing.
+
+\section{Improving advection on slanted cell meshes}
+My current work focuses on improving the stability and accuracy of a multidimensional advection scheme that is suitable for arbitrary meshes \citep{weller-shahrokhi2014}.  The performance of the advection scheme is being evaluated over steep slopes on terrain-following, cut cell and slanted cell meshes.
 
 The multidimensional advection scheme is an explicit, Eulerian, finite-volume scheme that has a cubic upwind-biased stencil.  Fluxes across faces are approximated using a least squares polynomial fit onto the stencil point values.
 On a two-dimensional quadrilateral mesh, the stencil has $4 \times 3$ points in the domain interior (figure~\ref{fig:stencil-interior}), but may include fewer points near the boundaries.  This is a particular concern at the lower boundary where stencils may be smaller and highly distorted (figure~\ref{fig:stencil-lower-boundary}).
@@ -96,21 +103,23 @@ In the interior of a two-dimensional domain, we fit a polynomial surface to a st
 \end{align}
 where $a_1 \ldots a_9$ are the unknown coefficients that are calculated from the least squares fit.  It may not be possible to fit all the polynomial terms to a stencil near the lower boundary because it will include fewer points that may be non-uniformly distributed.  With help from Philip Browne, I have developed a mathematical technique that removes certain high-order terms based on the stencil geometry.  We call this technique an `adaptive polynomial fit'.
 
-The adaptive polynomial fit alone is not enough to ensure numerical stability.  I am developing a new procedure that will stabilise the polynomial fit for troublesome stencils.  It is based on constraints derived from a one-dimensional von Neumann analysis of a simplified version of the spatial discretisation.  Compared to the original version of the advection scheme by \citet{weller-shahrokhi2014}, the improved version is stable for a wider range of test cases and has accuracy that is comparable to the original version.
+The adaptive polynomial fit alone is not enough to ensure numerical stability.  I am developing a new procedure that will stabilise the polynomial fit for troublesome stencils.  It is based on constraints derived from a one-dimensional von Neumann analysis of a simplified version of the spatial discretisation.  Compared to the original version of the advection scheme by \citet{weller-shahrokhi2014}, the improved version is stable for a wider range of test cases and has accuracy that is comparable to the original version.  Further work is needed to achieve stability for additional test cases, and give us confidence that the scheme is stable and accurate for arbitrary meshes.
 
-% future work: more stabilisation, 1D tests/comparisons with other schemes, e.g. WENO,
-
-% now say a few words about what I've done to the advection scheme:
-% adaptive polynomial fit
-% 
+% I could talk about recent work in 1D, potential comparisons with WENO
 
 \section{Future research}
+\TODO{introductory sentence}
+
+The development of the multidimensional advection scheme, as with most tasks in life, has proved to be more challenging than initially thought.  The new version of the scheme is already much improved over the original version since it is stable for a larger selection of tests.  However, the scheme is weakly unstable in certain cases and it is not yet clear how to address this issue.  I am collaborating with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for further suggestions.
+
+
+MC2 discussed exploratory work into a Charney--Phillips staggering for arbitrary meshes.  I intend to return to this topic once I am satisfied with the performance of the advection scheme and once I have prepared a paper discussing the advection results.
 
 % timescales?
-% stabilise advection scheme on arbitrary 2D meshes
-% Charney--Phillips
 
 \section{Training}
+\TODO{quick overview of what's new: MA3NAT, MWR reviewer, DCMIP 2016, Simon Clark}
+
 \subsection*{Mathematics modules}
 \begin{tabular}{l l l l}
 Spring 2016	& MA3NAT & Numerical Analysis II & unassessed \\
@@ -131,13 +140,14 @@ Spring 2015	& MAMNSP & Numerical Solution of Partial Differential Equations  & 7
 \subsection*{External courses}
 \begin{tabular}{l l}
 June 2016 & Dynamical core intercomparison project summer school, NCAR \\
+13 May 2016 & Peer review: the nuts and bolts, Sense about Science \\
 June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
 \end{tabular}
 
 \subsection*{Conferences and workshops}
 \begin{tabularx}{\linewidth}{l l X}
 October 2016 & Speaker & Numerical and computational methods for simulation of all-scale geophysical flows, ECMWF \\
-July 2016 & Attendee & 1st GungHo Network meeting, Daresbury Laboratory \\
+July 2016 & Attendee & \TODO{1st GungHo Network meeting, Daresbury Laboratory} \\
 November 2015 & Attendee & GungHo workshop on next generation weather and climate prediction, UK Met Office \\
 June 2015 & Attendee & Hoskins@70 \\
 June 2015 & Poster & SCENARIO DTP conference \\
@@ -167,16 +177,20 @@ Sep 2014 & Course teacher & MPE python and linux short course \\
 
 \subsection*{Outreach}
 \begin{tabular}{l l l}
-July 2016 & Organising filming with scientist and videographer, Simon Clark \\
 14 Jul 2015 & Schools physicist of the year awards \\
 14 Jun 2015 & East Reading festival \\
 15 Feb 2015 & Brighton science festival \\
 \end{tabular}
 
-\subsection*{Collaboration}
-Yumeng, Leibniz Institute for Tropospheric Research, Mattijs Janssens, Christiana Skea 
-
-Visiting NCAR, hosted by Ram Nair
+\subsection*{Collaborations}
+I have spent some time working with other contacts, sharing ideas about my own and their own research projects:
+\begin{itemize}
+\item Ram Nair has helped me to arrange a visit to NCAR to present my research and spend time with NCAR staff
+\item I am arranging for Simon Clark to visit the department in July 2016.  Simon is a PhD student at Exeter and YouTube videographer.  I am organising for him to present a departmental seminar, and to film a radiosonde launch and laboratory demonstrations.
+\item I have provided test cases and manuscript reviews for an article about dimensionally-split and multidimensional advection schemes.  I am a coauthor for this article, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office.
+\item I intend to collaborate with Hilary's next student, Christiana Skea, who will be investigating variable timestepping for ODEs
+\item An OpenFOAM contributor, Mattijs Janssens, is helping us implement periodic boundary conditions for the multidimensional advection scheme.  I am also working with him to fix MPI parallelisation bugs in our code.
+\end{itemize}
 
 \bibliographystyle{ametsoc2014}                                                 
 \small{\bibliography{references}}
