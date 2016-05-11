@@ -1,0 +1,16 @@
+$(eval $(call PlotMesh,build/thermalAdvection-mesh-btf-1000m-250dz,src/mc-report-2016-05/thermalAdvectionMesh))
+$(eval $(call PlotMesh,build/thermalAdvection-mesh-slantedCell-1000m-250dz,src/mc-report-2016-05/thermalAdvectionMesh))
+$(eval $(call PlotMesh,build/thermalAdvection-mesh-cutCell-1000m-250dz,src/mc-report-2016-05/thermalAdvectionMesh))
+
+$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/thermalAdvection-mesh-btf-1000m-250dz,$(meshFiles) $(systemFiles),build/thermalAdvection-mesh-btf-1000m-250dz))
+$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/thermalAdvection-mesh-slantedCell-1000m-250dz,$(meshFiles) $(systemFiles),build/thermalAdvection-mesh-slantedCell-1000m-250dz))
+$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/thermalAdvection-mesh-cutCell-1000m-250dz,$(meshFiles) $(systemFiles),build/thermalAdvection-mesh-cutCell-1000m-250dz))
+
+$(eval $(call MakeDir,build/thermalAdvection-mesh-btf-1000m-250dz/$(polyMesh)))
+$(eval $(call MakeDir,build/thermalAdvection-mesh-btf-1000m-250dz/system))
+
+$(eval $(call MakeDir,build/thermalAdvection-mesh-cutCell-1000m-250dz/$(polyMesh)))
+$(eval $(call MakeDir,build/thermalAdvection-mesh-cutCell-1000m-250dz/system))
+
+$(eval $(call MakeDir,build/thermalAdvection-mesh-slantedCell-1000m-250dz/$(polyMesh)))
+$(eval $(call MakeDir,build/thermalAdvection-mesh-slantedCell-1000m-250dz/system))

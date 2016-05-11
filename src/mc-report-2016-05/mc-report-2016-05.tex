@@ -34,6 +34,8 @@
 \large{Monitoring Committee: Maarten Ambaum, Paul Williams}}
 \date{31st May 2016}
 
+\captionsetup{margin=3pt,font={small}}
+
 \makeatletter
 \AtBeginDocument{
   \hypersetup{
@@ -51,14 +53,14 @@
 
 Atmospheric models solve the equations of motion in a discrete form on a three-dimensional mesh, with the lower boundary representing the terrain surface.
 Next-generation atmospheric models are being designed to be more flexible than previous models, so that the choice of mesh and choices of numerical schemes can be deferred or changed during operation \citep{ford2013,theurich2015}.
-My PhD project seeks to make numerical weather and climate predictions more accurate by developing new meshes and improved numerical schemes that are suitable for next-generation models.
+My PhD project seeks to make numerical weather and climate predictions more accurate by developing new meshes and numerical schemes that are suitable for next-generation models.
 The project focuses on two aspects: first, how to model atmospheric flows accurately on arbitrary meshes and, second, how terrain is best represented by a mesh.
 
 % let's follow the same order: first talk about advection accuracy
 
 There are two main mesh generation methods used in atmospheric models: terrain-following layers and cut cells.
 Most operational models use terrain-following layers, in which the vertical coordinate is transformed so that the mesh's lower boundary represents the terrain.
-Terrain-following coordinates reduce numerical accuracy in the calculation of horizontal pressure gradients \citep{gary1973,zaengl2012} and advection terms \citep{schaer2002}.  Inaccuracies are larger near steep terrain.  Since the basic terrain-following coordinate was developed by \citet{galchen-somerville1975a}, there have been proposals to make coordinate transformations that are increasingly orthogonal \citep{simmons-burridge1981,schaer2002,leuenberger2010,klemp2011}.
+Terrain-following coordinates reduce numerical accuracy in the calculation of horizontal pressure gradients \citep{gary1973,zaengl2012} and advection terms \citep{schaer2002}.  Inaccuracies are larger near steep terrain.  Since the basic terrain-following coordinate was developed by \citet{galchen-somerville1975a}, there have been proposals to make coordinate transformations that are more orthogonal \citep{simmons-burridge1981,schaer2002,leuenberger2010,klemp2011}.
 
 The cut cell method is an alternative to terrain-following coordinates.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.  While the cut cell method can reduce numerical errors, cut cell meshes can have arbitrarily small cells which impose severe constraints on the timestep for explicit methods \citep{almgren1997}.
 
@@ -66,20 +68,20 @@ To illustrate the two different mesh generation methods, a wave-shaped mountain 
 
 \begin{figure}
 	\centering
-	\subcaptionbox{Basic terrain-following mesh \label{fig:btf-mesh}}[.3\linewidth]{\TODO{btf mesh}}
-	\subcaptionbox{Cut cell mesh \label{fig:cutcell-mesh}}[.3\linewidth]{\TODO{cut cell mesh}}
-	\subcaptionbox{Slanted cell mesh \label{fig:slantedcell-mesh}}[.3\linewidth]{\TODO{cut cell mesh}}
-	\caption{\TODO{btf, cut cell and slanted cell meshes.  the cut cell mesh was generated using the ASAM grid generator, courtesy of TROPOS}}
+	\subcaptionbox{Basic terrain-following mesh \label{fig:btf-mesh}}[.32\linewidth]{\includegraphics[width=2in]{../thermalAdvection-mesh-btf-1000m-250dz/constant/mesh.pdf}}
+	\subcaptionbox{Cut cell mesh \label{fig:cutcell-mesh}}[.32\linewidth]{\includegraphics[width=2in]{../thermalAdvection-mesh-cutCell-1000m-250dz/constant/mesh.pdf}}
+	\subcaptionbox{Slanted cell mesh \label{fig:slantedcell-mesh}}[.32\linewidth]{\includegraphics[width=2in]{../thermalAdvection-mesh-slantedCell-1000m-250dz/constant/mesh.pdf}}
+	\caption{Cell edges of basic terrain-following, cut cell and slanted cell meshes having the same wave-shaped mountain profile.  Only the lowest \SI{1.2}{\kilo\meter} in the centre of the domain is shown.  The entire domain is \SI{300}{\kilo\meter} wide and \SI{30}{\kilo\meter} high.  Axis units are \si{\meter}.  Cut cell mesh generated with code kindly provided by TROPOS.}
 	\label{fig:meshes}
 \end{figure}
 
 \section{Comparison of terrain-following and slanted cell meshes}
 The first year of my PhD concentrated on comparing the numerical accuracy on terrain-following and slanted cell meshes.
-In the second monitoring committee report (hereafter referred to as MC2), the slanted cell method was referred to as the cut cell method, but it is necessary to make a distinction between the two methods.  While they share strong similarities, cut cell and slanted cell meshes have differences: compare the representation of the same terrain profile using cut cells (figure~\ref{fig:cutcell-mesh}) and slanted cells (figure~\ref{fig:slantedcell-mesh}).
+In the second monitoring committee report (called MC2 hereafter), the slanted cell method was referred to as the cut cell method, but it is necessary to make a distinction between the two methods: cut cell and slanted cell meshes have differences that can be seen by comparing the representation of the same terrain profile using cut cells (figure~\ref{fig:cutcell-mesh}) and slanted cells (figure~\ref{fig:slantedcell-mesh}).
 
-The slanted cell method has several advantages over the cut cell method.  First, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}, I have developed a new technique that makes slanted cell meshes straightforward to construct \citep{shaw-weller2016}.  Second, the slanted cell method does not severely constrain the timestep because thin cells are created that are long in the direction of flow.
+The slanted cell method has advantages over the cut cell method.  First, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}, I have developed a new technique that makes slanted cell meshes straightforward to construct \citep{shaw-weller2016}.  Second, the slanted cell method does not severely constrain the timestep because thin cells are created that are long in the direction of flow.
 
-Since the previous meeting, the Leibniz Institute for Tropospheric Research have kindly provided me with their cut cell mesh generator used in the All Scale Atmospheric Model \citep{jaehn2015}.  This generates true cut cell meshes and will enable me to compare test results for cut cell and slanted cell meshes.
+Since the previous meeting, the Leibniz Institute for Tropospheric Research (TROPOS) have kindly provided me with their cut cell mesh generator used in the All Scale Atmospheric Model \citep{jaehn2015}.  This generates true cut cell meshes and will enable me to compare test results for cut cell and slanted cell meshes.
 
 Our submission to Monthly Weather Review underwent a third round of revisions after our previous monitoring committee meeting.  These revisions included the development of a new slanted cell mesh generation method which avoided the complex heuristics employed by the previous method (see MC2, section 3).  The article was accepted for publication in February 2016 and is now undergoing prepress proofing.
 
@@ -112,8 +114,9 @@ The adaptive polynomial fit alone is not enough to ensure numerical stability.  
 
 The development of the multidimensional advection scheme, as with most tasks in life, has proved to be more challenging than initially thought.  The new version of the scheme is already much improved over the original version since it is stable for a larger selection of tests.  However, the scheme is weakly unstable in certain cases and it is not yet clear how to address this issue.  I am collaborating with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for further suggestions.
 
-
 MC2 discussed exploratory work into a Charney--Phillips staggering for arbitrary meshes.  I intend to return to this topic once I am satisfied with the performance of the advection scheme and once I have prepared a paper discussing the advection results.
+
+% say more about C--P: what needs doing? defining the variables, designing a advection schemes for theta, incorporating it into the fully-compressible model, 
 
 % timescales?
 
@@ -185,8 +188,8 @@ Sep 2014 & Course teacher & MPE python and linux short course \\
 \subsection*{Collaborations}
 I have spent some time working with other contacts, sharing ideas about my own and their own research projects:
 \begin{itemize}
-\item Ram Nair has helped me to arrange a visit to NCAR to present my research and spend time with NCAR staff
-\item I am arranging for Simon Clark to visit the department in July 2016.  Simon is a PhD student at Exeter and YouTube videographer.  I am organising for him to present a departmental seminar, and to film a radiosonde launch and laboratory demonstrations.
+\item Ram Nair has helped me to arrange a visit to NCAR in June 2016 to present my research and spend time with NCAR staff
+\item I am arranging for Simon Clark to visit the department in July 2016.  Simon is a PhD student at Exeter and a YouTube vlogger.  I am organising for him to present a departmental seminar, and to film a radiosonde launch and laboratory demonstrations.
 \item I have provided test cases and manuscript reviews for an article about dimensionally-split and multidimensional advection schemes.  I am a coauthor for this article, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office.
 \item I intend to collaborate with Hilary's next student, Christiana Skea, who will be investigating variable timestepping for ODEs
 \item An OpenFOAM contributor, Mattijs Janssens, is helping us implement periodic boundary conditions for the multidimensional advection scheme.  I am also working with him to fix MPI parallelisation bugs in our code.
