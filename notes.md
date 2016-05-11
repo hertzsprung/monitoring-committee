@@ -1,17 +1,15 @@
-- paper accepted
-- advection scheme work
-- Quo Vadis runner up
-- reviewed a MWR paper
+/ paper accepted
+/ advection scheme work
+/ Quo Vadis runner up
+/ reviewed a MWR paper
 / contributing to Yumeng's paper
 / collaborating occassionally with ASAM group
 / met Mattijs Janssens, OpenFOAM developer
-- attended (almost) every departmental and lunchtime seminar, give examples of skills gained
-- active on twitter, website and blog (thanks to SCENARIO meeting)
-- became RMetS member
-- attended spring term MA3NAT lectures, covered matrix decompositions, including SVD (which I use), iterative methods and numerical stability
+/ attended (almost) every departmental and lunchtime seminar, give examples of skills gained
+/ active on twitter, website and blog (thanks to SCENARIO meeting)
+/ attended spring term MA3NAT lectures, covered matrix decompositions, including SVD (which I use), iterative methods and numerical stability
 / DCMIP summer school
 / Ram Nair hosting my visit to NCAR
-- presented at mesoscale group and PhD group
+/ presented at mesoscale group and PhD group
 / organising visit from Exeter University PhD student and YouTube videographer, Simon Clark
 / attended peer review workshop hosted by Sense about Science
-- read Eloquent Science

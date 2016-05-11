@@ -3,11 +3,11 @@
 \usetikzlibrary{patterns}
 \begin{document}
 \begin{tikzpicture}[
-  scale=0.55,
+  scale=0.5,
   cpnt/.style={fill=gray},
 ]
 
-\draw [thick, ->] (9.5,3) -- (9.5,1) node [midway, anchor=west] {$\mathbf{u}$};
+\draw [thick, ->] (6,7) -- (8,7) node [midway, anchor=south] {$\mathbf{u}$};
 
 \draw (9,0) -- (9,6) -- (3,6) -- (0,7) -- (3,3.8) -- (6,1) -- (9,0);
 \draw (3,6) -- (3,3.8);
@@ -17,8 +17,8 @@
 
 \fill [pattern=north east lines] (0,7) -- (3,3.8) -- (6,1) -- (9,0) -- (9,-0.5) -- (0,-0.5) -- (0,7);
 
-\draw [ultra thick] (3,3.8) -- (6,2);
-\draw [thick] (4.5,2.9) circle [radius=0.15] node [anchor=south] {$F$};
+\draw [ultra thick] (6,1) -- (6,2);
+\draw [thick] (6,1.5) circle [radius=0.15] node [anchor=west] {$F$};
 
 \path [cpnt] (2.2,5.5) circle [radius=0.1];
 

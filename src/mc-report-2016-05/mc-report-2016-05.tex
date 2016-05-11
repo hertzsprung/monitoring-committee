@@ -51,12 +51,13 @@
 \newcommand{\exner}{\Pi}
 \maketitle
 
-Atmospheric models solve the equations of motion in a discrete form on a three-dimensional mesh, with the lower boundary representing the terrain surface.
 Next-generation atmospheric models are being designed to be more flexible than previous models, so that the choice of mesh and choices of numerical schemes can be deferred or changed during operation \citep{ford2013,theurich2015}.
 My PhD project seeks to make numerical weather and climate predictions more accurate by developing new meshes and numerical schemes that are suitable for next-generation models.
 The project focuses on two aspects: first, how to model atmospheric flows accurately on arbitrary meshes and, second, how terrain is best represented by a mesh.
 
-% let's follow the same order: first talk about advection accuracy
+\TODO{first talk about advection accuracy}
+
+\TODO{then talk about advantages of Charney--Phillips over Lorenz vertical staggering}
 
 There are two main mesh generation methods used in atmospheric models: terrain-following layers and cut cells.
 Most operational models use terrain-following layers, in which the vertical coordinate is transformed so that the mesh's lower boundary represents the terrain.
@@ -64,7 +65,7 @@ Terrain-following coordinates reduce numerical accuracy in the calculation of ho
 
 The cut cell method is an alternative to terrain-following coordinates.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.  While the cut cell method can reduce numerical errors, cut cell meshes can have arbitrarily small cells which impose severe constraints on the timestep for explicit methods \citep{almgren1997}.
 
-To illustrate the two different mesh generation methods, a wave-shaped mountain is represented using a basic terrain-following mesh (figure~\ref{fig:btf-mesh}) and a cut cell mesh (figure~\ref{fig:cutcell-mesh}).  \TODO{say something about them}
+To illustrate the two different mesh generation methods, a wave-shaped mountain with a peak height of \SI{1}{\kilo\meter} is represented using a basic terrain-following mesh (figure~\ref{fig:btf-mesh}) and a cut cell mesh (figure~\ref{fig:cutcell-mesh}).  Notice that cells in the basic terrain-following mesh become severely distorted over steep surfaces while, on the cut cell mesh, some small cells are found near the mountain peak.
 
 \begin{figure}
 	\centering
@@ -95,7 +96,7 @@ On a two-dimensional quadrilateral mesh, the stencil has $4 \times 3$ points in 
 	\centering
 	\subcaptionbox{12-point stencil for face in domain interior \label{fig:stencil-interior}}[.48\linewidth]{\input{fig-upwind-stencil.tex}}
 	\subcaptionbox{7-point stencil for face near the lower boundary of a slanted cell mesh.  The ground is shown with diagonal hatching. \label{fig:stencil-lower-boundary}}[.48\linewidth]{\vspace*{2em}\input{fig-lower-boundary-stencil.tex}}
-	\caption{\TODO{Two-dimensional cubicUpwindCPCFit stencils}}
+	\caption{Two-dimensional stencils used for approximating a value at a face centroid given a set of surrounding cell centre values.  In the two stencils, the face $F$ is shown with a thick line, and the face centroid with an open circle. Cell centres are denoted by grey filled circles.  The direction of the windvector, $\bm{u}$, is shown above both stencils.}
 	\label{fig:stencils}
 \end{figure}
 
@@ -110,9 +111,9 @@ The adaptive polynomial fit alone is not enough to ensure numerical stability.  
 % I could talk about recent work in 1D, potential comparisons with WENO
 
 \section{Future research}
-\TODO{introductory sentence}
+My future work begins with the completion of advection scheme development and the submission of a paper on this topic.  After that, I intend to resume my research into numerical schemes for Charney--Phillips staggering on arbitrary meshes.
 
-The development of the multidimensional advection scheme, as with most tasks in life, has proved to be more challenging than initially thought.  The new version of the scheme is already much improved over the original version since it is stable for a larger selection of tests.  However, the scheme is weakly unstable in certain cases (figure~\ref{fig:instability}) and it is not yet clear how to address this issue.  I am collaborating with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for further suggestions.
+The development of the multidimensional advection scheme, as with so many tasks in life, has proved to be more challenging than initially thought.  The new version of the scheme is already much improved over the original version since it is stable for a larger selection of tests.  However, the scheme is weakly unstable in certain cases (figure~\ref{fig:instability}) and it is not yet clear how to address this issue.  I am collaborating with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for further suggestions.
 
 \begin{figure}
 \centering
@@ -128,15 +129,30 @@ Cell edges are shown by grey lines.  Wind vectors are drawn at every face using 
 \label{fig:instability}
 \end{figure}
 
-MC2 discussed exploratory work into a Charney--Phillips staggering for arbitrary meshes.  I intend to return to this topic once I am satisfied with the performance of the advection scheme and once I have prepared a paper discussing the advection results.
+MC2 discussed some brief, exploratory work into a Charney--Phillips staggering for arbitrary meshes.  I intend to return to this topic once I am satisfied with the performance of the advection scheme and once I have prepared a paper discussing the advection results.
 
-% say more about C--P: what needs doing? defining the variables, designing a advection schemes for theta, incorporating it into the fully-compressible model, 
+\TODO{say more about C--P: what needs doing? defining the variables, designing a advection schemes for theta, incorporating it into the fully-compressible model, semi-implicit GW}
 
-% timescales?
+\TODO{timescales?}
 
 \section{Training}
-\TODO{quick overview of what's new: MA3NAT, MWR reviewer, DCMIP 2016, Simon Clark}
+A complete history of training, teaching and collaborations is tabulated here.  
+This year, I have attended almost all lunchtime and departmental seminars, HHH and mesoscale group meetings.  I take note of analytical techniques that might be useful in future, for example, verifying trends using low pass filters\footnote{The summer NAO in observations and CMIP models: impacts on European precipitation and uncertainties in future projected trends, Ileana Bladé, 7 March 2016}, and solving linear PDEs using Green's functions\footnote{Constraining ocean ventilation pathways and time scales with observations and models, Samar Khatiwala, 21 March 2016}.
+Since the second monitoring committee meeting, I have learnt about the Singular Value Decomposition in Numerical Analysis II, which I am using for fitting polynomial surfaces in my own research.
+I have also reviewed a manuscript submitted to Monthly Weather Review, and I am keen to get better at critically analysing papers.
 
+Following a talk by Ed Hawkins and Tom Sizmur about online scientific communication, I have been sharing more of my ideas on my blog\footnote{My blog is at \url{datumedge.co.uk}} and on Twitter\footnote{My Twitter username is \href{https://twitter.com/hertzsprrrung}{@hertzsprrrung}}.  I have found Twitter to be especially useful for discovering contacts from a range of disciplines whose interests overlap with my research.
+
+\subsection*{Collaborations}
+I have spent some time working with other contacts, sharing ideas about my own and their own research projects:
+\begin{itemize}
+\item Ram Nair has helped me to arrange a visit to NCAR in June 2016 to present my research and spend time with NCAR staff
+\item I am arranging for Simon Clark to visit the department in July 2016.  Simon is a PhD student at Exeter and a YouTube vlogger.  I am organising for him to present a departmental seminar, and to film a radiosonde launch and laboratory demonstrations.
+\item I have provided test cases and manuscript reviews for an article about dimensionally-split and multidimensional advection schemes.  I am a coauthor for this article, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office.
+\item I intend to collaborate with Hilary's next student, Christiana Skea, who will be investigating variable timestepping for ODEs
+\end{itemize}
+
+\footnotesize{
 \subsection*{Mathematics modules}
 \begin{tabular}{l l l l}
 Spring 2016	& MA3NAT & Numerical Analysis II & unassessed \\
@@ -173,7 +189,7 @@ March 2015 & Speaker & Galerkin methods with applications in weather and climate
 
 \subsection*{Presentations}
 \begin{tabularx}{\linewidth}{l l X}
-23 Mar 2016 & Quo Vadis & Numerical representation of orography in dynamical cores \\
+23 Mar 2016 & Quo Vadis & Numerical representation of orography in dynamical cores (honourable mention) \\
 17 Feb 2016 & PhD group & Multidimensional advection schemes for arbitrary meshes \\
 9 Feb 2016 & Mesoscale group & Curl-free pressure gradients for accurate modelling of cold air pools \\
 19 Oct 2015 & HHH group & Improving modelled mountain flows with alternative representations of terrain \\
@@ -198,16 +214,7 @@ Sep 2014 & Course teacher & MPE python and linux short course \\
 14 Jun 2015 & East Reading festival \\
 15 Feb 2015 & Brighton science festival \\
 \end{tabular}
-
-\subsection*{Collaborations}
-I have spent some time working with other contacts, sharing ideas about my own and their own research projects:
-\begin{itemize}
-\item Ram Nair has helped me to arrange a visit to NCAR in June 2016 to present my research and spend time with NCAR staff
-\item I am arranging for Simon Clark to visit the department in July 2016.  Simon is a PhD student at Exeter and a YouTube vlogger.  I am organising for him to present a departmental seminar, and to film a radiosonde launch and laboratory demonstrations.
-\item I have provided test cases and manuscript reviews for an article about dimensionally-split and multidimensional advection schemes.  I am a coauthor for this article, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office.
-\item I intend to collaborate with Hilary's next student, Christiana Skea, who will be investigating variable timestepping for ODEs
-\item An OpenFOAM contributor, Mattijs Janssens, is helping us implement periodic boundary conditions for the multidimensional advection scheme.  I am also working with him to fix MPI parallelisation bugs in our code.
-\end{itemize}
+}
 
 \bibliographystyle{ametsoc2014}                                                 
 \small{\bibliography{references}}
