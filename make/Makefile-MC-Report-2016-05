@@ -7,6 +7,8 @@ build/mc-report-2016-05/mc-report-2016-05.pdf: \
   src/mc-report-2016-05/slantedCell1500.pdf \
   src/mc-report-2016-05/slantedCell2040.pdf \
   src/mc-report-2016-05/slantedCellLegend.eps \
+  src/mc-report-2016-05/fig-upwind-stencil.tex \
+  src/mc-report-2016-05/fig-lower-boundary-stencil.tex \
   build/thermalAdvection-mesh-btf-1000m-250dz/constant/mesh.pdf \
   build/thermalAdvection-mesh-cutCell-1000m-250dz/constant/mesh.pdf \
   build/thermalAdvection-mesh-slantedCell-1000m-250dz/constant/mesh.pdf
