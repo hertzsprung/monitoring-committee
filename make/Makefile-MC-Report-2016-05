@@ -3,6 +3,10 @@ $(eval $(call LaTeXWithBibTeX,src/mc-report-2016-05,build,mc-report-2016-05))
 build/mc-report-2016-05/mc-report-2016-05.pdf: \
   src/mc-report-2016-05/ametsoc2014.bst \
   src/mc-report-2016-05/references.bib \
+  src/mc-report-2016-05/slantedCell1000.pdf \
+  src/mc-report-2016-05/slantedCell1500.pdf \
+  src/mc-report-2016-05/slantedCell2040.pdf \
+  src/mc-report-2016-05/slantedCellLegend.eps \
   build/thermalAdvection-mesh-btf-1000m-250dz/constant/mesh.pdf \
   build/thermalAdvection-mesh-cutCell-1000m-250dz/constant/mesh.pdf \
   build/thermalAdvection-mesh-slantedCell-1000m-250dz/constant/mesh.pdf

@@ -1,0 +1,27 @@
+FoamFile {
+        version         1.4;
+        format          ascii;
+
+        root            "";
+        case            "";
+        instance        "constant";
+        local           "";
+
+        class           dictionary;
+        object          gmtDict;
+}
+
+projection "X2.1i/1.8i";
+projection2D XZ;
+separateLegend true;
+plotBoundaryDots false;
+plotZeroValuePolys false;
+
+FieldsToPlot (
+	[T rawValues 288 292 0.25 "$GMTU/colours/green_linear_rev.cpt"]
+        [none mesh "gray70"]
+        [Uf vectors 8 1 "magenta"]
+);
+
+region "-0.5e3/5e3/0/1.5e3";
+boundaryMarks "1e3/0.5e3WSen";

@@ -14,7 +14,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{doi}
 \usepackage{siunitx}
-\usepackage[margin=3pt]{subcaption}
+\usepackage[margin=1pt]{subcaption}
 \usepackage{xcolor}
 \PassOptionsToPackage{final}{graphicx}
 \usepackage{tikz}
@@ -112,7 +112,21 @@ The adaptive polynomial fit alone is not enough to ensure numerical stability.  
 \section{Future research}
 \TODO{introductory sentence}
 
-The development of the multidimensional advection scheme, as with most tasks in life, has proved to be more challenging than initially thought.  The new version of the scheme is already much improved over the original version since it is stable for a larger selection of tests.  However, the scheme is weakly unstable in certain cases and it is not yet clear how to address this issue.  I am collaborating with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for further suggestions.
+The development of the multidimensional advection scheme, as with most tasks in life, has proved to be more challenging than initially thought.  The new version of the scheme is already much improved over the original version since it is stable for a larger selection of tests.  However, the scheme is weakly unstable in certain cases (figure~\ref{fig:instability}) and it is not yet clear how to address this issue.  I am collaborating with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for further suggestions.
+
+\begin{figure}
+\centering
+\subcaptionbox{$t = \SI{1000}{\second}$ (4000 timesteps) \label{fig:instability1000}}[0.32\linewidth]{\hspace*{-1em}\includegraphics[width=2.25in]{slantedCell1000.pdf}}
+\subcaptionbox{$t = \SI{1500}{\second}$ (6000 timesteps) \label{fig:instability1500}}[0.32\linewidth]{\hspace*{1em}\includegraphics[width=1.9in]{slantedCell1500.pdf}}
+\subcaptionbox{$t = \SI{2040}{\second}$ (8160 timesteps) \label{fig:instability2040}}[0.32\linewidth]{\includegraphics[width=1.9in]{slantedCell2040.pdf}}
+%
+\vspace{1em} \\
+\includegraphics[height=5in,angle=270]{slantedCellLegend.eps}
+%
+\caption{Development of numerical instability in a test of advection of a stratified thermal field in a prescribed, non-divergent wind field that is tangential to basic terrain-following surfaces.  Errors are too small to be visible at $t = \SI{1000}{\second}$ but, by $t = \SI{1500}{\second}$, erroneously large values have been created near the distorted cells around $x = \SI{1000}{\meter}, z = \SI{600}{\meter}$ that are advected over the lee slopes.  By $t = \SI{2040}{\second}$, the instability is fully-developed, having stripes of error and grid-scale oscillations that propagate in a direction opposite to the wind.  The timestep is \SI{2.5}{\second}.
+Cell edges are shown by grey lines.  Wind vectors are drawn at every face using magenta arrows, with the wind speed ranging from \SIrange{10}{13}{\meter\per\second}.  Only the lowest \SI{1.5}{\kilo\meter} of the central domain is shown.  The entire domain is \SI{20}{\kilo\meter} wide and \SI{5}{\kilo\meter} high.  Axis units are \si{\meter}.}
+\label{fig:instability}
+\end{figure}
 
 MC2 discussed exploratory work into a Charney--Phillips staggering for arbitrary meshes.  I intend to return to this topic once I am satisfied with the performance of the advection scheme and once I have prepared a paper discussing the advection results.
 
