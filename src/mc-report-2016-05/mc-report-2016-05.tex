@@ -65,21 +65,15 @@ Terrain-following meshes reduce numerical accuracy in the calculation of horizon
 The cut cell method is an alternative to terrain-following meshes.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.  While the cut cell method can reduce numerical errors, cut cell meshes can have arbitrarily small cells which impose severe constraints on the timestep for explicit methods \citep{almgren1997}.
 
 To illustrate the two types of mesh, a wave-shaped mountain with a peak height of \SI{1}{\kilo\meter} is represented using a basic terrain-following mesh (figure~\ref{fig:btf-mesh}) and a cut cell mesh (figure~\ref{fig:cutcell-mesh}).  Notice that the basic terrain-following mesh is severely distorted over steep surfaces while, on the cut cell mesh, small cells are found near the mountain peak.
+The development of a new type of mesh, the slanted cell mesh, is discussed in section~\ref{sec:tf-slanted-cells}.
 
 \subsection*{Advection on arbitrary meshes}
-\TODO{what is our scheme?  it's multidimensional (but dimensionally-split schemes can compensate for transverse transport, e.g. bott2010).  it's fairly cheap to compute (but perhaps others are, too, e.g. MPDATA?).  what else is so great about it?}
+When a wind field is misaligned with the mesh, an advection scheme must account for transverse flux between diagonally adjacent cells \citep{clappier1998}.  Dimensionally split schemes that do not account for transverse fluxes can distort advected quantities \citep{leonard1993}.  These distortions are called `splitting errors'.  In contrast, multidimensional schemes naturally account for such fluxes because the flux calculations include cross terms \citep{leonard1993}.
 
-\TODO{I think I need to justify our scheme by saying that having a multidimensional scheme is important to avoid splitting errors.  then say what other multidimensional schemes exist, what are their pros/cons?  lashley uses a swept-area multidimensional scheme, but it appears to require plenty of recomputation when the wind field changes.}
-
-\TODO{desirable characteristics: conservation, non-oscillatory, accurate (by some norm, often $\ell_2$), efficient computation}
-
-\TODO{what schemes already exist for arbitrary meshes?  what desirable characterstics do they have?  what do they lack?}
-
-\TODO{our scheme is heavily based on lashley2002, who else?  what desirable characteristics does it/should it have?  what does it have that others don't?  what does it lack?}
-% see slanted-cell-advection//advection.md notes
+Dimensionally split schemes are attractive because they are often computationally efficient compared to multidimensional schemes \citep{bott2010}, and a number of improvements have been developed to alleviate splitting errors \citep{leonard1996,bott2010}.  The advection scheme by \citet{weller-shahrokhi2014} is a multidimensional scheme that achieves computational efficiency by precomputing fluxes using the mesh geometry only.  Some aspects of this scheme are being modified to improve stability and accuracy, and this is the subject of section~\ref{sec:advection}.
 
 \subsection*{Vertical balance on arbitrary meshes}
-Some numerical models are susceptible to computational modes which produce unphysical solutions.   Models that have a Lorenz vertical staggering of variables can suffer from one such computational mode \citep{arakawa-konor1996}.  The Charney--Phillips vertical staggering does not suffer from the Lorenz computational mode, but it has only been formulated on structured, quadrilateral meshes.  I intend to develop a generalisation of the Charney--Phillips staggering for arbitrary meshes.
+Some numerical models are susceptible to computational modes which produce unphysical solutions.   Models that have a Lorenz vertical staggering of variables can suffer from one such computational mode \citep{arakawa-konor1996}.  The Charney--Phillips vertical staggering does not suffer from the Lorenz computational mode, but it has only been formulated on structured, quadrilateral meshes.  I intend to develop a generalisation of the Charney--Phillips staggering for arbitrary meshes, and the necessary tasks are outlined in section~\ref{sec:future}.
 
 \begin{figure}
 	\centering
@@ -91,6 +85,8 @@ Some numerical models are susceptible to computational modes which produce unphy
 \end{figure}
 
 \section{Comparison of terrain-following and slanted cell meshes}
+\label{sec:tf-slanted-cells}
+
 The first year of my PhD concentrated on comparing the numerical accuracy on terrain-following and slanted cell meshes.
 In the second monitoring committee report (called MC2 hereafter), the slanted cell method was referred to as the cut cell method, but it is necessary to make a distinction between the two methods: cut cell and slanted cell meshes have differences that can be seen by comparing the representation of the same terrain profile using cut cells (figure~\ref{fig:cutcell-mesh}) and slanted cells (figure~\ref{fig:slantedcell-mesh}).
 
@@ -101,6 +97,8 @@ Since the previous meeting, the Leibniz Institute for Tropospheric Research (TRO
 Our submission to Monthly Weather Review underwent a third round of revisions after our previous monitoring committee meeting.  These revisions included the development of a new slanted cell mesh generation method which avoided the complex heuristics employed by the previous method (see MC2, section 3).  The article was accepted for publication in February 2016 and is now undergoing prepress proofing.
 
 \section{Improving advection on slanted cell meshes}
+\label{sec:advection}
+
 My current work focuses on improving the stability and accuracy of a multidimensional advection scheme that is suitable for arbitrary meshes \citep{weller-shahrokhi2014}.  The performance of the advection scheme is being evaluated over steep slopes on terrain-following, cut cell and slanted cell meshes.
 
 The multidimensional advection scheme is an explicit, Eulerian, finite-volume scheme that has a cubic upwind-biased stencil.  Fluxes across faces are approximated using a least squares polynomial fit onto the stencil point values.
@@ -122,9 +120,9 @@ where $a_1 \ldots a_9$ are the unknown coefficients that are calculated from the
 
 The adaptive polynomial fit alone is not enough to ensure numerical stability.  I am developing a new procedure that will stabilise the polynomial fit for troublesome stencils.  It is based on constraints derived from a one-dimensional von Neumann analysis of a simplified version of the spatial discretisation.  Compared to the original version of the advection scheme by \citet{weller-shahrokhi2014}, the improved version is stable for a wider range of test cases and has accuracy that is comparable to the original version.  Further work is needed to achieve stability for additional test cases, and give us confidence that the scheme is stable and accurate for arbitrary meshes.
 
-% I could talk about recent work in 1D, potential comparisons with WENO
-
 \section{Future research}
+\label{sec:future}
+
 My future work begins with the completion of advection scheme development and the submission of a paper on this topic.  After that, I intend to resume my research into numerical schemes for the Charney--Phillips staggering on arbitrary meshes.
 
 The development of the multidimensional advection scheme, as with so many tasks in life, has proved to be more challenging than initially thought.  The new version of the scheme is already much improved over the original version since it is stable for a larger selection of tests.  However, the scheme is weakly unstable in certain cases (figure~\ref{fig:instability}) and it is not yet clear how to address this issue.  I am collaborating with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for further suggestions.
