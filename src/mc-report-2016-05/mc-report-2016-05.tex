@@ -23,6 +23,7 @@
 \usepackage{bm}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{enumitem}
 
 \title{Monitoring Committee Progress Report \#3\\
 \vspace*{1em}
@@ -51,23 +52,34 @@
 \newcommand{\exner}{\Pi}
 \maketitle
 
+\section{Introduction}
+
 Next-generation atmospheric models are designed to be more flexible than previous models, so that the choice of mesh and choices of numerical schemes can be deferred or changed during operation \citep{ford2013,theurich2015}.
 My PhD project seeks to make numerical weather and climate predictions more accurate by developing new meshes and numerical schemes that are suitable for next-generation models.
-The project focuses on two aspects: first, how to model orographic flows accurately on arbitrary meshes and, second, how orography is best represented by a mesh.
+In particular, the project addresses the modelling of orographic flows on arbitrary meshes, focusing on three aspects: first, how orography is best represented by a mesh; second, how to accurately advect quantities over orography and, third, how to avoid unphysical solutions in the vertical balance between pressure and temperature.
 
-Accurately modelling atmospheric flows over orography on arbitrary meshes presents many challenges that include the accurate advection of quantities, especially near the lower boundary, and the avoidance of unphysical solutions in the vertical balance between pressure and temperature.  Addressing these two particular challenges will form part of my PhD research.
+\subsection*{Representing orography with meshes}
 
-\TODO{first talk about advection accuracy}
+There are two main types of mesh used in atmospheric models: terrain-following meshes and cut cells meshes.
+Terrain-following meshes reduce numerical accuracy in the calculation of horizontal pressure gradients \citep{gary1973,zaengl2012} and advection terms \citep{schaer2002}.  Inaccuracies are larger near steep terrain.
+The cut cell method is an alternative to terrain-following meshes.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.  While the cut cell method can reduce numerical errors, cut cell meshes can have arbitrarily small cells which impose severe constraints on the timestep for explicit methods \citep{almgren1997}.
 
-\TODO{then talk about advantages of Charney--Phillips over Lorenz vertical staggering}
+To illustrate the two types of mesh, a wave-shaped mountain with a peak height of \SI{1}{\kilo\meter} is represented using a basic terrain-following mesh (figure~\ref{fig:btf-mesh}) and a cut cell mesh (figure~\ref{fig:cutcell-mesh}).  Notice that the basic terrain-following mesh is severely distorted over steep surfaces while, on the cut cell mesh, small cells are found near the mountain peak.
 
-There are two main mesh generation methods used in atmospheric models: terrain-following layers and cut cells.
-Most operational models use terrain-following layers, in which the vertical coordinate is transformed so that the mesh's lower boundary represents the terrain.
-Terrain-following coordinates reduce numerical accuracy in the calculation of horizontal pressure gradients \citep{gary1973,zaengl2012} and advection terms \citep{schaer2002}.  Inaccuracies are larger near steep terrain.  Since the basic terrain-following coordinate was developed by \citet{galchen-somerville1975a}, there have been proposals to make coordinate transformations that are more orthogonal \citep{simmons-burridge1981,schaer2002,leuenberger2010,klemp2011}.
+\subsection*{Advection on arbitrary meshes}
+\TODO{what is our scheme?  it's multidimensional (but dimensionally-split schemes can compensate for transverse transport, e.g. bott2010).  it's fairly cheap to compute (but perhaps others are, too, e.g. MPDATA?).  what else is so great about it?}
 
-The cut cell method is an alternative to terrain-following coordinates.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.  While the cut cell method can reduce numerical errors, cut cell meshes can have arbitrarily small cells which impose severe constraints on the timestep for explicit methods \citep{almgren1997}.
+\TODO{I think I need to justify our scheme by saying that having a multidimensional scheme is important to avoid splitting errors.  then say what other multidimensional schemes exist, what are their pros/cons?  lashley uses a swept-area multidimensional scheme, but it appears to require plenty of recomputation when the wind field changes.}
 
-To illustrate the two different mesh generation methods, a wave-shaped mountain with a peak height of \SI{1}{\kilo\meter} is represented using a basic terrain-following mesh (figure~\ref{fig:btf-mesh}) and a cut cell mesh (figure~\ref{fig:cutcell-mesh}).  Notice that cells in the basic terrain-following mesh become severely distorted over steep surfaces while, on the cut cell mesh, some small cells are found near the mountain peak.
+\TODO{desirable characteristics: conservation, non-oscillatory, accurate (by some norm, often $\ell_2$), efficient computation}
+
+\TODO{what schemes already exist for arbitrary meshes?  what desirable characterstics do they have?  what do they lack?}
+
+\TODO{our scheme is heavily based on lashley2002, who else?  what desirable characteristics does it/should it have?  what does it have that others don't?  what does it lack?}
+% see slanted-cell-advection//advection.md notes
+
+\subsection*{Vertical balance on arbitrary meshes}
+Some numerical models are susceptible to computational modes which produce unphysical solutions.   Models that have a Lorenz vertical staggering of variables can suffer from one such computational mode \citep{arakawa-konor1996}.  The Charney--Phillips vertical staggering does not suffer from the Lorenz computational mode, but it has only been formulated on structured, quadrilateral meshes.  I intend to develop a generalisation of the Charney--Phillips staggering for arbitrary meshes.
 
 \begin{figure}
 	\centering
@@ -113,7 +125,7 @@ The adaptive polynomial fit alone is not enough to ensure numerical stability.  
 % I could talk about recent work in 1D, potential comparisons with WENO
 
 \section{Future research}
-My future work begins with the completion of advection scheme development and the submission of a paper on this topic.  After that, I intend to resume my research into numerical schemes for Charney--Phillips staggering on arbitrary meshes.
+My future work begins with the completion of advection scheme development and the submission of a paper on this topic.  After that, I intend to resume my research into numerical schemes for the Charney--Phillips staggering on arbitrary meshes.
 
 The development of the multidimensional advection scheme, as with so many tasks in life, has proved to be more challenging than initially thought.  The new version of the scheme is already much improved over the original version since it is stable for a larger selection of tests.  However, the scheme is weakly unstable in certain cases (figure~\ref{fig:instability}) and it is not yet clear how to address this issue.  I am collaborating with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for further suggestions.
 
@@ -131,10 +143,19 @@ Cell edges are shown by grey lines.  Wind vectors are drawn at every face using 
 \label{fig:instability}
 \end{figure}
 
-MC2 discussed some brief, exploratory work into a Charney--Phillips staggering for arbitrary meshes.  I intend to return to this topic once I am satisfied with the performance of the advection scheme and once I have prepared a paper discussing the advection results.
-
-\TODO{say more about C--P: what needs doing? defining the variables, designing a advection schemes for theta, incorporating it into the fully-compressible model, semi-implicit GW}
-
+MC2 discussed some brief, exploratory work into a generalised Charney--Phillips staggering for arbitrary meshes.  I intend to return to this topic once I am satisfied with the performance of the advection scheme and once I have prepared a paper discussing the advection results.
+There are a series of tasks that are required to develop numerical schemes for the generalised Charney--Phillips staggering:
+\begin{enumerate}
+\item Define the prognostic variables and their arrangement on arbitrary meshes
+\item Design a simple numerical scheme for advecting potential temperature
+\item Incorporate the advection scheme into the fully-compressible model from \citet{weller-shahrokhi2014}, using a fully-explicit configuration
+\item Compare the Lorenz and Charney--Phillips variants of the model by selecting test that excite the Lorenz computational model, such as the standing waves tests from \citet{arakawa-konor1996}
+\end{enumerate}
+Following this, further tasks should be undertaken if time permits:
+\begin{enumerate}[resume]
+\item Adapt the multidimensional cubic advection scheme for advecting potential temperature on generalised Charney--Phillips meshes
+\item Modify the fully-compressible model to enable a semi-implicit configuration with the Charney--Phillips staggering
+\end{enumerate}
 \TODO{timescales?}
 
 \section{Training}
@@ -181,7 +202,7 @@ June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
 \subsection*{Conferences and workshops}
 \begin{tabularx}{\linewidth}{l l X}
 October 2016 & Speaker & Numerical and computational methods for simulation of all-scale geophysical flows, ECMWF \\
-July 2016 & Attendee & \TODO{1st GungHo Network meeting, Daresbury Laboratory} \\
+July 2016 & Attendee & 1st GungHo Network meeting, Daresbury Laboratory \\
 November 2015 & Attendee & GungHo workshop on next generation weather and climate prediction, UK Met Office \\
 June 2015 & Attendee & Hoskins@70 \\
 June 2015 & Poster & SCENARIO DTP conference \\
