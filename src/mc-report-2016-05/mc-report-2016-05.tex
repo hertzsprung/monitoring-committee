@@ -24,8 +24,11 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{enumitem}
+\usepackage{draftwatermark}
 
-\title{Monitoring Committee Progress Report \#3\\
+\title{
+\vspace*{-2em}
+Monitoring Committee Progress Report \#3\\
 \vspace*{1em}
 \Large{Numerical Representation of Mountains in Atmospheric Models}}
 \author{James Shaw
@@ -36,6 +39,7 @@
 \date{31st May 2016}
 
 \captionsetup{margin=3pt,font={small}}
+\setlength{\bibsep}{0.3em plus 0.1ex}
 
 \makeatletter
 \AtBeginDocument{
@@ -49,6 +53,7 @@
 
 \newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
 \begin{document}
+\SetWatermarkLightness{0.95}
 \newcommand{\exner}{\Pi}
 \maketitle
 
@@ -62,24 +67,18 @@ In particular, the project addresses the modelling of orographic flows on arbitr
 
 There are two main types of mesh used in atmospheric models: terrain-following meshes and cut cells meshes.
 Terrain-following meshes reduce numerical accuracy in the calculation of horizontal pressure gradients \citep{gary1973,zaengl2012} and advection terms \citep{schaer2002}.  Inaccuracies are larger near steep terrain.
-The cut cell method is an alternative to terrain-following meshes.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.  While the cut cell method can reduce numerical errors, cut cell meshes can have arbitrarily small cells which impose severe constraints on the timestep for explicit methods \citep{almgren1997}.
+Cut cell meshes are an alternative to terrain-following meshes.  Cut cell meshes are orthogonal everywhere except at the surface so that pressure gradient errors and advection errors are reduced, especially near steep terrain \citep{lock2012,good2014}.  However, cut cell meshes can have arbitrarily small cells which impose severe constraints on the timestep for explicit methods or semi-implicit methods \citep{almgren1997}.
 
 To illustrate the two types of mesh, a wave-shaped mountain with a peak height of \SI{1}{\kilo\meter} is represented using a basic terrain-following mesh (figure~\ref{fig:btf-mesh}) and a cut cell mesh (figure~\ref{fig:cutcell-mesh}).  Notice that the basic terrain-following mesh is severely distorted over steep surfaces while, on the cut cell mesh, small cells are found near the mountain peak.
+The development of a new type of mesh, the slanted cell mesh, is discussed in section~\ref{sec:tf-slanted-cells}.
 
 \subsection*{Advection on arbitrary meshes}
-\TODO{what is our scheme?  it's multidimensional (but dimensionally-split schemes can compensate for transverse transport, e.g. bott2010).  it's fairly cheap to compute (but perhaps others are, too, e.g. MPDATA?).  what else is so great about it?}
+When a wind field is misaligned with the mesh, an advection scheme must account for transverse flux between diagonally adjacent cells \citep{clappier1998}.  Dimensionally split schemes that do not account for transverse fluxes can distort advected quantities \citep{leonard1993}.  These distortions are called `splitting errors'.  In contrast, multidimensional schemes naturally account for such fluxes by including cross terms in the flux calculations \citep{leonard1993}.
 
-\TODO{I think I need to justify our scheme by saying that having a multidimensional scheme is important to avoid splitting errors.  then say what other multidimensional schemes exist, what are their pros/cons?  lashley uses a swept-area multidimensional scheme, but it appears to require plenty of recomputation when the wind field changes.}
-
-\TODO{desirable characteristics: conservation, non-oscillatory, accurate (by some norm, often $\ell_2$), efficient computation}
-
-\TODO{what schemes already exist for arbitrary meshes?  what desirable characterstics do they have?  what do they lack?}
-
-\TODO{our scheme is heavily based on lashley2002, who else?  what desirable characteristics does it/should it have?  what does it have that others don't?  what does it lack?}
-% see slanted-cell-advection//advection.md notes
+Dimensionally split schemes are attractive because they are often computationally efficient compared to multidimensional schemes \citep{bott2010}, and a number of improvements have been developed to alleviate splitting errors \citep{leonard1996,bott2010}.  The advection scheme by \citet{weller-shahrokhi2014} is a multidimensional scheme that achieves computational efficiency by precomputing fluxes using the mesh geometry only.  Some aspects of this scheme are being modified to improve stability and accuracy, and this is the subject of section~\ref{sec:advection}.
 
 \subsection*{Vertical balance on arbitrary meshes}
-Some numerical models are susceptible to computational modes which produce unphysical solutions.   Models that have a Lorenz vertical staggering of variables can suffer from one such computational mode \citep{arakawa-konor1996}.  The Charney--Phillips vertical staggering does not suffer from the Lorenz computational mode, but it has only been formulated on structured, quadrilateral meshes.  I intend to develop a generalisation of the Charney--Phillips staggering for arbitrary meshes.
+Some numerical models are susceptible to computational modes which produce unphysical solutions.   Models that have a Lorenz vertical staggering of variables can suffer from one such computational mode \citep{arakawa-konor1996}.  The Charney--Phillips vertical staggering does not suffer from the Lorenz computational mode, but it has only been formulated on structured, quadrilateral meshes.  I intend to develop a generalisation of the Charney--Phillips staggering for arbitrary meshes, and the necessary tasks are outlined in section~\ref{sec:future}.
 
 \begin{figure}
 	\centering
@@ -91,25 +90,29 @@ Some numerical models are susceptible to computational modes which produce unphy
 \end{figure}
 
 \section{Comparison of terrain-following and slanted cell meshes}
-The first year of my PhD concentrated on comparing the numerical accuracy on terrain-following and slanted cell meshes.
-In the second monitoring committee report (called MC2 hereafter), the slanted cell method was referred to as the cut cell method, but it is necessary to make a distinction between the two methods: cut cell and slanted cell meshes have differences that can be seen by comparing the representation of the same terrain profile using cut cells (figure~\ref{fig:cutcell-mesh}) and slanted cells (figure~\ref{fig:slantedcell-mesh}).
+\label{sec:tf-slanted-cells}
+
+During the first year of my PhD, I compared the numerical accuracy on terrain-following and slanted cell meshes.
+In the second monitoring committee report (called MC2 hereafter), a slanted cell mesh was referred to as a cut cell mesh, but it is necessary to make a distinction between the two types: the differences can be seen by comparing the representation of the same terrain profile using cut cells (figure~\ref{fig:cutcell-mesh}) and slanted cells (figure~\ref{fig:slantedcell-mesh}).
 
 The slanted cell method has advantages over the cut cell method.  First, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}, I have developed a new technique that makes slanted cell meshes straightforward to construct \citep{shaw-weller2016}.  Second, the slanted cell method does not severely constrain the timestep because thin cells are created that are long in the direction of flow.
 
-Since the previous meeting, the Leibniz Institute for Tropospheric Research (TROPOS) have kindly provided me with their cut cell mesh generator used in the All Scale Atmospheric Model \citep{jaehn2015}.  This generates true cut cell meshes and will enable me to compare test results for cut cell and slanted cell meshes.
+The Leibniz Institute for Tropospheric Research (TROPOS) have kindly provided me with their cut cell mesh generator used in the All Scale Atmospheric Model \citep{jaehn2015}.  This generates true cut cell meshes and will enable me to compare results on cut cell and slanted cell meshes.
 
 \citet{shaw-weller2016} was published in May 2016 and included the development of a new slanted cell mesh generation method which avoided the complex heuristics employed by the previous method (see MC2, section 3).
 
 \section{Improving advection on slanted cell meshes}
-My current work focuses on improving the stability and accuracy of a multidimensional advection scheme that is suitable for arbitrary meshes \citep{weller-shahrokhi2014}.  The performance of the advection scheme is being evaluated over steep slopes on terrain-following, cut cell and slanted cell meshes.
+\label{sec:advection}
+
+My current work focuses on improving the stability of a multidimensional advection scheme that is suitable for arbitrary meshes \citep{weller-shahrokhi2014}.  The performance of the advection scheme is being evaluated over steep slopes on terrain-following, cut cell and slanted cell meshes.
 
 The multidimensional advection scheme is an explicit, Eulerian, finite-volume scheme that has a cubic upwind-biased stencil.  Fluxes across faces are approximated using a least squares polynomial fit onto the stencil point values.
 On a two-dimensional quadrilateral mesh, the stencil has $4 \times 3$ points in the domain interior (figure~\ref{fig:stencil-interior}), but may include fewer points near the boundaries.  This is a particular concern at the lower boundary where stencils may be smaller and highly distorted (figure~\ref{fig:stencil-lower-boundary}).
 
 \begin{figure}
 	\centering
-	\subcaptionbox{12-point stencil for face in domain interior \label{fig:stencil-interior}}[.48\linewidth]{\input{fig-upwind-stencil.tex}}
-	\subcaptionbox{7-point stencil for face near the lower boundary of a slanted cell mesh.  The ground is shown with diagonal hatching. \label{fig:stencil-lower-boundary}}[.48\linewidth]{\vspace*{2em}\input{fig-lower-boundary-stencil.tex}}
+	\subcaptionbox{12-point stencil in the domain interior \label{fig:stencil-interior}}[.48\linewidth]{\input{fig-upwind-stencil.tex}}
+	\subcaptionbox{7-point stencil near the lower boundary of a slanted cell mesh.  The ground is shown with diagonal hatching. \label{fig:stencil-lower-boundary}}[.48\linewidth]{\vspace*{2em}\input{fig-lower-boundary-stencil.tex}}
 	\caption{Two-dimensional stencils used for approximating a value at a face centroid given a set of surrounding cell centre values.  In the two stencils, the face $F$ is shown with a thick line, and the face centroid with an open circle. Cell centres are denoted by grey filled circles.  The direction of the windvector, $\bm{u}$, is shown above both stencils.}
 	\label{fig:stencils}
 \end{figure}
@@ -118,16 +121,14 @@ In the interior of a two-dimensional domain, we fit a polynomial surface to a st
 \begin{align}
 	\phi = a_1 + a_2 x + a_3 y + a_4 x^2 + a_5 x y + a_6 y^2 + a_7 x^3 + a_8 x^2 y + a_9 x y^2
 \end{align}
-where $a_1 \ldots a_9$ are the unknown coefficients that are calculated from the least squares fit.  It may not be possible to fit all the polynomial terms to a stencil near the lower boundary because it will include fewer points that may be non-uniformly distributed.  With help from Philip Browne, I have developed a mathematical technique that removes certain high-order terms based on the stencil geometry.  We call this technique an `adaptive polynomial fit'.
+where $a_1 \ldots a_9$ are the unknown coefficients that are calculated from the least squares fit.  It may not be possible to fit all the polynomial terms to a stencil near the lower boundary because it includes fewer points.  With additional help from Philip Browne, I have developed a mathematical technique that removes certain high-order terms based on the stencil geometry.  We call this technique an `adaptive polynomial fit'.
 
-The adaptive polynomial fit alone is not enough to ensure numerical stability.  I am developing a new procedure that will stabilise the polynomial fit for troublesome stencils.  It is based on constraints derived from a one-dimensional von Neumann analysis of a simplified version of the spatial discretisation.  Compared to the original version of the advection scheme by \citet{weller-shahrokhi2014}, the improved version is stable for a wider range of test cases and has accuracy that is comparable to the original version.  Further work is needed to achieve stability for additional test cases, and give us confidence that the scheme is stable and accurate for arbitrary meshes.
+\TODO{a paragraph describing the adaptive polynomial fit will go here}
 
-% I could talk about recent work in 1D, potential comparisons with WENO
-
-\section{Future research}
-My future work begins with the completion of advection scheme development and the submission of a paper on this topic.  After that, I intend to resume my research into numerical schemes for the Charney--Phillips staggering on arbitrary meshes.
-
-The development of the multidimensional advection scheme, as with so many tasks in life, has proved to be more challenging than initially thought.  The new version of the scheme is already much improved over the original version since it is stable for a larger selection of tests.  However, the scheme is weakly unstable in certain cases (figure~\ref{fig:instability}) and it is not yet clear how to address this issue.  I am collaborating with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for further suggestions.
+The adaptive polynomial fit alone is not enough to ensure numerical stability.  I am developing a new procedure that will stabilise the polynomial fit for troublesome stencils.  It is based on constraints derived from a one-dimensional von Neumann analysis of a simplified version of the spatial discretisation.  Compared to the original version of the advection scheme by \citet{weller-shahrokhi2014}, the improved version is stable for a wider range of test cases and has accuracy that is comparable to the original version.
+However, the scheme is weakly unstable in certain cases (figure~\ref{fig:instability}) and a solution has yet to be found.
+Further work is needed to give us confidence that the scheme is stable and accurate for arbitrary meshes.
+I am also working with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for suggestions.
 
 \begin{figure}
 \centering
@@ -138,12 +139,16 @@ The development of the multidimensional advection scheme, as with so many tasks 
 \vspace{1em} \\
 \includegraphics[height=5in,angle=270]{slantedCellLegend.eps}
 %
-\caption{Development of numerical instability in a test of advection of a stratified thermal field in a prescribed, non-divergent wind field that is tangential to basic terrain-following surfaces.  Errors are too small to be visible at $t = \SI{1000}{\second}$ but, by $t = \SI{1500}{\second}$, erroneously large values have been created near the distorted cells around $x = \SI{1000}{\meter}, z = \SI{600}{\meter}$ that are advected over the lee slopes.  By $t = \SI{2040}{\second}$, the instability is fully-developed, having stripes of error and grid-scale oscillations that propagate in a direction opposite to the wind.  The timestep is \SI{2.5}{\second}.
+\caption{\TODO{change this figure to show results of a different test: the one that was previously unstable and is now stable.  I might be able to use the automated test case from AtmosFOAM}.  Development of numerical instability in a test of advection of a stratified thermal field in a prescribed, non-divergent wind field that is tangential to basic terrain-following surfaces.  Errors are too small to be visible at $t = \SI{1000}{\second}$ but, by $t = \SI{1500}{\second}$, erroneously large values have been created near the lower boundary (at $(x,z) = (1000, 600)\:\si{\meter}$) that are advected over the lee slopes.  By $t = \SI{2040}{\second}$, the instability is fully-developed, having stripes of error and grid-scale oscillations that propagate in a direction opposite to the wind.  The timestep is \SI{2.5}{\second}.
 Cell edges are shown by grey lines.  Wind vectors are drawn at every face using magenta arrows, with the wind speed ranging from \SIrange{10}{13}{\meter\per\second}.  Only the lowest \SI{1.5}{\kilo\meter} of the central domain is shown.  The entire domain is \SI{20}{\kilo\meter} wide and \SI{5}{\kilo\meter} high.  Axis units are \si{\meter}.}
 \label{fig:instability}
 \end{figure}
 
-MC2 discussed some brief, exploratory work into a generalised Charney--Phillips staggering for arbitrary meshes.  I intend to return to this topic once I am satisfied with the performance of the advection scheme and once I have prepared a paper discussing the advection results.
+\section{Future research}
+\label{sec:future}
+
+My future work begins with the completion of advection scheme development and the submission of a paper on this topic.  After that, I intend to resume my research into numerical schemes for generalised Charney--Phillips staggering on arbitrary meshes.
+MC2 discussed some brief, exploratory work on this topic, but no further work has been done since then.
 There are a series of tasks that are required to develop numerical schemes for the generalised Charney--Phillips staggering:
 \begin{enumerate}
 \item Define the prognostic variables and their arrangement on arbitrary meshes
@@ -156,26 +161,15 @@ Following this, further tasks should be undertaken if time permits:
 \item Adapt the multidimensional cubic advection scheme for advecting potential temperature on generalised Charney--Phillips meshes
 \item Modify the fully-compressible model to enable a semi-implicit configuration with the Charney--Phillips staggering
 \end{enumerate}
-\TODO{timescales?}
 
 \section{Training}
 This year, I have attended almost all lunchtime and departmental seminars, HHH and mesoscale group meetings.  I take note of analytical techniques that might be useful in future, for example, verifying trends using low pass filters\footnote{The summer NAO in observations and CMIP models: impacts on European precipitation and uncertainties in future projected trends, Ileana Bladé, 7 March 2016}, and solving linear PDEs using Green's functions\footnote{Constraining ocean ventilation pathways and time scales with observations and models, Samar Khatiwala, 21 March 2016}.
-Since the second monitoring committee meeting, I have learnt about the Singular Value Decomposition in Numerical Analysis II, which I am using for fitting polynomial surfaces in my own research.
-I have also reviewed a manuscript submitted to Monthly Weather Review, and I am keen to get better at critically analysing papers.
+I have also peer reviewed a Monthly Weather Review manuscript, and I am keen to get better at critically analysing papers.
 
-Following a talk by Ed Hawkins and Tom Sizmur about online scientific communication, I have been sharing more of my ideas on my blog\footnote{My blog is at \url{datumedge.co.uk}} and on Twitter\footnote{My Twitter username is \href{https://twitter.com/hertzsprrrung}{@hertzsprrrung}}.  I have found Twitter to be especially useful for discovering contacts from a range of disciplines whose interests overlap with my research.
+Following a talk by Ed Hawkins and Tom Sizmur about online scientific communication, I have been sharing more of my thoughts on my blog and on Twitter\footnote{My blog is at \url{datumedge.co.uk} and my Twitter username is \href{https://twitter.com/hertzsprrrung}{@hertzsprrrung}}.  I have found Twitter to be especially useful for discovering contacts from a range of disciplines whose interests overlap with my research.
 
-\subsection*{Collaborations}
-I have spent some time working with other contacts, sharing ideas about my own and their own research projects:
-\begin{itemize}
-\item Ram Nair has helped me to arrange a visit to NCAR in June 2016 to present my research and spend time with NCAR staff
-\item I am arranging for Simon Clark to visit the department in July 2016.  Simon is a PhD student at Exeter and a YouTube vlogger.  I am organising for him to present a departmental seminar, and to film a radiosonde launch and laboratory demonstrations.
-\item I have provided test cases and manuscript reviews for an article about dimensionally-split and multidimensional advection schemes.  I am a coauthor for this article, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office.
-\item I intend to collaborate with Hilary's next student, Christiana Skea, who will be investigating variable timestepping for ODEs
-\end{itemize}
-
-\footnotesize{
 \subsection*{Mathematics modules}
+\footnotesize
 \begin{tabular}{l l l l}
 Spring 2016	& MA3NAT & Numerical Analysis II & unassessed \\
 Spring 2015	& MAMNSP & Numerical Solution of Partial Differential Equations  & 78\% \\
@@ -209,6 +203,29 @@ June 2015 & Poster & SCENARIO DTP conference \\
 March 2015 & Speaker & Galerkin methods with applications in weather and climate forecasting, ICMS \\
 \end{tabularx}
 
+\subsection*{Teaching}
+\begin{tabular}{l l l}
+Oct 2015 & Teaching assistant & MTMG02 atmospheric physics \\
+Sep 2015 & Teaching assistant & NCAS summer school \\
+Sep 2014 & Course teacher & MPE python and linux short course \\
+\end{tabular}
+
+\subsection*{Visits and collaborations}
+\begin{tabularx}{\linewidth}{l X}
+July 2016 & Organising visit from Simon Clark, stratospheric PhD researcher and YouTube vlogger \\
+June 2016 --\ & Working with Hilary's new MSc student, Christiana Skea, studying variable timestepping for ODEs \\
+June 2016 & Visiting NCAR, hosted by Ram Nair \\
+2015 -- 2016 & Coauthoring an article about dimensionally-split and multidimensional advection schemes, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office \\
+\end{tabularx}
+
+
+\subsection*{Outreach}
+\begin{tabular}{l l l}
+14 Jul 2015 & Schools physicist of the year awards \\
+14 Jun 2015 & East Reading festival \\
+15 Feb 2015 & Brighton science festival \\
+\end{tabular}
+
 \subsection*{Presentations}
 \begin{tabularx}{\linewidth}{l l X}
 23 Mar 2016 & Quo Vadis & Numerical representation of orography in dynamical cores (honourable mention) \\
@@ -223,22 +240,7 @@ March 2015 & Speaker & Galerkin methods with applications in weather and climate
 12 Sep 2014 & Lunchtime seminar  & Gain control of your documents and code: hands-on with revision control and build automation \\
 \end{tabularx}
 
-\subsection*{Teaching}
-\begin{tabular}{l l l}
-Oct 2015 & Teaching assistant & MTMG02 atmospheric physics \\
-Sep 2015 & Teaching assistant & NCAS summer school \\
-Sep 2014 & Course teacher & MPE python and linux short course \\
-\end{tabular}
-
-\subsection*{Outreach}
-\begin{tabular}{l l l}
-14 Jul 2015 & Schools physicist of the year awards \\
-14 Jun 2015 & East Reading festival \\
-15 Feb 2015 & Brighton science festival \\
-\end{tabular}
-}
-
 \bibliographystyle{ametsoc2014}                                                 
-\small{\bibliography{references}}
+\bibliography{references}
 
 \end{document}
