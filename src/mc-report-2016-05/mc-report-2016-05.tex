@@ -40,7 +40,7 @@ Monitoring Committee Progress Report \#3\\
 \date{31st May 2016}
 
 \captionsetup{margin=3pt,font={small}}
-\setlength{\bibsep}{0.25em plus 0.1ex}
+\setlength{\bibsep}{0.3em plus 0.1ex}
 
 \makeatletter
 \AtBeginDocument{
@@ -74,10 +74,8 @@ To illustrate the two types of mesh, a wave-shaped mountain with a peak height o
 The development of a new type of mesh, the slanted cell mesh, is discussed in section~\ref{sec:tf-slanted-cells}.
 
 \subsection*{Advection on arbitrary meshes}
-\TODO{rewrite this to focus on multidimensional schemes, and how ours is computationally cheaper than FFSL multidimensional schemes, such as CSLAM and lashley2002}
-When a wind field is misaligned with the mesh, an advection scheme must account for transverse flux between diagonally adjacent cells \citep{clappier1998}.  Dimensionally split schemes that do not account for transverse fluxes can distort advected quantities \citep{leonard1993}.  These distortions are called `splitting errors'.  In contrast, multidimensional schemes naturally account for such fluxes by including cross terms in the flux calculations \citep{leonard1993}.
-
-Dimensionally split schemes are attractive because they are often computationally efficient compared to multidimensional schemes \citep{bott2010}, and a number of improvements have been developed to alleviate splitting errors \citep{leonard1996,bott2010}.  The advection scheme by \citet{weller-shahrokhi2014} is a multidimensional scheme that achieves computational efficiency by precomputing fluxes using the mesh geometry only.  Some aspects of this scheme are being modified to improve stability and accuracy, and this is the subject of section~\ref{sec:advection}.
+Multidimensional advection schemes are attractive because they are suitable for arbitrary meshes \citep{dubey2014} \TODO{would like to find a better ref}.  However, existing multidimensional schemes are often computationally expensive because a complete polynomial surface must be constructed from stencil values \TODO{give citations: lashley2002, leonard?}.
+The advection scheme by \citet{weller-shahrokhi2014} is a multidimensional scheme that achieves computational efficiency by precomputing fluxes using the mesh geometry alone.  Some aspects of this scheme are being modified to improve stability and accuracy, and this is the subject of section~\ref{sec:advection}.
 
 \subsection*{Vertical balance on arbitrary meshes}
 Some numerical models are susceptible to computational modes which produce unphysical solutions.   Models that have a Lorenz vertical staggering of variables can suffer from one such computational mode \citep{arakawa-konor1996}.  The Charney--Phillips vertical staggering does not suffer from the Lorenz computational mode, but it has only been formulated on structured, quadrilateral meshes.  I intend to develop a generalisation of the Charney--Phillips staggering for arbitrary meshes, and the necessary tasks are outlined in section~\ref{sec:future}.
