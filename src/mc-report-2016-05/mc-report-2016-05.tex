@@ -73,6 +73,7 @@ To illustrate the two types of mesh, a wave-shaped mountain with a peak height o
 The development of a new type of mesh, the slanted cell mesh, is discussed in section~\ref{sec:tf-slanted-cells}.
 
 \subsection*{Advection on arbitrary meshes}
+\TODO{rewrite this to focus on multidimensional schemes, and how ours is computationally cheaper than FFSL multidimensional schemes, such as CSLAM and lashley2002}
 When a wind field is misaligned with the mesh, an advection scheme must account for transverse flux between diagonally adjacent cells \citep{clappier1998}.  Dimensionally split schemes that do not account for transverse fluxes can distort advected quantities \citep{leonard1993}.  These distortions are called `splitting errors'.  In contrast, multidimensional schemes naturally account for such fluxes by including cross terms in the flux calculations \citep{leonard1993}.
 
 Dimensionally split schemes are attractive because they are often computationally efficient compared to multidimensional schemes \citep{bott2010}, and a number of improvements have been developed to alleviate splitting errors \citep{leonard1996,bott2010}.  The advection scheme by \citet{weller-shahrokhi2014} is a multidimensional scheme that achieves computational efficiency by precomputing fluxes using the mesh geometry only.  Some aspects of this scheme are being modified to improve stability and accuracy, and this is the subject of section~\ref{sec:advection}.
@@ -85,7 +86,8 @@ Some numerical models are susceptible to computational modes which produce unphy
 	\subcaptionbox{Basic terrain-following mesh \label{fig:btf-mesh}}[.32\linewidth]{\includegraphics[width=2in]{../thermalAdvection-mesh-btf-1000m-250dz/constant/mesh.pdf}}
 	\subcaptionbox{Cut cell mesh \label{fig:cutcell-mesh}}[.32\linewidth]{\includegraphics[width=2in]{../thermalAdvection-mesh-cutCell-1000m-250dz/constant/mesh.pdf}}
 	\subcaptionbox{Slanted cell mesh \label{fig:slantedcell-mesh}}[.32\linewidth]{\includegraphics[width=2in]{../thermalAdvection-mesh-slantedCell-1000m-250dz/constant/mesh.pdf}}
-	\caption{Cell edges of basic terrain-following, cut cell and slanted cell meshes having the same wave-shaped mountain profile.  Only the lowest \SI{1.2}{\kilo\meter} in the centre of the domain is shown.  The entire domain is \SI{300}{\kilo\meter} wide and \SI{30}{\kilo\meter} high.  Axis units are \si{\meter}.  Cut cell mesh generated with code kindly provided by TROPOS.}
+	\caption{Cell edges of basic terrain-following, cut cell and slanted cell meshes having the same wave-shaped mountain profile.  Only the lowest \SI{1.2}{\kilo\meter} in the centre of the domain is shown.  The entire domain is \SI{300}{\kilo\meter} wide and \SI{30}{\kilo\meter} high.  Axis units are \si{\meter}.
+The cut cell mesh was generated with code used in the All Scale Atmospheric Model \citep{jaehn2015}, kindly provided by the Leibniz Institute for Tropospheric Research.}
 	\label{fig:meshes}
 \end{figure}
 
@@ -95,11 +97,9 @@ Some numerical models are susceptible to computational modes which produce unphy
 During the first year of my PhD, I compared the numerical accuracy on terrain-following and slanted cell meshes.
 In the second monitoring committee report (called MC2 hereafter), a slanted cell mesh was referred to as a cut cell mesh, but it is necessary to make a distinction between the two types: the differences can be seen by comparing the representation of the same terrain profile using cut cells (figure~\ref{fig:cutcell-mesh}) and slanted cells (figure~\ref{fig:slantedcell-mesh}).
 
-The slanted cell method has advantages over the cut cell method.  First, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}, I have developed a new technique that makes slanted cell meshes straightforward to construct \citep{shaw-weller2016}.  Second, the slanted cell method does not severely constrain the timestep because thin cells are created that are long in the direction of flow.
-
-The Leibniz Institute for Tropospheric Research (TROPOS) have kindly provided me with their cut cell mesh generator used in the All Scale Atmospheric Model \citep{jaehn2015}.  This generates true cut cell meshes and will enable me to compare results on cut cell and slanted cell meshes.
-
+The slanted cell method has advantages over the cut cell method.
 \citet{shaw-weller2016} was published in May 2016 and included the development of a new slanted cell mesh generation method which avoided the complex heuristics employed by the previous method (see MC2, section 3).
+This method makes slanted cell meshes straightforward to construct, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}.  Second, slanted cell meshes alleviate the severe timestep constraints associated with cut cell meshes \citep{shaw-weller2016}.
 
 \section{Improving advection on slanted cell meshes}
 \label{sec:advection}
@@ -146,12 +146,15 @@ Cell edges are shown by grey lines.  Wind vectors are drawn at every face using 
 
 \section{Future research}
 \label{sec:future}
-
-\TODO{put timelines on: advection stuff by Oct 2016, 6 months on C--P development, 3 months writing C--P, 1 month writing intro}
-\TODO{say what the key conclusions of the advection work are expected to be}
-My future work begins with the completion of advection scheme development and the submission of a paper on this topic.  After that, I intend to resume my research into numerical schemes for generalised Charney--Phillips staggering on arbitrary meshes.
+A timeline of future work is presented with tentative completion dates for each group of tasks.
+My future work begins with the completion of advection scheme development described in the previous section.  After that, I will resume my work developing advection schemes for generalised Charney--Phillips staggering on arbitrary meshes.
 MC2 discussed some brief, exploratory work on this topic, but no further work has been done since then.
-There are a series of tasks that are required to develop numerical schemes for the generalised Charney--Phillips staggering:
+
+\begin{description}
+\item[October 2016]{Complete stabilisation of the multidimensional advection scheme.  We will submit a paper on the topic, noting that the advection scheme is computationally cheap and suitable for arbitrary meshes.  Advection tests will be performed over steep slopes and the advantages of the slanted cell mesh will be highlighted.}
+%
+\item[May 2017]{Develop a generalised Charney--Phillips staggering for arbitrary meshes.
+This work comprises a series of tasks:
 \begin{enumerate}
 \item Define the prognostic variables and their arrangement on arbitrary meshes
 \item Design a simple numerical scheme for advecting potential temperature
@@ -163,6 +166,13 @@ Following this, further tasks should be undertaken if time permits:
 \item Adapt the multidimensional cubic advection scheme for advecting potential temperature on generalised Charney--Phillips meshes
 \item Modify the fully-compressible model to enable a semi-implicit configuration with the Charney--Phillips staggering
 \end{enumerate}
+}
+\item[August 2017]{Write a thesis chapter documenting the generalised Charney--Phillips staggering, the advection scheme and associated work.}
+\item[September 2017 onwards]{Prepare the thesis introduction and incorporate my other papers into the thesis.}
+\item[Early 2018]{Complete PhD.}
+\end{description}
+
+
 
 \bibliographystyle{ametsoc2014}                                                 
 \bibliography{references}
