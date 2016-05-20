@@ -24,6 +24,7 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{enumitem}
+\usepackage{kbordermatrix}
 \usepackage{draftwatermark}
 
 \title{
@@ -119,11 +120,25 @@ On a two-dimensional quadrilateral mesh, the stencil has $4 \times 3$ points in 
 
 In the interior of a two-dimensional domain, we fit a polynomial surface to a stencil of a discrete scalar field $\phi$:
 \begin{align}
-	\phi = a_1 + a_2 x + a_3 y + a_4 x^2 + a_5 x y + a_6 y^2 + a_7 x^3 + a_8 x^2 y + a_9 x y^2
+	\phi = a_1 + a_2 x + a_3 y + a_4 x^2 + a_5 x y + a_6 y^2 + a_7 x^3 + a_8 x^2 y + a_9 x y^2 \label{eqn:polynomial}
 \end{align}
-where $a_1 \ldots a_9$ are the unknown coefficients that are calculated from the least squares fit.  It may not be possible to fit all the polynomial terms to a stencil near the lower boundary because it includes fewer points.  With additional help from Philip Browne, I have developed a mathematical technique that removes certain high-order terms based on the stencil geometry.  We call this technique an `adaptive polynomial fit'.
+where $\bm{a} = a_1 \ldots a_9$ are the unknown coefficients that are calculated from the least squares fit.  It may not be possible to fit all the polynomial terms to a stencil near the lower boundary because it includes fewer points.  With additional help from Philip Browne, I have developed a mathematical technique that removes certain high-order terms based on the stencil geometry.  We call this technique an `adaptive polynomial fit'.
 
-\TODO{a paragraph describing the adaptive polynomial fit will go here}
+The adaptive polynomial fit uses the stencil geometry to construct a full-rank matrix.  For a stencil in the interior of a two-dimensional domain with twelve points, $c_1 \ldots c_{12}$, the matrix $B$ is
+\begin{align}
+	B = 
+	\kbordermatrix{
+		& \mathrm{constant} & x & y & x^2 & x y & y^2 & x^3 & x^2 y & x y^2 \\
+		c_1 & 1 & x_1 & y_1 & x_1^2 & \cdots & \cdots & \cdots & \cdots & x_1 y_1^2 \\
+		c_2 & 1 & x_2 & y_2 & x_2^2 & \cdots & \cdots & \cdots & \cdots & x_2 y_2^2 \\
+		\vdots & \vdots & \vdots & \vdots & \vdots &  &  &  &  & \vdots \\
+		c_{12} & 1 & x_{12} & y_{12} & x_{12}^2 & \cdots & \cdots & \cdots & \cdots & x_{12} y_{12}^2 \\
+	} \text{.}
+\end{align}
+Equation~\eqref{eqn:polynomial} is used to form a matrix equation $\bm{\phi} = B \bm{a}$, where $\bm{\phi}$ is the vector of stencil point values that can change between timesteps.
+To solve for $\bm{a}$, the pseudo-inverse, $B^\dagger$, is calculated using the singular value decomposition of $B$.  Note that $B^\dagger$ can be precomputed using the stencil geometry alone.
+
+For smaller stencils, or highly-distorted stencil geometries, the matrix $B$ may be numerically rank-deficient (that is, it has singular values close to zero).  To ensure that the matrix is full-rank, $B$ is constructed by appending one column at a time.  If any column causes the matrix to become rank-deficient then that column is omitted.  This technique constructs polynomial surfaces that are high-order for large, uniform stencils and lower-order for smaller stencils or highly-distorted stencils.
 
 The adaptive polynomial fit alone is not enough to ensure numerical stability.  I am developing a new procedure that will stabilise the polynomial fit for troublesome stencils.  It is based on constraints derived from a one-dimensional von Neumann analysis of a simplified version of the spatial discretisation.  Compared to the original version of the advection scheme by \citet{weller-shahrokhi2014}, the improved version is stable for a wider range of test cases and has accuracy that is comparable to the original version.
 However, the scheme is weakly unstable in certain cases (figure~\ref{fig:instability}) and a solution has yet to be found.
@@ -151,9 +166,9 @@ My future work begins with the completion of advection scheme development descri
 MC2 discussed some brief, exploratory work on this topic, but no further work has been done since then.
 
 \begin{description}
-\item[October 2016]{Complete stabilisation of the multidimensional advection scheme.  We will submit a paper on the topic, noting that the advection scheme is computationally cheap and suitable for arbitrary meshes.  Advection tests will be performed over steep slopes and the advantages of the slanted cell mesh will be highlighted.}
+\item[Autumn 2016]{Complete stabilisation of the multidimensional advection scheme.  We will submit a paper on the topic, noting that the advection scheme is computationally cheap and suitable for arbitrary meshes.  Advection tests will be performed over steep slopes and the advantages of the slanted cell mesh will be highlighted.}
 %
-\item[May 2017]{Develop a generalised Charney--Phillips staggering for arbitrary meshes.
+\item[Spring 2017]{Develop a generalised Charney--Phillips staggering for arbitrary meshes.
 This work comprises a series of tasks:
 \begin{enumerate}
 \item Define the prognostic variables and their arrangement on arbitrary meshes
@@ -167,11 +182,18 @@ Following this, further tasks should be undertaken if time permits:
 \item Modify the fully-compressible model to enable a semi-implicit configuration with the Charney--Phillips staggering
 \end{enumerate}
 }
-\item[August 2017]{Write a thesis chapter documenting the generalised Charney--Phillips staggering, the advection scheme and associated work.}
-\item[September 2017 onwards]{Prepare the thesis introduction and incorporate my other papers into the thesis.}
+\item[Summer 2017]{Write a thesis chapter documenting the generalised Charney--Phillips staggering, the advection scheme and associated work.}
+\item[Winter 2017]{Prepare the thesis introduction and incorporate my other papers into the thesis.}
 \item[Early 2018]{Complete PhD.}
 \end{description}
 
+\section{Training}
+This year, I have attended almost all lunchtime and departmental seminars, HHH and mesoscale group meetings.  I take note of analytical techniques that might be useful in future, for example, verifying trends using low pass filters\footnote{The summer NAO in observations and CMIP models: impacts on European precipitation and uncertainties in future projected trends, Ileana Bladé, 7 March 2016}, and solving linear PDEs using Green's functions\footnote{Constraining ocean ventilation pathways and time scales with observations and models, Samar Khatiwala, 21 March 2016}.
+I have also peer reviewed a Monthly Weather Review manuscript, and I am keen to get better at critically analysing papers.
+
+Following a talk by Ed Hawkins and Tom Sizmur about online scientific communication, I have been sharing more of my thoughts on my blog and on Twitter\footnote{My blog is at \url{datumedge.co.uk} and my Twitter username is \href{https://twitter.com/hertzsprrrung}{@hertzsprrrung}}.  I have found Twitter to be especially useful for discovering contacts from a range of disciplines whose interests overlap with my research.
+
+A complete training record is provided in the appendix.
 
 
 \bibliographystyle{ametsoc2014}                                                 
@@ -179,11 +201,7 @@ Following this, further tasks should be undertaken if time permits:
 
 \newpage
 
-\section{Training}
-This year, I have attended almost all lunchtime and departmental seminars, HHH and mesoscale group meetings.  I take note of analytical techniques that might be useful in future, for example, verifying trends using low pass filters\footnote{The summer NAO in observations and CMIP models: impacts on European precipitation and uncertainties in future projected trends, Ileana Bladé, 7 March 2016}, and solving linear PDEs using Green's functions\footnote{Constraining ocean ventilation pathways and time scales with observations and models, Samar Khatiwala, 21 March 2016}.
-I have also peer reviewed a Monthly Weather Review manuscript, and I am keen to get better at critically analysing papers.
-
-Following a talk by Ed Hawkins and Tom Sizmur about online scientific communication, I have been sharing more of my thoughts on my blog and on Twitter\footnote{My blog is at \url{datumedge.co.uk} and my Twitter username is \href{https://twitter.com/hertzsprrrung}{@hertzsprrrung}}.  I have found Twitter to be especially useful for discovering contacts from a range of disciplines whose interests overlap with my research.
+\section*{Appendix}
 
 \subsection*{Mathematics modules}
 \footnotesize
