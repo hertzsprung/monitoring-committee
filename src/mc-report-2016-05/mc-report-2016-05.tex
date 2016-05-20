@@ -140,22 +140,23 @@ To solve for $\bm{a}$, the pseudo-inverse, $B^\dagger$, is calculated using the 
 
 For smaller stencils, or highly-distorted stencil geometries, the matrix $B$ may be numerically rank-deficient (that is, it has singular values close to zero).  To ensure that the matrix is full-rank, $B$ is constructed by appending one column at a time.  If any column causes the matrix to become rank-deficient then that column is omitted.  This technique constructs polynomial surfaces that are high-order for large, uniform stencils and lower-order for smaller stencils or highly-distorted stencils.
 
-The adaptive polynomial fit alone is not enough to ensure numerical stability.  I am developing a new procedure that will stabilise the polynomial fit for troublesome stencils.  It is based on constraints derived from a one-dimensional von Neumann analysis of a simplified version of the spatial discretisation.  Compared to the original version of the advection scheme by \citet{weller-shahrokhi2014}, the improved version is stable for a wider range of test cases and has accuracy that is comparable to the original version.
-However, the scheme is weakly unstable in certain cases (figure~\ref{fig:instability}) and a solution has yet to be found.
-Further work is needed to give us confidence that the scheme is stable and accurate for arbitrary meshes.
-I am also working with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for suggestions.
+The adaptive polynomial fit alone is not enough to ensure numerical stability.  I am developing a new procedure that will stabilise the polynomial fit for troublesome stencils.  It is based on constraints derived from a one-dimensional von Neumann analysis of a simplified version of the spatial discretisation.  Compared to the original version of the advection scheme by \citet{weller-shahrokhi2014}, the improved version is stable for a wider range of test cases (figure~\ref{fig:instability}).  
+However, the scheme is still weakly unstable in certain cases and work is ongoing to give us confidence that the scheme will be stable and accurate for arbitrary meshes.
+I am also working with Tristan Pryer here at Reading, and I am reaching out to other experts in the field for suggested solutions.
 
 \begin{figure}
 \centering
-\subcaptionbox{$t = \SI{1000}{\second}$ (4000 timesteps) \label{fig:instability1000}}[0.32\linewidth]{\hspace*{-1em}\includegraphics[width=2.25in]{slantedCell1000.pdf}}
-\subcaptionbox{$t = \SI{1500}{\second}$ (6000 timesteps) \label{fig:instability1500}}[0.32\linewidth]{\hspace*{1em}\includegraphics[width=1.9in]{slantedCell1500.pdf}}
-\subcaptionbox{$t = \SI{2040}{\second}$ (8160 timesteps) \label{fig:instability2040}}[0.32\linewidth]{\includegraphics[width=1.9in]{slantedCell2040.pdf}}
+\subcaptionbox{Improved scheme, $t = \SI{150}{\second}$ \label{fig:stable150}}[0.32\linewidth]{\hspace*{-1em}\includegraphics[width=2.25in]{slantedCellNew150.pdf}}
+\subcaptionbox{Original scheme, $t = \SI{150}{\second}$ \label{fig:unstable150}}[0.32\linewidth]{\hspace*{1em}\includegraphics[width=1.9in]{slantedCellOld150.pdf}}
+\subcaptionbox{Original scheme, $t = \SI{400}{\second}$ \label{fig:instability400}}[0.32\linewidth]{\includegraphics[width=1.9in]{slantedCell400.pdf}}
 %
 \vspace{1em} \\
 \includegraphics[height=5in,angle=270]{slantedCellLegend.eps}
 %
-\caption{\TODO{change this figure to show results of a different test: the one that was previously unstable and is now stable.  I might be able to use the automated test case from AtmosFOAM}.  Development of numerical instability in a test of advection of a stratified thermal field in a prescribed, non-divergent wind field that is tangential to basic terrain-following surfaces.  Errors are too small to be visible at $t = \SI{1000}{\second}$ but, by $t = \SI{1500}{\second}$, erroneously large values have been created near the lower boundary (at $(x,z) = (1000, 600)\:\si{\meter}$) that are advected over the lee slopes.  By $t = \SI{2040}{\second}$, the instability is fully-developed, having stripes of error and grid-scale oscillations that propagate in a direction opposite to the wind.  The timestep is \SI{2.5}{\second}.
-Cell edges are shown by grey lines.  Wind vectors are drawn at every face using magenta arrows, with the wind speed ranging from \SIrange{10}{13}{\meter\per\second}.  Only the lowest \SI{1.5}{\kilo\meter} of the central domain is shown.  The entire domain is \SI{20}{\kilo\meter} wide and \SI{5}{\kilo\meter} high.  Axis units are \si{\meter}.}
+	\caption{Comparison of results between the original advection scheme from \citet{weller-shahrokhi2014} and the improved advection scheme that includes the adaptive polynomial fit and stabilisation procedures.  After $t = \SI{150}{\second}$ the initial, stably-stratified thermal profile has been advected in a prescribed, terrain-following wind field over the wave-shaped mountains.  The new version of the scheme produces the expected result (\subref{fig:stable150}).  With the original version of the scheme, errors develop on the lee slope that are advected along the ground (\subref{fig:unstable150}).
+By $t = \SI{400}{\second}$, the instability is fully-developed, having stripes of error and grid-scale oscillations that propagate in a direction opposite to the wind (\subref{fig:instability400}).
+The timestep is \SI{2.5}{\second}.
+Cell edges are shown by grey lines.  Wind vectors are drawn using magenta arrows, with the wind speed ranging from \SIrange{10}{13}{\meter\per\second}.  The wind field is the same for all results shown and the wind is time invariant.  Only the lowest \SI{1.5}{\kilo\meter} of the central domain is shown.  The entire domain is \SI{20}{\kilo\meter} wide and \SI{5}{\kilo\meter} high.  Axis units are \si{\meter}.}
 \label{fig:instability}
 \end{figure}
 
@@ -187,13 +188,12 @@ Following this, further tasks should be undertaken if time permits:
 \item[Early 2018]{Complete PhD.}
 \end{description}
 
-\section{Training}
+\section{Personal development}
+This section discusses some recent activities; a complete training record is provided in the appendix.
 This year, I have attended almost all lunchtime and departmental seminars, HHH and mesoscale group meetings.  I take note of analytical techniques that might be useful in future, for example, verifying trends using low pass filters\footnote{The summer NAO in observations and CMIP models: impacts on European precipitation and uncertainties in future projected trends, Ileana Bladé, 7 March 2016}, and solving linear PDEs using Green's functions\footnote{Constraining ocean ventilation pathways and time scales with observations and models, Samar Khatiwala, 21 March 2016}.
 I have also peer reviewed a Monthly Weather Review manuscript, and I am keen to get better at critically analysing papers.
 
 Following a talk by Ed Hawkins and Tom Sizmur about online scientific communication, I have been sharing more of my thoughts on my blog and on Twitter\footnote{My blog is at \url{datumedge.co.uk} and my Twitter username is \href{https://twitter.com/hertzsprrrung}{@hertzsprrrung}}.  I have found Twitter to be especially useful for discovering contacts from a range of disciplines whose interests overlap with my research.
-
-A complete training record is provided in the appendix.
 
 
 \bibliographystyle{ametsoc2014}                                                 
