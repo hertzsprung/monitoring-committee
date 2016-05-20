@@ -39,7 +39,7 @@ Monitoring Committee Progress Report \#3\\
 \date{31st May 2016}
 
 \captionsetup{margin=3pt,font={small}}
-\setlength{\bibsep}{0.3em plus 0.1ex}
+\setlength{\bibsep}{0.25em plus 0.1ex}
 
 \makeatletter
 \AtBeginDocument{
@@ -147,6 +147,8 @@ Cell edges are shown by grey lines.  Wind vectors are drawn at every face using 
 \section{Future research}
 \label{sec:future}
 
+\TODO{put timelines on: advection stuff by Oct 2016, 6 months on C--P development, 3 months writing C--P, 1 month writing intro}
+\TODO{say what the key conclusions of the advection work are expected to be}
 My future work begins with the completion of advection scheme development and the submission of a paper on this topic.  After that, I intend to resume my research into numerical schemes for generalised Charney--Phillips staggering on arbitrary meshes.
 MC2 discussed some brief, exploratory work on this topic, but no further work has been done since then.
 There are a series of tasks that are required to develop numerical schemes for the generalised Charney--Phillips staggering:
@@ -161,6 +163,11 @@ Following this, further tasks should be undertaken if time permits:
 \item Adapt the multidimensional cubic advection scheme for advecting potential temperature on generalised Charney--Phillips meshes
 \item Modify the fully-compressible model to enable a semi-implicit configuration with the Charney--Phillips staggering
 \end{enumerate}
+
+\bibliographystyle{ametsoc2014}                                                 
+\bibliography{references}
+
+\newpage
 
 \section{Training}
 This year, I have attended almost all lunchtime and departmental seminars, HHH and mesoscale group meetings.  I take note of analytical techniques that might be useful in future, for example, verifying trends using low pass filters\footnote{The summer NAO in observations and CMIP models: impacts on European precipitation and uncertainties in future projected trends, Ileana Bladé, 7 March 2016}, and solving linear PDEs using Green's functions\footnote{Constraining ocean ventilation pathways and time scales with observations and models, Samar Khatiwala, 21 March 2016}.
@@ -239,8 +246,5 @@ June 2016 & Visiting NCAR, hosted by Ram Nair \\
 17 Dec 2014 & MPECDT jamboree & Poster presentation \\
 12 Sep 2014 & Lunchtime seminar  & Gain control of your documents and code: hands-on with revision control and build automation \\
 \end{tabularx}
-
-\bibliographystyle{ametsoc2014}                                                 
-\bibliography{references}
 
 \end{document}
