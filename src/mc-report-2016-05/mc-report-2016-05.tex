@@ -25,6 +25,7 @@
 \usepackage{tabularx}
 \usepackage{enumitem}
 \usepackage{kbordermatrix}
+\usepackage{titlesec}
 \usepackage{draftwatermark}
 
 \title{
@@ -36,11 +37,11 @@ Monitoring Committee Progress Report \#3\\
 \vspace{0.5em} \\
 \large{Supervisors: Hilary Weller, John Methven, Terry Davies}
 \vspace{0.5em} \\
-\large{Monitoring Committee: Maarten Ambaum, Paul Williams}}
+\large{Monitoring Committee: Paul Williams, Maarten Ambaum}}
 \date{31st May 2016}
 
 \captionsetup{margin=3pt,font={small}}
-\setlength{\bibsep}{0.3em plus 0.1ex}
+%\setlength{\bibsep}{0.3em plus 0.1ex}
 
 \makeatletter
 \AtBeginDocument{
@@ -74,8 +75,10 @@ To illustrate the two types of mesh, a wave-shaped mountain with a peak height o
 The development of a new type of mesh, the slanted cell mesh, is discussed in section~\ref{sec:tf-slanted-cells}.
 
 \subsection*{Advection on arbitrary meshes}
-Multidimensional advection schemes are attractive because they are suitable for arbitrary meshes \citep{dubey2014} \TODO{would like to find a better ref}.  However, existing multidimensional schemes are often computationally expensive because a complete polynomial surface must be constructed from stencil values \TODO{give citations: lashley2002, leonard?}.
-The advection scheme by \citet{weller-shahrokhi2014} is a multidimensional scheme that achieves computational efficiency by precomputing fluxes using the mesh geometry alone.  Some aspects of this scheme are being modified to improve stability and accuracy, and this is the subject of section~\ref{sec:advection}.
+Multidimensional advection schemes are attractive because they are suitable for arbitrary meshes \citep{dubey2014} and because they avoid splitting errors associated with dimensionally-split schemes \citep{leonard1993}.
+However, existing multidimensional schemes are often computationally expensive because a complete polynomial surface must be constructed \citep{skamarock-menchaca2010}.
+In contrast, the advection scheme by \citet{weller-shahrokhi2014} is a multidimensional scheme that achieves computational efficiency by precomputing most flux calculations using the mesh geometry alone.
+Section~\ref{sec:advection} describes some of the modifications being made to improve the stability of this advection scheme.
 
 \subsection*{Vertical balance on arbitrary meshes}
 Some numerical models are susceptible to computational modes which produce unphysical solutions.   Models that have a Lorenz vertical staggering of variables can suffer from one such computational mode \citep{arakawa-konor1996}.  The Charney--Phillips vertical staggering does not suffer from the Lorenz computational mode, but it has only been formulated on structured, quadrilateral meshes.  I intend to develop a generalisation of the Charney--Phillips staggering for arbitrary meshes, and the necessary tasks are outlined in section~\ref{sec:future}.
@@ -98,21 +101,21 @@ In the second monitoring committee report (called MC2 hereafter), a slanted cell
 
 The slanted cell method has advantages over the cut cell method.
 \citet{shaw-weller2016} was published in May 2016 and included the development of a new slanted cell mesh generation method which avoided the complex heuristics employed by the previous method (see MC2, section 3).
-This method makes slanted cell meshes straightforward to construct, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}.  Second, slanted cell meshes alleviate the severe timestep constraints associated with cut cell meshes \citep{shaw-weller2016}.
+This method makes slanted cell meshes straightforward to construct, unlike the construction of cut cell meshes, which can be somewhat involved \citep{hartkopf2011}.  Another advantage of slanted cell meshes is that they alleviate the severe timestep constraints associated with cut cell meshes \citep{shaw-weller2016}.
 
 \section{Improving advection on slanted cell meshes}
 \label{sec:advection}
 
 My current work focuses on improving the stability of a multidimensional advection scheme that is suitable for arbitrary meshes \citep{weller-shahrokhi2014}.  The performance of the advection scheme is being evaluated over steep slopes on terrain-following, cut cell and slanted cell meshes.
 
-The multidimensional advection scheme is an explicit, Eulerian, finite-volume scheme that has a cubic upwind-biased stencil.  Fluxes across faces are approximated using a least squares polynomial fit onto the stencil point values.
+The multidimensional advection scheme is an explicit, Eulerian, method-of-lines, finite-volume scheme that has a cubic upwind-biased stencil.  Fluxes across faces are approximated using a least squares polynomial fit onto the stencil point values.
 On a two-dimensional quadrilateral mesh, the stencil has $4 \times 3$ points in the domain interior (figure~\ref{fig:stencil-interior}), but may include fewer points near the boundaries.  This is a particular concern at the lower boundary where stencils may be smaller and highly distorted (figure~\ref{fig:stencil-lower-boundary}).
 
 \begin{figure}
 	\centering
 	\subcaptionbox{12-point stencil in the domain interior \label{fig:stencil-interior}}[.48\linewidth]{\input{fig-upwind-stencil.tex}}
 	\subcaptionbox{7-point stencil near the lower boundary of a slanted cell mesh.  The ground is shown with diagonal hatching. \label{fig:stencil-lower-boundary}}[.48\linewidth]{\vspace*{2em}\input{fig-lower-boundary-stencil.tex}}
-	\caption{Two-dimensional stencils used for approximating a value at a face centroid given a set of surrounding cell centre values.  In the two stencils, the face $F$ is shown with a thick line, and the face centroid with an open circle. Cell centres are denoted by grey filled circles.  The direction of the windvector, $\bm{u}$, is shown above both stencils.}
+	\caption{Two-dimensional stencils used for approximating a value at a face centroid given a set of surrounding cell centre values.  In the two stencils, the face $F$ is shown with a thick line, and the face centroid with an open circle. Cell centres are denoted by grey filled circles.  The direction of the wind vector, $\bm{u}$, is shown above both stencils.}
 	\label{fig:stencils}
 \end{figure}
 
@@ -151,10 +154,10 @@ I am also working with Tristan Pryer here at Reading, and I am reaching out to o
 \vspace{1em} \\
 \includegraphics[height=5in,angle=270]{slantedCellLegend.eps}
 %
-	\caption{Comparison of results between the original advection scheme from \citet{weller-shahrokhi2014} and the improved advection scheme that includes the adaptive polynomial fit and stabilisation procedures.  After $t = \SI{150}{\second}$ the initial, stably-stratified thermal profile has been advected in a prescribed, terrain-following wind field over the wave-shaped mountains.  The new version of the scheme produces the expected result (\subref{fig:stable150}).  With the original version of the scheme, errors develop on the lee slope that are advected along the ground (\subref{fig:unstable150}).
-By $t = \SI{400}{\second}$, the instability is fully-developed, having stripes of error and grid-scale oscillations that propagate in a direction opposite to the wind (\subref{fig:instability400}).
+	\caption{Comparison of results between the original advection scheme from \citet{weller-shahrokhi2014} and the improved advection scheme that includes the adaptive polynomial fit and stabilisation procedures.  After $t = \SI{150}{\second}$ the initial, stably-stratified thermal profile has been advected in a prescribed, terrain-following wind field over the wave-shaped mountains.  The new version of the scheme produces the expected result (subfigure~\subref{fig:stable150}).  With the original version of the scheme, errors develop on the lee slope that are advected along the ground (subfigure~\subref{fig:unstable150}).
+By $t = \SI{400}{\second}$, the instability is fully-developed, having stripes of error and grid-scale oscillations that propagate in a direction opposite to the wind (subfigure~\subref{fig:instability400}).
 The timestep is \SI{2.5}{\second}.
-Cell edges are shown by grey lines.  Wind vectors are drawn using magenta arrows, with the wind speed ranging from \SIrange{10}{13}{\meter\per\second}.  The wind field is the same for all results shown and the wind is time invariant.  Only the lowest \SI{1.5}{\kilo\meter} of the central domain is shown.  The entire domain is \SI{20}{\kilo\meter} wide and \SI{5}{\kilo\meter} high.  Axis units are \si{\meter}.}
+Cell edges are shown by grey lines.  Wind vectors are drawn using magenta arrows, with the wind speed ranging from about \SIrange{10}{13}{\meter\per\second}.  The wind field is the same for all results shown and the wind is time invariant.  Only the lowest \SI{1.5}{\kilo\meter} of the central domain is shown.  The entire domain is \SI{20}{\kilo\meter} wide and \SI{5}{\kilo\meter}.  Prior to the construction of the slanted cells, the initially rectangular domain has $192 \times 80$ cells.  Axis units are \si{\meter}.}
 \label{fig:instability}
 \end{figure}
 
@@ -162,7 +165,7 @@ Cell edges are shown by grey lines.  Wind vectors are drawn using magenta arrows
 \label{sec:future}
 A timeline of future work is presented with tentative completion dates for each group of tasks.
 My future work begins with the completion of advection scheme development described in the previous section.  After that, I will resume my work developing advection schemes for generalised Charney--Phillips staggering on arbitrary meshes.
-MC2 discussed some brief, exploratory work on this topic, but no further work has been done since then.
+MC2 discussed a brief exploration into this topic, but no further work has been done since then.
 
 \begin{description}
 \item[Autumn 2016]{Complete stabilisation of the multidimensional advection scheme.  We will submit a paper on the topic, noting that the advection scheme is computationally cheap and suitable for arbitrary meshes.  Advection tests will be performed over steep slopes and the advantages of the slanted cell mesh will be highlighted.}
@@ -200,6 +203,8 @@ Following a talk by Ed Hawkins and Tom Sizmur about online scientific communicat
 \newpage
 
 \section*{Appendix}
+
+\titlespacing\subsection{0pt}{0.8em plus 4pt minus 2pt}{0.2em plus 2pt minus 2pt}
 
 \subsection*{Mathematics modules}
 \footnotesize
@@ -267,9 +272,9 @@ June 2016 & Visiting NCAR, hosted by Ram Nair \\
 19 Oct 2015 & HHH group & Improving modelled mountain flows with alternative representations of terrain \\
 27 Apr 2015 & HHH group & A like-for-like comparison between terrain following and cut cell grids \\
 21 Apr 2015 & PhD group & Discrete vector calculus on Arakawa C grids \\
-12 Feb 2015 & UK Met office & Poster presentation \\
+12 Feb 2015 & UK Met Office & Poster presentation for Met Office Academic Partnership \\
 18 Jan 2015 & PhD group & Python and linux tips \\
-17 Dec 2014 & MPECDT jamboree & Poster presentation \\
+17 Dec 2014 & MPECDT jamboree & Poster presentation for Mathematics for Planet Earth Centre for Doctoral Training jamboree \\
 12 Sep 2014 & Lunchtime seminar  & Gain control of your documents and code: hands-on with revision control and build automation \\
 \end{tabularx}
 
