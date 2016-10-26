@@ -11,10 +11,10 @@
 \usepackage{mathptmx}
 \usepackage{natbib}
 \usepackage[final,babel]{microtype}
-\usepackage[hidelinks]{hyperref}
+\usepackage[colorlinks,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{doi}
 \usepackage{siunitx}
-\usepackage[margin=1pt]{subcaption}
+\usepackage[margin=3pt]{subcaption}
 \usepackage{xcolor}
 \PassOptionsToPackage{final}{graphicx}
 \usepackage{tikz}
@@ -50,8 +50,13 @@ Monitoring Committee Progress Report \#4\\
 }
 \makeatother
 
+\makeatletter
+\patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}
+\patchcmd{\ttlh@hang}{\noindent}{}{}{}
+\makeatother
 
 \newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
+\newcommand{\iu}{{i\mkern1mu}}
 \begin{document}
 \maketitle
 
@@ -59,17 +64,102 @@ Monitoring Committee Progress Report \#4\\
 
 An atmospheric model solves the equations of motion in discrete form on a numerical mesh.  This mesh becomes distorted over sloping terrain, and the distortions can lead to larger numerical errors.  With new atmospheric models using increasingly fine mesh spacing, steep slopes become resolved by the mesh.  These steep slopes can result in highly-distorted meshes that can lead to larger numerical errors.  My PhD project seeks out new techniques for reducing numerical errors in regions of steep terrain.
 
-There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh surfaces to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to increased errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cells that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \cite{mesinger2012} and unstructured tetrahedral meshes \cite{smolarkiewicz-szmelter2011}.
+There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh surfaces to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to larger errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cells that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \citep{mesinger2012} and unstructured tetrahedral meshes \citep{smolarkiewicz-szmelter2011}.
 
-The wide variety of mesh types motivates the development of finite volume methods for arbitrary meshes.  This enables a like-for-like comparison between different types of mesh and allows us to assess the characteristics of new types of mesh.  Further, we hope that the new methods we develop will be less sensitive to mesh distortions than more traditional methods.
+The wide variety of mesh types motivates the development of finite volume methods for arbitrary meshes.  This enables a like-for-like comparison between different types of mesh and allows us to assess the characteristics of new types of mesh.  Further, we hope that the new methods we develop will be less sensitive to mesh distortions compared to traditional methods.
+
+My project comprises three parts.  First, a new type of mesh has been developed that is less distorted than terrain-following meshes and avoids arbitrarily small cells that are associated with the cut cell method \citep{shaw-weller2016}.  Second, we have designed an explicit, Eulerian transport scheme that is accurate near the lower boundary and is suitable for a variety of mesh types.  Third, we intend to generalise the Charney--Phillips staggering for arbitrary meshes and hope that this new formulation will alleviate the computational mode that is associated with the Lorenz staggering of variables \citep{arakawa-konor1996}.
+
+\section{A new finite volume scheme for transport over steep slopes}
+In May 2016, monitoring committee report \#3 (hereafter MC3) described our progress developing an explicit, Eulerian transport scheme which has been named ``cubicFit''.  At that time the scheme was numerically unstable on some meshes.  We have since improved stability using additional constraints derived from a von Neumann analysis.  No further stability problems have been encountered since the improvement was implemented.  In this section, an overview of the cubicFit scheme is provided, and some details of the von Neumann stability analysis are outlined.
+
+The discretisation starts from the continuous flux form transport equation of a dependent variable $\phi$,
+\begin{align}
+	\frac{\partial \phi}{\partial t} - \nabla \cdot \left( \mathbf{u} \phi \right) = 0 \label{eqn:transport}
+\end{align}
+where $\mathbf{u}$ is the wind field.  A C-grid staggering is used such that the dependent variable $\phi$ is prognosed at cell centroids and the wind is prescribed at face centroids.  The divergence term in equation~\eqref{eqn:transport} is discretised using Gauss' divergence theorem,
+\begin{align}
+	\nabla \cdot \left( \mathbf{u} \phi \right) \approx \sum_{f \in\:c} \mathbf{u}_f \cdot \mathbf{S}_f \phi_F
+\end{align}
+where $\sum_{f \in\:c}$ denotes a summation over faces $f$ of cell $c$, $\mathbf{u}_f$ is the wind vector prescribed at the face, and $\mathbf{S}_f$ is the vector that is outward normal to the face having a magnitude equal to the face area.  $\phi_F$ is an approximation of the dependent variable at the face centroid.  The accuracy of this approximation is crucial to the accuracy of the transport scheme.
+
+\begin{figure}
+	\centering
+	\subcaptionbox{12-point stencil for a face in the interior of a two-dimensional quadrilateral mesh \label{fig:stencil-interior}}[.32\linewidth]{\TODO{}}
+	\subcaptionbox{6-point stencil for a face near a flat lower boundary \label{fig:stencil-boundary}}[.32\linewidth]{\TODO{}}
+	\subcaptionbox{9-point stencil for a face near a sloping lower boundary.  When the slope is only slight then there is insufficient variation in $x$ to fit the $x^3$ polynomial term. \label{fig:stencil-sloped}}[.32\linewidth]{\TODO{}}
+	\caption{Example stencils for different regions of quadrilateral meshes.  The wind direction $\mathbf{u}$ and local $x$--$y$ coordinate system is indicated for each stencil.  The values of the dependent variable $\phi$ immediately upwind and downwind of face $f$ are labelled $\phi_u$ and $\phi_d$ respectively.}
+	\label{fig:stencils}
+\end{figure}
+
+The cubicFit scheme approximates the value $\phi_F$ by fitting a multidimensional polynomial over a stencil of cell centre values using a least-squares approach.  An example stencil for a face in the interior of a two-dimensional quadrilateral mesh is shown in figure~\ref{fig:stencil-interior}.  The cell centre values immediately upwind and downwind of face $f$ are labelled $\phi_u$ and $\phi_d$ respectively.
+The polynomial for such a face is
+\begin{align}
+	\phi = a_1 + a_2 x + a_3 y + a_4 x^2 + a_5 xy + a_6 y^2 + a_7 x^3 + a_8 x^2 y + a_9 x y^2 \label{eqn:nine-poly}
+\end{align}
+By choosing a local coordinate with its origin positioned at the face centroid then $\phi_F = a_1$.  The value of $\phi_F$ is calculated as a weighted sum of cell centre value,
+\begin{align}
+	\phi_F = \begin{bmatrix}w_u \\ w_d \\ w_3 \\ \vdots \\ w_n\end{bmatrix} \cdot
+		\begin{bmatrix}\phi_u \\ \phi_d \\ \phi_3 \\ \vdots \\ \phi_n\end{bmatrix}
+	= \mathbf{w} \cdot \bm{\phi}
+\end{align}
+where $n$ is the number of cells in the stencil for face $f$.  By convention the upwind cell is the first component and the downwind cell is the second component.
+
+For stencils near boundaries (figure~\ref{fig:stencil-boundary}) and for stencils in some distorted mesh regions (figure~\ref{fig:stencil-sloped}), there is insufficient information to fit all nine polynomial terms in equation~\eqref{eqn:nine-poly}.  We can detect such cases by checking whether the matrix equation that results from the least squares procedure is numerically full rank (details are provided in MC3).
+
+\begin{figure}
+	\centering
+	\subcaptionbox{2-point approximation \label{fig:vonNeumann-2}}[.32\linewidth]{\TODO{}}
+	\subcaptionbox{3-point approximation \label{fig:vonNeumann-3}}[.32\linewidth]{\TODO{}}
+	\subcaptionbox{4-point approximation \label{fig:vonNeumann-4}}[.32\linewidth]{\TODO{}}
+	\caption{Schematics of one-dimensional linear transport discretisations with uniform wind and constant mesh spacing.  The von Neumann analysis starts with the 2-point approximation and subsequent analyses introduce additional points.  The 4-point approximation is constructed to mimic the configuration of typical stencils used by cubicFit, such as the stencil in figure~r\ref{fig:stencil-interior}.}
+	\label{fig:vonNeumann}
+\end{figure}
 
 
+For stencils in some other distorted mesh regions, there is sufficient information to fit equation~\eqref{eqn:nine-poly}, but the resulting weights lead to an unstable transport scheme.  To detect these cases we evaluate the weights vector $\mathbf{w}$ against a set of constraints that are derived from a von Neumann stability analysis.
+
+\subsection*{Von Neumann stability analysis}
+The analysis starts by considering the linear transport equation that is continuous in time and discretised in space,
+\begin{align}
+	\frac{\partial \phi^{(n)}_j}{\partial t} &= -u \frac{\phi_R - \phi_L}{\Delta x}
+\end{align}
+with left- and right-hand face approximations, $\phi_L$ and $\phi_R$, separated by a mesh spacing $\Delta x$ (figure~\ref{fig:vonNeumann-2}).  The face approximations are calculated as weighted sums of the neighbouring cell centre values,
+\begin{align}
+\phi_L &= w_u \phi_{j-1} + w_d \phi_j \\
+\phi_R &= w_u \phi_j + w_d \phi_{j+1}
+\end{align}
+where we assume that the upwind weight $w_u$ and downwind weight $w_d$ are the same for both left- and right-hand faces.  We replace $\phi$ with the Fourier decomposition 
+\begin{align}
+	\phi_j^{(n)} &= A^n e^{\iu j k \Delta x}
+\end{align}
+where $\phi_j^{(n)}$ denotes the value of $\phi$ at position $j \Delta x$ and time level $(n)$, and $k$ is a wavenumber.  The wind $u$ is taken to be positive.  The amplification factor $A$ is constrained such that $|A| \leq 1$ and $\arg(A) < 0$ so that the solution has a physical phase speed and does not amplify.  Additionally, $A$ must be no less than the amplification factor for a first-order upwind scheme (in which $w_u = 1$, $w_d = 0$).  Similar analyses are performed for three-point approximations (figure~\ref{fig:vonNeumann-3}) and four-point approximations (figure~\ref{fig:vonNeumann-4}) to obtain the constraints on $\mathbf{w}$,
+\begin{align}
+	0.5 \leq w_u \leq 1 \\
+	0 \leq w_d \leq 0.5 \\
+	w_u - w_d \geq \max_{p\:\in\:P}(|w_p|)
+\end{align}
+where P are the peripheral cells $\left\{ w_3, \ldots, w_n \right\}$.
+
+The full-rank constraint and von Neumann stability constraints are used to select the most suitable subset of polynomial terms from equation~\eqref{eqn:nine-poly} (the subset includes the set itself).
+The monitoring committee raised a concern about this procedure in our third meeting: which terms should be retained and which should be discarded?  Our recent improvements have addressed this issue.  We generate a set of candidate polynomials and select the candidate with the greatest number of terms that satisifies all constraints.  Candidate polynomials are generated such that high-order terms may appear only if the corresponding low-order terms also appear.  More precisely, let
+\begin{align}
+	M(x, y) = { x^i y^j : i,j \geq 0 \text{ and } i+j \leq 3 }
+\end{align}
+be the set of all monomials of degree at most \num{3} in $x, y$.
+A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are in $S$ with $a \leq c$ and $b \leq d$, then $x^i y^j$ is also in $S$ for all $a < i < c$, $b < j < d$.  The candidate polynomials are all the dense subsets of $M(x,y)$.  If multiple candidates with the same number of terms satisfy the constraints, we choose the candidate with the best-conditioned matrix.
+
+\subsection*{A new transport test over steep terrain}
 
 \section{Future research}
 \label{sec:future}
 
 \section{Personal development}
+This section highlights some of my recent personal developments.  A complete training record is available in the appendix.
 
+I hope to attend two conferences next year.  Hilary recommended PDEs on the Sphere as an excellent venue to present my work to an audience of numerical geoscientists.  I would also like to attend SciCADE, a conference on Scientific Computation and Differential Equations, in order to meet numerical scientists and mathematicians working in other discplines.
+
+I have gained more experience as a reviewer, having provided feedback on the MSc dissertation of Hilary's most recent MSc student, Christiana Skea.  We were extremely pleased that Christiana was awarded the MSc dissertation prize for her work.  I have also reviewed a second manuscript for Monthly Weather Review.
 
 \bibliographystyle{ametsoc2014}                                                 
 \bibliography{references}
@@ -110,15 +200,15 @@ June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
 
 \subsection*{Conferences and workshops}
 \begin{tabularx}{\linewidth}{l l X}
-September 2017 & & SciCADE2017, University of Bath \\
-April 2017 & & PDEs on the Sphere, Paris \\
+September 2017 & & \href{https://sites.google.com/site/scicade2017/}{SciCADE}, University of Bath \\
+April 2017 & & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, Paris \\
 February 2017 & Speaker & Numerical Methods for Geophysical Fluid Dynamics, Imperial College London \\
-October 2016 & Speaker & Numerical and computational methods for simulation of all-scale geophysical flows, ECMWF \\
+October 2016 & Speaker & \href{http://www.ecmwf.int/en/learning/workshops-and-seminars/workshop-numerical-and-computational-methods-simulation-all-scale-geophysical-flows}{Numerical and computational methods for simulation of all-scale geophysical flows}, ECMWF \\
 July 2016 & Attendee & 1st GungHo Network meeting, Daresbury Laboratory \\
 November 2015 & Attendee & GungHo workshop on next generation weather and climate prediction, UK Met Office \\
 June 2015 & Attendee & Hoskins@70 \\
 June 2015 & Poster & SCENARIO DTP conference \\
-March 2015 & Speaker & Galerkin methods with applications in weather and climate forecasting, ICMS \\
+March 2015 & Speaker & \href{http://www.icms.org.uk/workshop.php?id=334}{Galerkin methods with applications in weather and climate forecasting}, ICMS \\
 \end{tabularx}
 
 \subsection*{Teaching}
@@ -131,8 +221,8 @@ Sep 2014 & Course teacher & MPE python and linux short course \\
 
 \subsection*{Visits and collaborations}
 \begin{tabularx}{\linewidth}{l X}
-July 2016 & Organised visit from Simon Clark, stratospheric PhD researcher and YouTube vlogger \\
-Summer 2016 & Worked with Hilary's MSc student and dissertation prize winner, Christiana Skea, studying variable timestepping for ODEs \\
+July 2016 & Organised visit from \href{https://www.youtube.com/user/SimonOxfPhys}{Simon Clark}, stratospheric PhD researcher and YouTube vlogger \\
+Summer 2016 & Worked with Hilary's MSc student, Christiana Skea, studying variable timestepping for ODEs \\
 June 2016 & Visited NCAR, hosted by Ram Nair \\
 2015 -- 2016 & Coauthoring an article about dimensionally-split and multidimensional advection schemes, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office \\
 \end{tabularx}
