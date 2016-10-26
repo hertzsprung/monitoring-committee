@@ -68,7 +68,7 @@ There are several methods for representing terrain on a mesh.  Operational model
 
 The wide variety of mesh types motivates the development of finite volume methods for arbitrary meshes.  This enables a like-for-like comparison between different types of mesh and allows us to assess the characteristics of new types of mesh.  Further, we hope that the new methods we develop will be less sensitive to mesh distortions compared to traditional methods.
 
-My project comprises three parts.  First, a new type of mesh has been developed that is less distorted than terrain-following meshes and avoids arbitrarily small cells that are associated with the cut cell method \citep{shaw-weller2016}.  Second, we have designed an explicit, Eulerian transport scheme that is accurate near the lower boundary and is suitable for a variety of mesh types.  Third, we intend to generalise the Charney--Phillips staggering for arbitrary meshes and hope that this new formulation will alleviate the computational mode that is associated with the Lorenz staggering of variables \citep{arakawa-konor1996}.
+My project comprises three parts.  First, a new type of mesh called the slanted cell mesh has been developed that is less distorted than terrain-following meshes and avoids arbitrarily small cells that are associated with the cut cell method \citep{shaw-weller2016}.  Second, we have designed an explicit, Eulerian transport scheme that is accurate near highly-distorted lower boundaries and is suitable for a variety of mesh types.  Third, we intend to generalise the Charney--Phillips staggering for arbitrary meshes and hope that this new formulation will alleviate the computational mode that is associated with the Lorenz staggering of variables \citep{arakawa-konor1996}.
 
 \section{A new finite volume scheme for transport over steep slopes}
 In May 2016, monitoring committee report \#3 (hereafter MC3) described our progress developing an explicit, Eulerian transport scheme which has been named ``cubicFit''.  At that time the scheme was numerically unstable on some meshes.  We have since improved stability using additional constraints derived from a von Neumann analysis.  No further stability problems have been encountered since the improvement was implemented.  In this section, an overview of the cubicFit scheme is provided, and some details of the von Neumann stability analysis are outlined.
@@ -112,7 +112,7 @@ For stencils near boundaries (figure~\ref{fig:stencil-boundary}) and for stencil
 	\subcaptionbox{2-point approximation \label{fig:vonNeumann-2}}[.32\linewidth]{\TODO{}}
 	\subcaptionbox{3-point approximation \label{fig:vonNeumann-3}}[.32\linewidth]{\TODO{}}
 	\subcaptionbox{4-point approximation \label{fig:vonNeumann-4}}[.32\linewidth]{\TODO{}}
-	\caption{Schematics of one-dimensional linear transport discretisations with uniform wind and constant mesh spacing.  The von Neumann analysis starts with the 2-point approximation and subsequent analyses introduce additional points.  The 4-point approximation is constructed to mimic the configuration of typical stencils used by cubicFit, such as the stencil in figure~r\ref{fig:stencil-interior}.}
+	\caption{Schematics of one-dimensional linear transport discretisations with uniform wind and constant mesh spacing.  The von Neumann analysis starts with the 2-point approximation and subsequent analyses introduce additional points.  The 4-point approximation is constructed to mimic the configuration of typical stencils used by cubicFit, such as the stencil in figure~\ref{fig:stencil-interior}.}
 	\label{fig:vonNeumann}
 \end{figure}
 
@@ -124,7 +124,7 @@ The analysis starts by considering the linear transport equation that is continu
 \begin{align}
 	\frac{\partial \phi^{(n)}_j}{\partial t} &= -u \frac{\phi_R - \phi_L}{\Delta x}
 \end{align}
-with left- and right-hand face approximations, $\phi_L$ and $\phi_R$, separated by a mesh spacing $\Delta x$ (figure~\ref{fig:vonNeumann-2}).  The face approximations are calculated as weighted sums of the neighbouring cell centre values,
+with left- and right-hand face approximations, $\phi_L$ and $\phi_R$, separated by mesh spacing $\Delta x$ (figure~\ref{fig:vonNeumann-2}).  The face approximations are calculated as weighted sums of the neighbouring cell centre values,
 \begin{align}
 \phi_L &= w_u \phi_{j-1} + w_d \phi_j \\
 \phi_R &= w_u \phi_j + w_d \phi_{j+1}
@@ -142,14 +142,36 @@ where $\phi_j^{(n)}$ denotes the value of $\phi$ at position $j \Delta x$ and ti
 where P are the peripheral cells $\left\{ w_3, \ldots, w_n \right\}$.
 
 The full-rank constraint and von Neumann stability constraints are used to select the most suitable subset of polynomial terms from equation~\eqref{eqn:nine-poly} (the subset includes the set itself).
-The monitoring committee raised a concern about this procedure in our third meeting: which terms should be retained and which should be discarded?  Our recent improvements have addressed this issue.  We generate a set of candidate polynomials and select the candidate with the greatest number of terms that satisifies all constraints.  Candidate polynomials are generated such that high-order terms may appear only if the corresponding low-order terms also appear.  More precisely, let
+The monitoring committee raised a concern about this procedure in our third meeting: which terms should be retained and which should be discarded?  Recent improvements address this issue.  We generate a set of candidate polynomials and select the candidate with the greatest number of terms that satisifies all constraints.  Candidate polynomials are generated such that high-order terms may appear only if the corresponding low-order terms also appear.  More precisely, let
 \begin{align}
 	M(x, y) = { x^i y^j : i,j \geq 0 \text{ and } i+j \leq 3 }
 \end{align}
 be the set of all monomials of degree at most \num{3} in $x, y$.
 A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are in $S$ with $a \leq c$ and $b \leq d$, then $x^i y^j$ is also in $S$ for all $a < i < c$, $b < j < d$.  The candidate polynomials are all the dense subsets of $M(x,y)$.  If multiple candidates with the same number of terms satisfy the constraints, we choose the candidate with the best-conditioned matrix.
 
-\subsection*{A new transport test over steep terrain}
+\subsection*{A new tracer transport test over steep terrain}
+
+\begin{figure}
+	\centering
+	\subcaptionbox{Basic terrain-following mesh \label{fig:mesh-btf}}[.32\linewidth]{\TODO{}}
+	\subcaptionbox{Cut cell mesh \label{fig:mesh-cutCell}}[.32\linewidth]{\TODO{}}
+	\subcaptionbox{Slanted cell mesh \label{fig:mesh-slantedCell}}[.32\linewidth]{\TODO{}}
+	\caption{The edges of the three meshes used in the two-dimensional tracer transport test.  The same wave-shaped mountain is represented by all three meshes.  The mesh spacing is $\Delta x = \SI{1000}{\meter}$ and $\Delta z = \SI{500}{\meter}$.  The peak mountain height is \SI{6}{\kilo\meter}.  Only the central region of the domain is shown.  The entire domain is \SI{301}{\kilo\meter} wide and \SI{25}{\kilo\meter} high.}
+	\label{fig:meshes}
+\end{figure}
+
+In MC3 we presented preliminary results of two-dimensional test case that used transported a stably-stratified thermal profile in a terrain-following wind field over orography.  We have since replaced this test with a variation of the standard orographic transport test by \citet{schaer2002}.  Test results are compared on a basic terrain-following mesh (figure~\ref{fig:mesh-btf}), cut cell mesh (figure~\ref{fig:mesh-cutCell}), and slanted cell mesh (figure~\ref{fig:mesh-slantedCell}).  Three modifications were made to the standard test:
+\begin{enumerate}
+	\item The peak mountain height was raised to \SI{6}{\kilo\meter} in order to present a greater challenge to the cubicFit scheme.
+	\item A terrain-following wind field is prescribed that is misaligned with all three meshes.  This is done to ensure that flow crosses mesh surfaces in all tests.
+	\item The tracer is centred at the ground in order to assess transport accuracy over the lower boundary.
+\end{enumerate}
+
+\TODO{analyse results}
+
+We expect that few or no further modifications to the transport scheme will be needed.   Since our meeting in May 2016, we realised that further experiments were needed to demonstrate that the cubicFit scheme is suitable for non-quadrilateral meshes.  To address this, we have performed tests on a sphere using standard deformational flow tests by \citet{lauritzen2012} on hexagonal icosahedra.
+Work is now underway to document the cubicFit scheme and experimental results.
+We intend to submit a manuscript to the Journal of Computational Physics in early 2017.
 
 \section{Future research}
 \label{sec:future}
