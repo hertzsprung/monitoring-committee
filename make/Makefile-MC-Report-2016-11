@@ -1,0 +1,5 @@
+$(eval $(call LaTeXWithBibTeX,src/mc-report-2016-11,build,mc-report-2016-11))
+
+build/mc-report-2016-11/mc-report-2016-11.pdf: \
+  src/mc-report-2016-11/ametsoc2014.bst \
+  src/mc-report-2016-11/references.bib
