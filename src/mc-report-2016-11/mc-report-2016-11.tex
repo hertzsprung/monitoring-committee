@@ -51,11 +51,17 @@ Monitoring Committee Progress Report \#4\\
 \makeatother
 
 
+\newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
 \begin{document}
-\newcommand{\exner}{\Pi}
 \maketitle
 
 \section{Introduction}
+
+An atmospheric model solves the equations of motion in discrete form on a numerical mesh.  This mesh becomes distorted over sloping terrain, and the distortions can lead to larger numerical errors.  With new atmospheric models using increasingly fine mesh spacing, steep slopes become resolved by the mesh.  These steep slopes can result in highly-distorted meshes that can lead to larger numerical errors.  My PhD project seeks out new techniques for reducing numerical errors in regions of steep terrain.
+
+There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh surfaces to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to increased errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cells that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \cite{mesinger2012} and unstructured tetrahedral meshes \cite{smolarkiewicz-szmelter2011}.
+
+The wide variety of mesh types motivates the development of finite volume methods for arbitrary meshes.  This enables a like-for-like comparison between different types of mesh and allows us to assess the characteristics of new types of mesh.  Further, we hope that the new methods we develop will be less sensitive to mesh distortions than more traditional methods.
 
 
 
