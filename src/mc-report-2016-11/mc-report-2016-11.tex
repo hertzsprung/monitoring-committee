@@ -167,6 +167,24 @@ In MC3 we presented preliminary results of two-dimensional test case that used t
 	\item The tracer is centred at the ground in order to assess transport accuracy over the lower boundary.
 \end{enumerate}
 
+\begin{figure}
+	\centering
+	\includegraphics{../fig-mountainAdvection-tracer/fig-mountainAdvection-tracer.pdf}
+	\caption{Evolution of the tracer in the two-dimensional transport test over steep terrain.  The tracer is transported to the right over the wave-shaped terrain.  Tracer contours are every \SI{0.1}{\kilo\gram\per\meter\cubed}.  The result obtained using the cubicFit scheme on the basic terrain-following mesh is shown at $t=\SI{0}{\second}$, $t=\SI{5000}{\second}$ and $t=\SI{10000}{\second}$ with solid black contours. The analytic solution at $t=\SI{10000}{\second}$ is shown with dotted contours.
+	The shaded box indicates the region that is plotted in figure~\ref{fig:mountainAdvection-errors}.
+	\TODO{try to mask off below the mountain to hide the messy contouring}}
+	\label{fig:mountainAdvection-tracer}
+\end{figure}
+
+\TODO{describe test evolution}
+
+\begin{figure}
+	\centering
+	\includegraphics{../fig-mountainAdvection-error/fig-mountainAdvection-error.pdf}
+	\caption{Tracer contours at $t=\SI{10000}{\second}$ for the two-dimensional tracer transport tests.  A region in the lee of the mountain is plotted corresponding to the shaded area in figure~\ref{fig:mountainAdvection-tracer}.  Results are presented on BTF, cut cell and slanted cell meshes (shown in figure~\ref{fig:meshes}) using the linearUpwind and cubicFit transport schemes.  The numerical solutions are marked by solid black lines.  The analytic solution is marked by dotted lines.  Contours are every \SI{0.1}{\kilo\gram\per\meter\cubed}.  Areas of positive error are shaded using warm colours and areas of negative error using cool colours.}
+	\label{fig:mountainAdvection-errors}
+\end{figure}
+
 \TODO{analyse results}
 
 We expect that few or no further modifications to the transport scheme will be needed.   Since our meeting in May 2016, we realised that further experiments were needed to demonstrate that the cubicFit scheme is suitable for non-quadrilateral meshes.  To address this, we have performed tests on a sphere using standard deformational flow tests by \citet{lauritzen2012} on hexagonal icosahedra.

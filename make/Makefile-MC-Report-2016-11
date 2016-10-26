@@ -2,4 +2,6 @@ $(eval $(call LaTeXWithBibTeX,src/mc-report-2016-11,build,mc-report-2016-11))
 
 build/mc-report-2016-11/mc-report-2016-11.pdf: \
   src/mc-report-2016-11/ametsoc2014.bst \
-  src/mc-report-2016-11/references.bib
+  src/mc-report-2016-11/references.bib \
+  build/fig-mountainAdvection-tracer/fig-mountainAdvection-tracer.pdf \
+  build/fig-mountainAdvection-error/fig-mountainAdvection-error.pdf
