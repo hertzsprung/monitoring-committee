@@ -6,6 +6,9 @@ build/mc-report-2016-11/mc-report-2016-11.pdf: \
   src/mc-report-2016-11/fig-vonNeumann-2.tex \
   src/mc-report-2016-11/fig-vonNeumann-3.tex \
   src/mc-report-2016-11/fig-vonNeumann-4.tex \
+  src/mc-report-2016-11/fig-stencil-12.tex \
+  src/mc-report-2016-11/fig-stencil-9.tex \
+  src/mc-report-2016-11/fig-stencil-6.tex \
   build/fig-mountainAdvection-tracer/fig-mountainAdvection-tracer.pdf \
   build/fig-mountainAdvection-error/fig-mountainAdvection-error.pdf \
   build/mountainAdvection-mesh-btf-1000/constant/mesh.pdf \

@@ -39,7 +39,7 @@ Monitoring Committee Progress Report \#4\\
 \date{24th November 2016}
 
 \captionsetup{margin=3pt,font={small}}
-%\setlength{\bibsep}{0.3em plus 0.1ex}
+\setlength{\bibsep}{0.3em plus 0.1ex}
 
 \makeatletter
 \AtBeginDocument{
@@ -87,14 +87,14 @@ where $\sum_{f \in\:c}$ denotes a summation over faces $f$ of cell $c$, $\mathbf
 
 \begin{figure}
 	\centering
-	\subcaptionbox{12-point stencil for a face in the interior of a two-dimensional quadrilateral mesh \label{fig:stencil-interior}}[.32\linewidth]{\TODO{}}
-	\subcaptionbox{6-point stencil for a face near a flat lower boundary \label{fig:stencil-boundary}}[.32\linewidth]{\TODO{}}
-	\subcaptionbox{9-point stencil for a face near a sloping lower boundary.  When the slope is only slight then there is insufficient variation in $x$ to fit the $x^3$ polynomial term. \label{fig:stencil-sloped}}[.32\linewidth]{\TODO{}}
-	\caption{Example stencils for different regions of quadrilateral meshes.  The wind direction $\mathbf{u}$ and local $x$--$y$ coordinate system is indicated for each stencil.  The values of the dependent variable $\phi$ immediately upwind and downwind of face $f$ are labelled $\phi_u$ and $\phi_d$ respectively.}
+	\subcaptionbox{12-point stencil for a face in the interior of a two-dimensional quadrilateral mesh \label{fig:stencil-interior}}[.32\linewidth]{\input{fig-stencil-12.tex}}
+	\subcaptionbox{6-point stencil for a face near a flat lower boundary \label{fig:stencil-boundary}}[.32\linewidth]{\input{fig-stencil-6.tex}}
+	\subcaptionbox{9-point stencil for a face near a sloping lower boundary.  When the slope is only slight then there is insufficient variation in $x$ to fit the $x^3$ polynomial term. \label{fig:stencil-sloped}}[.32\linewidth]{\input{fig-stencil-9.tex}}
+	\caption{Example stencils for different regions of quadrilateral meshes.  The wind direction $\mathbf{u}$ and local $x$--$y$ coordinate system is indicated for each stencil.  The origin of the local coordinate system is positioned at the centroid of face $f$ marked by an open circle.  Cell centres are marked by grey dots.  The values of the dependent variable $\phi$ immediately upwind and downwind of face $f$ are labelled $\phi_u$ and $\phi_d$ respectively.}
 	\label{fig:stencils}
 \end{figure}
 
-The cubicFit scheme approximates the value $\phi_F$ by fitting a multidimensional polynomial over a stencil of cell centre values using a least-squares approach.  An example stencil for a face in the interior of a two-dimensional quadrilateral mesh is shown in figure~\ref{fig:stencil-interior}.  The cell centre values immediately upwind and downwind of face $f$ are labelled $\phi_u$ and $\phi_d$ respectively.
+The cubicFit scheme approximates the value $\phi_F$ by fitting a multidimensional polynomial over a stencil of cell centre values using a least-squares approach.  An example stencil for a face in the interior of a two-dimensional quadrilateral mesh is shown in figure~\ref{fig:stencil-interior}.
 The polynomial for such a face is
 \begin{align}
 	\phi = a_1 + a_2 x + a_3 y + a_4 x^2 + a_5 xy + a_6 y^2 + a_7 x^3 + a_8 x^2 y + a_9 x y^2 \label{eqn:nine-poly}
@@ -122,7 +122,7 @@ For stencils near boundaries (figure~\ref{fig:stencil-boundary}) and for stencil
 For stencils in some other distorted mesh regions, there is sufficient information to fit equation~\eqref{eqn:nine-poly}, but the resulting weights lead to an unstable transport scheme.  To detect these cases we evaluate the weights vector $\mathbf{w}$ against a set of constraints that are derived from a von Neumann stability analysis.
 
 \subsection*{Von Neumann stability analysis}
-The analysis starts by considering the linear transport equation that is continuous in time and discretised in space,
+The analysis starts by considering the one-dimensional linear transport equation that is continuous in time and discretised in space,
 \begin{align}
 	\frac{\partial \phi^{(n)}_j}{\partial t} &= -u \frac{\phi_R - \phi_L}{\Delta x}
 \end{align}
