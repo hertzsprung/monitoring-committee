@@ -64,7 +64,7 @@ Monitoring Committee Progress Report \#4\\
 
 \section{Introduction}
 
-An atmospheric model solves the equations of motion in discrete form on a numerical mesh.  This mesh becomes distorted over sloping terrain, and the distortions can lead to larger numerical errors.  With new atmospheric models using increasingly fine mesh spacing, steep slopes become resolved by the mesh.  These steep slopes can result in highly-distorted meshes that can lead to larger numerical errors.  My PhD project seeks out new techniques for reducing numerical errors in regions of steep terrain.
+An atmospheric model solves the equations of motion in discrete form on a numerical mesh.  This mesh becomes distorted over sloping terrain, and the distortions can result in numerical errors.  With new atmospheric models using increasingly fine mesh spacing, steep slopes become resolved by the mesh.  These steep slopes can result in highly-distorted meshes that can lead to larger numerical errors.  My PhD project seeks out new techniques for reducing numerical errors in regions of steep terrain.
 
 There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh layers to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to larger errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cells that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \citep{mesinger2012} and unstructured tetrahedral meshes \citep{smolarkiewicz-szmelter2011}.
 
@@ -99,7 +99,7 @@ The polynomial for such a face is
 \begin{align}
 	\phi = a_1 + a_2 x + a_3 y + a_4 x^2 + a_5 xy + a_6 y^2 + a_7 x^3 + a_8 x^2 y + a_9 x y^2 \label{eqn:nine-poly}
 \end{align}
-By choosing a local coordinate with its origin positioned at the face centroid then $\phi_F = a_1$.  The value of $\phi_F$ is calculated as a weighted sum of cell centre value,
+By choosing a local coordinate with its origin positioned at the face centroid then $\phi_F = a_1$.  The value of $\phi_F$ is calculated as a weighted sum of cell centre values,
 \begin{align}
 	\phi_F = \begin{bmatrix}w_u \\ w_d \\ w_3 \\ \vdots \\ w_n\end{bmatrix} \cdot
 		\begin{bmatrix}\phi_u \\ \phi_d \\ \phi_3 \\ \vdots \\ \phi_n\end{bmatrix}
@@ -119,7 +119,7 @@ For stencils near boundaries (figure~\ref{fig:stencil-boundary}) and for stencil
 \end{figure}
 
 
-For stencils in some other distorted mesh regions, there is sufficient information to fit equation~\eqref{eqn:nine-poly}, but the resulting weights lead to an unstable transport scheme.  To detect these cases we evaluate the weights vector $\mathbf{w}$ against a set of constraints that are derived from a von Neumann stability analysis.
+For stencils in some other distorted mesh regions, there is sufficient information to fit equation~\eqref{eqn:nine-poly}, but the resulting weights lead to an unstable transport scheme.  To detect these cases, we evaluate the weights vector $\mathbf{w}$ against a set of constraints that are derived from a von Neumann stability analysis.
 
 \subsection*{Von Neumann stability analysis}
 The analysis starts by considering the one-dimensional linear transport equation that is continuous in time and discretised in space,
@@ -188,7 +188,7 @@ Figure~\ref{fig:mountainAdvection-tracer} shows the evolution of the tracer with
 \end{figure}
 
 To assess the accuracy of cubicFit, results are compared against a standard linearUpwind scheme \citepalias{openfoam}.  Numerical solutions are presented using solid contours in figure~\ref{fig:mountainAdvection-errors}.  The analytic solutions are shown with dotted contours and the error field is shaded in colour.
-Errors are largest using the linearUpwind scheme on the cut cell mesh.  Results are improved using the linearUpwind scheme with slanted cell mesh or basic terrain-following mesh.  A great improvement is found using the cubicFit scheme, which is seen to be largely insensitive to the choice of mesh.
+Errors are largest using the linearUpwind scheme on the cut cell mesh.  Results are improved using the linearUpwind scheme with slanted cell mesh or basic terrain-following mesh.  A greater improvement is found using the cubicFit scheme, which is seen to be largely insensitive to the choice of mesh.
 
 We expect that few or no further modifications to the transport scheme will be needed.   Since our meeting in May 2016, we realised that further experiments were needed to demonstrate that the cubicFit scheme is suitable for non-quadrilateral meshes.  To address this, we have performed tests on a sphere using standard deformational flow tests by \citet{lauritzen2012} on hexagonal icosahedra.
 Work is now underway to document the cubicFit scheme and experimental results.
@@ -203,16 +203,27 @@ Work has progressed well since the previous meeting in May 2016, though an addit
 \item[February 2017]{Begin work on generalising the Charney--Phillips staggering for arbitrary meshes.  Start by verifying that existing test cases, such as those from \citet{arakawa-konor1996}, are able to excite the Lorenz computational mode using the nonhydrostatic model by \citet{weller-shahrokhi2014}.}
 \item[April 2017]{Complete modifications to the nonhydrostatic model to enable execution using the generalised Charney--Phillips staggering.  The model should include a simple transport scheme for potential temperature.  The model will have a fully-explicit formulation.}
 \item[Summer 2017]{Time permitting, the model should be improved using a more accurate transport scheme.  Such a scheme will likely be based on the cubicFit scheme that we have already implemented.  The model might also be extended with a semi-implicit treatment of gravity waves.}
-\item[Autumn 2017]{Complete main thesis chapters (outlined in section~\ref{sec:thesis-plan}) including all test results.}
+\item[Autumn 2017]{Complete main thesis chapters (outlined in Appendix A) including all test results.}
 \item[Early 2018]{Complete PhD.}
 \end{description}
 
-\section{Thesis plan}
-\label{sec:thesis-plan}
+\section{Personal development}
+This section highlights some of my recent personal developments.  A complete training record is available in the appendix.
 
-What follows is an outline of the main chapters of my thesis.
+I hope to attend two conferences next year.  Hilary recommended PDEs on the Sphere as an excellent venue to present my work to an audience of numerical geoscientists.  I would also like to attend SciCADE, a conference on Scientific Computation and Differential Equations, in order to meet numerical scientists and mathematicians working in other disciplines.
 
-\titlespacing\subsubsection{0pt}{0.8em plus 4pt minus 2pt}{0.4em plus 2pt minus 2pt}
+I have gained more experience as a reviewer, having provided feedback on the MSc dissertation of Hilary's most recent MSc student, Christiana Skea.  We were extremely pleased that Christiana was awarded the MSc dissertation prize for her work.  I have also reviewed a second manuscript for Monthly Weather Review.
+
+\bibliographystyle{ametsoc2014}                                                 
+\bibliography{references}
+
+\newpage
+
+\section*{Appendices}
+
+\titlespacing\subsubsection{0pt}{0.8em plus 4pt minus 2pt}{0.2em plus 2pt minus 2pt}
+
+\subsection*{Appendix A: Thesis plan}
 
 \subsubsection*{A new mesh for representing terrain}
 \begin{itemize}
@@ -239,30 +250,16 @@ What follows is an outline of the main chapters of my thesis.
 	\item Mountain waves test case
 \end{itemize}
 
-\section{Personal development}
-This section highlights some of my recent personal developments.  A complete training record is available in the appendix.
+\subsection*{Appendix B: Training record}
 
-I hope to attend two conferences next year.  Hilary recommended PDEs on the Sphere as an excellent venue to present my work to an audience of numerical geoscientists.  I would also like to attend SciCADE, a conference on Scientific Computation and Differential Equations, in order to meet numerical scientists and mathematicians working in other disciplines.
-
-I have gained more experience as a reviewer, having provided feedback on the MSc dissertation of Hilary's most recent MSc student, Christiana Skea.  We were extremely pleased that Christiana was awarded the MSc dissertation prize for her work.  I have also reviewed a second manuscript for Monthly Weather Review.
-
-\bibliographystyle{ametsoc2014}                                                 
-\bibliography{references}
-
-\newpage
-
-\section*{Appendix}
-
-\titlespacing\subsection{0pt}{0.8em plus 4pt minus 2pt}{0.2em plus 2pt minus 2pt}
-
-\subsection*{Mathematics modules}
+\subsubsection*{Mathematics modules}
 \footnotesize
 \begin{tabular}{l l l l}
 Spring 2016	& MA3NAT & Numerical Analysis II & unassessed \\
 Spring 2015	& MAMNSP & Numerical Solution of Partial Differential Equations  & 78\% \\
 \end{tabular}
 
-\subsection*{RRDP modules}
+\subsubsection*{RRDP modules}
 \begin{tabular}{l l}
 Summer 2017	& Organising conferences \\
 28 Feb 2017	& Getting your first post-doc position \\
@@ -276,14 +273,14 @@ Summer 2017	& Organising conferences \\
 19 Feb 2015	& How to write a paper \\
 \end{tabular}
 
-\subsection*{External courses}
+\subsubsection*{External courses}
 \begin{tabular}{l l}
 June 2016 & Dynamical core intercomparison project summer school, NCAR \\
 13 May 2016 & Peer review: the nuts and bolts, Sense about Science \\
 June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
 \end{tabular}
 
-\subsection*{Conferences and workshops}
+\subsubsection*{Conferences and workshops}
 \begin{tabularx}{\linewidth}{l l X}
 September 2017 & & \href{https://sites.google.com/site/scicade2017/}{SciCADE}, University of Bath \\
 April 2017 & & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, Paris \\
@@ -296,7 +293,7 @@ June 2015 & Poster & SCENARIO DTP conference \\
 March 2015 & Speaker & \href{http://www.icms.org.uk/workshop.php?id=334}{Galerkin methods with applications in weather and climate forecasting}, ICMS \\
 \end{tabularx}
 
-\subsection*{Teaching}
+\subsubsection*{Teaching}
 \begin{tabular}{l l l}
 Oct 2016 & Teaching assistant & MTMW11 fluid dynamics \\
 Oct 2015 & Teaching assistant & MTMG02 atmospheric physics \\
@@ -304,7 +301,7 @@ Sep 2015 & Teaching assistant & NCAS summer school \\
 Sep 2014 & Course teacher & MPE python and linux short course \\
 \end{tabular}
 
-\subsection*{Visits and collaborations}
+\subsubsection*{Visits and collaborations}
 \begin{tabularx}{\linewidth}{l X}
 July 2016 & Organised visit from \href{https://www.youtube.com/user/SimonOxfPhys}{Simon Clark}, stratospheric PhD researcher and YouTube vlogger \\
 Summer 2016 & Worked with Hilary's MSc student, Christiana Skea, studying variable timestepping for ODEs \\
@@ -312,15 +309,14 @@ June 2016 & Visited NCAR, hosted by Ram Nair \\
 2015 -- 2016 & Coauthoring an article about dimensionally-split and multidimensional advection schemes, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office \\
 \end{tabularx}
 
-
-\subsection*{Outreach}
+\subsubsection*{Outreach}
 \begin{tabular}{l l l}
 14 Jul 2015 & Schools physicist of the year awards \\
 14 Jun 2015 & East Reading festival \\
 15 Feb 2015 & Brighton science festival \\
 \end{tabular}
 
-\subsection*{Presentations}
+\subsubsection*{Presentations}
 \begin{tabularx}{\linewidth}{l l X}
 17 Nov 2016 & Comp. Atmos. Dyn. group & \\
 9 Nov 2016 & PhD group & \\
