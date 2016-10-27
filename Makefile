@@ -25,6 +25,7 @@ include make/templates/Makefile-PlotMesh
 include make/templates/Makefile-MountainAdvection-ContourPlot
 include make/Makefile-GravityWavesMeshes
 include make/Makefile-ThermalAdvectionMeshes
+include make/Makefile-MountainAdvectionMeshes
 include make/Makefile-GravityWaves
 include make/Makefile-Grids
 include make/Makefile-MountainAdvection

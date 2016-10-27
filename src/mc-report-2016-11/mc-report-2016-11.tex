@@ -57,6 +57,8 @@ Monitoring Committee Progress Report \#4\\
 
 \newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
 \newcommand{\iu}{{i\mkern1mu}}
+
+\defcitealias{openfoam}{{OpenFOAM user guide}}
 \begin{document}
 \maketitle
 
@@ -64,7 +66,7 @@ Monitoring Committee Progress Report \#4\\
 
 An atmospheric model solves the equations of motion in discrete form on a numerical mesh.  This mesh becomes distorted over sloping terrain, and the distortions can lead to larger numerical errors.  With new atmospheric models using increasingly fine mesh spacing, steep slopes become resolved by the mesh.  These steep slopes can result in highly-distorted meshes that can lead to larger numerical errors.  My PhD project seeks out new techniques for reducing numerical errors in regions of steep terrain.
 
-There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh surfaces to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to larger errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cells that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \citep{mesinger2012} and unstructured tetrahedral meshes \citep{smolarkiewicz-szmelter2011}.
+There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh layers to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to larger errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cells that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \citep{mesinger2012} and unstructured tetrahedral meshes \citep{smolarkiewicz-szmelter2011}.
 
 The wide variety of mesh types motivates the development of finite volume methods for arbitrary meshes.  This enables a like-for-like comparison between different types of mesh and allows us to assess the characteristics of new types of mesh.  Further, we hope that the new methods we develop will be less sensitive to mesh distortions compared to traditional methods.
 
@@ -73,7 +75,7 @@ My project comprises three parts.  First, a new type of mesh called the slanted 
 \section{A new finite volume scheme for transport over steep slopes}
 In May 2016, monitoring committee report \#3 (hereafter MC3) described our progress developing an explicit, Eulerian transport scheme which has been named ``cubicFit''.  At that time the scheme was numerically unstable on some meshes.  We have since improved stability using additional constraints derived from a von Neumann analysis.  No further stability problems have been encountered since the improvement was implemented.  In this section, an overview of the cubicFit scheme is provided, and some details of the von Neumann stability analysis are outlined.
 
-The discretisation starts from the continuous flux form transport equation of a dependent variable $\phi$,
+The discretisation starts from the flux form transport equation of a dependent variable $\phi$,
 \begin{align}
 	\frac{\partial \phi}{\partial t} - \nabla \cdot \left( \mathbf{u} \phi \right) = 0 \label{eqn:transport}
 \end{align}
@@ -109,10 +111,10 @@ For stencils near boundaries (figure~\ref{fig:stencil-boundary}) and for stencil
 
 \begin{figure}
 	\centering
-	\subcaptionbox{2-point approximation \label{fig:vonNeumann-2}}[.32\linewidth]{\TODO{}}
-	\subcaptionbox{3-point approximation \label{fig:vonNeumann-3}}[.32\linewidth]{\TODO{}}
-	\subcaptionbox{4-point approximation \label{fig:vonNeumann-4}}[.32\linewidth]{\TODO{}}
-	\caption{Schematics of one-dimensional linear transport discretisations with uniform wind and constant mesh spacing.  The von Neumann analysis starts with the 2-point approximation and subsequent analyses introduce additional points.  The 4-point approximation is constructed to mimic the configuration of typical stencils used by cubicFit, such as the stencil in figure~\ref{fig:stencil-interior}.}
+	\subcaptionbox{2-point approximation \label{fig:vonNeumann-2}}[.25\linewidth]{\input{fig-vonNeumann-2}}
+	\subcaptionbox{3-point approximation \label{fig:vonNeumann-3}}[.33\linewidth]{\input{fig-vonNeumann-3}}
+	\subcaptionbox{4-point approximation \label{fig:vonNeumann-4}}[.4\linewidth]{\input{fig-vonNeumann-4}}
+	\caption{Schematics of one-dimensional linear transport discretisations with uniform wind and constant mesh spacing.  The von Neumann analysis starts with the 2-point approximation and subsequent analyses introduce additional points.  The 4-point approximation is constructed to mimic the configuration of typical stencils used by cubicFit, such as the stencil in figure~\ref{fig:stencil-interior}.  Cell centres are marked by grey filled circles and faces are marked by black open circles.  The uniform wind $u$ is from left to right.}
 	\label{fig:vonNeumann}
 \end{figure}
 
@@ -139,32 +141,32 @@ where $\phi_j^{(n)}$ denotes the value of $\phi$ at position $j \Delta x$ and ti
 	0 \leq w_d \leq 0.5 \\
 	w_u - w_d \geq \max_{p\:\in\:P}(|w_p|)
 \end{align}
-where P are the peripheral cells $\left\{ w_3, \ldots, w_n \right\}$.
+where $P$ are the peripheral cells $\left\{ w_3, \ldots, w_n \right\}$.
 
 The full-rank constraint and von Neumann stability constraints are used to select the most suitable subset of polynomial terms from equation~\eqref{eqn:nine-poly} (the subset includes the set itself).
-The monitoring committee raised a concern about this procedure in our third meeting: which terms should be retained and which should be discarded?  Recent improvements address this issue.  We generate a set of candidate polynomials and select the candidate with the greatest number of terms that satisifies all constraints.  Candidate polynomials are generated such that high-order terms may appear only if the corresponding low-order terms also appear.  More precisely, let
+The monitoring committee raised a concern about this procedure in our third meeting: which terms should be retained and which should be discarded?  Recent improvements address this issue.  We generate a set of candidate polynomials and select the candidate with the greatest number of terms that satisifies all constraints.  Candidate polynomials are generated such that high-order terms are discarded first.  More precisely, let
 \begin{align}
 	M(x, y) = { x^i y^j : i,j \geq 0 \text{ and } i+j \leq 3 }
 \end{align}
 be the set of all monomials of degree at most \num{3} in $x, y$.
-A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are in $S$ with $a \leq c$ and $b \leq d$, then $x^i y^j$ is also in $S$ for all $a < i < c$, $b < j < d$.  The candidate polynomials are all the dense subsets of $M(x,y)$.  If multiple candidates with the same number of terms satisfy the constraints, we choose the candidate with the best-conditioned matrix.
+A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are in $S$ with $a \leq c$ and $b \leq d$, then $x^i y^j$ is also in $S$ for all $a < i < c$, $b < j < d$.  The candidate polynomials are all the dense subsets of $M(x,y)$.  If multiple candidates with the same number of terms satisfy the constraints, the candidate with the best-conditioned matrix is chosen.
 
 \subsection*{A new tracer transport test over steep terrain}
 
 \begin{figure}
 	\centering
-	\subcaptionbox{Basic terrain-following mesh \label{fig:mesh-btf}}[.32\linewidth]{\TODO{}}
-	\subcaptionbox{Cut cell mesh \label{fig:mesh-cutCell}}[.32\linewidth]{\TODO{}}
-	\subcaptionbox{Slanted cell mesh \label{fig:mesh-slantedCell}}[.32\linewidth]{\TODO{}}
-	\caption{The edges of the three meshes used in the two-dimensional tracer transport test.  The same wave-shaped mountain is represented by all three meshes.  The mesh spacing is $\Delta x = \SI{1000}{\meter}$ and $\Delta z = \SI{500}{\meter}$.  The peak mountain height is \SI{6}{\kilo\meter}.  Only the central region of the domain is shown.  The entire domain is \SI{301}{\kilo\meter} wide and \SI{25}{\kilo\meter} high.}
+	\subcaptionbox{Basic terrain-following mesh \label{fig:mesh-btf}}[.34\linewidth]{\includegraphics{../mountainAdvection-mesh-btf-1000/constant/mesh.pdf}}
+	\subcaptionbox{Cut cell mesh \label{fig:mesh-cutCell}}[.34\linewidth]{\includegraphics{../mountainAdvection-mesh-cutCell-1000/constant/mesh.pdf}}
+	\subcaptionbox{Slanted cell mesh \label{fig:mesh-slantedCell}}[.3\linewidth]{\includegraphics{../mountainAdvection-mesh-slantedCell-1000/constant/mesh.pdf}}
+	\caption{The edges of the three meshes used in the two-dimensional tracer transport test.  The same wave-shaped mountain is represented by all three meshes.  The mesh spacing is $\Delta x = \SI{1000}{\meter}$ and $\Delta z = \SI{500}{\meter}$.  The peak mountain height is \SI{6}{\kilo\meter}.  Only part domain near the mountain is shown.  The entire domain is \SI{301}{\kilo\meter} wide and \SI{25}{\kilo\meter} high.}
 	\label{fig:meshes}
 \end{figure}
 
-In MC3 we presented preliminary results of two-dimensional test case that used transported a stably-stratified thermal profile in a terrain-following wind field over orography.  We have since replaced this test with a variation of the standard orographic transport test by \citet{schaer2002}.  Test results are compared on a basic terrain-following mesh (figure~\ref{fig:mesh-btf}), cut cell mesh (figure~\ref{fig:mesh-cutCell}), and slanted cell mesh (figure~\ref{fig:mesh-slantedCell}).  Three modifications were made to the standard test:
+In MC3 we presented preliminary results of two-dimensional test case that used transported a stably-stratified thermal profile in a terrain-following wind field over orography.  We have since replaced this test with a variation of the standard orographic transport test by \citet{schaer2002}.  Test results are compared on a basic terrain-following (BTF) mesh (figure~\ref{fig:mesh-btf}), cut cell mesh (figure~\ref{fig:mesh-cutCell}), and slanted cell mesh (figure~\ref{fig:mesh-slantedCell}).  Three modifications were made to the standard test:
 \begin{enumerate}
 	\item The peak mountain height was raised to \SI{6}{\kilo\meter} in order to present a greater challenge to the cubicFit scheme.
-	\item A terrain-following wind field is prescribed that is misaligned with all three meshes.  This is done to ensure that flow crosses mesh surfaces in all tests.
-	\item The tracer is centred at the ground in order to assess transport accuracy over the lower boundary.
+	\item A terrain-following wind field was prescribed that is misaligned with all three meshes.  This was done to ensure that flow crosses mesh layers in all tests.
+	\item The tracer was centred at the ground in order to assess transport accuracy over the lower boundary.
 \end{enumerate}
 
 \begin{figure}
@@ -176,16 +178,17 @@ In MC3 we presented preliminary results of two-dimensional test case that used t
 	\label{fig:mountainAdvection-tracer}
 \end{figure}
 
-\TODO{describe test evolution}
+Figure~\ref{fig:mountainAdvection-tracer} shows the evolution of the tracer with snapshots plotted at the initial time $t = \SI{0}{\second}$, half-way time $t = \SI{5000}{\second}$, and end time $t= \SI{10000}{\second}$.  At $t = \SI{5000}{\second}$ the tracer is positioned above the mountain and has been distorted by the terrain-following winds.  Once the tracer clears the mountain the analytic solution returns to its original shape (shown by dotted contours in figure~\ref{fig:mountainAdvection-tracer}).  The numerical result plotted with solid contours in figure~\ref{fig:mountainAdvection-tracer} was obtained on the basic terrain-following mesh using the cubicFit scheme.  Slight distortions are apparent at $t = \SI{10000}{\second}$ compared to the analytic solution.
 
 \begin{figure}
 	\centering
 	\includegraphics{../fig-mountainAdvection-error/fig-mountainAdvection-error.pdf}
-	\caption{Tracer contours at $t=\SI{10000}{\second}$ for the two-dimensional tracer transport tests.  A region in the lee of the mountain is plotted corresponding to the shaded area in figure~\ref{fig:mountainAdvection-tracer}.  Results are presented on BTF, cut cell and slanted cell meshes (shown in figure~\ref{fig:meshes}) using the linearUpwind and cubicFit transport schemes.  The numerical solutions are marked by solid black lines.  The analytic solution is marked by dotted lines.  Contours are every \SI{0.1}{\kilo\gram\per\meter\cubed}.  Areas of positive error are shaded using warm colours and areas of negative error using cool colours.}
+	\caption{Tracer contours at $t=\SI{10000}{\second}$ for the two-dimensional tracer transport tests.  A region in the lee of the mountain is plotted corresponding to the shaded area in figure~\ref{fig:mountainAdvection-tracer}.  Results are presented on BTF, cut cell and slanted cell meshes (shown in figure~\ref{fig:meshes}) using the linearUpwind and cubicFit transport schemes.  The numerical solutions are marked by solid black lines.  The analytic solution is marked by dotted lines.  Contours are every \SI{0.1}{\kilo\gram\per\meter\cubed}.  The error field is shaded in colour.}
 	\label{fig:mountainAdvection-errors}
 \end{figure}
 
-\TODO{analyse results}
+To assess the accuracy of cubicFit, results are compared against a standard linearUpwind scheme \citepalias{openfoam}.  Numerical solutions are presented using solid contours in figure~\ref{fig:mountainAdvection-errors}.  The analytic solutions are shown with dotted contours and the error field is shaded in colour.
+Errors are largest using the linearUpwind scheme on the cut cell mesh.  Results are improved using the linearUpwind scheme with slanted cell mesh or basic terrain-following mesh.  A great improvement is found using the cubicFit scheme, which is seen to be largely insensitive to the choice of mesh.
 
 We expect that few or no further modifications to the transport scheme will be needed.   Since our meeting in May 2016, we realised that further experiments were needed to demonstrate that the cubicFit scheme is suitable for non-quadrilateral meshes.  To address this, we have performed tests on a sphere using standard deformational flow tests by \citet{lauritzen2012} on hexagonal icosahedra.
 Work is now underway to document the cubicFit scheme and experimental results.
@@ -194,10 +197,52 @@ We intend to submit a manuscript to the Journal of Computational Physics in earl
 \section{Future research}
 \label{sec:future}
 
+Work has progressed well since the previous meeting in May 2016, though an additional 1--2 months was taken with additional transport tests on the sphere.  Here we present a revised timeline of tasks:
+\begin{description}
+\item[January 2017]{Submit a manuscript documenting the cubicFit transport scheme to the Journal of Computational Physics.}
+\item[February 2017]{Begin work on generalising the Charney--Phillips staggering for arbitrary meshes.  Start by verifying that existing test cases, such as those from \citet{arakawa-konor1996}, are able to excite the Lorenz computational mode using the nonhydrostatic model by \citet{weller-shahrokhi2014}.}
+\item[April 2017]{Complete modifications to the nonhydrostatic model to enable execution using the generalised Charney--Phillips staggering.  The model should include a simple transport scheme for potential temperature.  The model will have a fully-explicit formulation.}
+\item[Summer 2017]{Time permitting, the model should be improved using a more accurate transport scheme.  Such a scheme will likely be based on the cubicFit scheme that we have already implemented.  The model might also be extended with a semi-implicit treatment of gravity waves.}
+\item[Autumn 2017]{Complete main thesis chapters (outlined in section~\ref{sec:thesis-plan}) including all test results.}
+\item[Early 2018]{Complete PhD.}
+\end{description}
+
+\section{Thesis plan}
+\label{sec:thesis-plan}
+
+What follows is an outline of the main chapters of my thesis.
+
+\titlespacing\subsubsection{0pt}{0.8em plus 4pt minus 2pt}{0.4em plus 2pt minus 2pt}
+
+\subsubsection*{A new mesh for representing terrain}
+\begin{itemize}
+	\setlength\itemsep{0.1em}
+	\item Introduce existing types of mesh
+	\item Describe the new slanted cell method
+\end{itemize}
+
+\subsubsection*{A new transport scheme for steep slopes}
+\begin{itemize}
+	\setlength\itemsep{0.1em}
+	\item Document the cubicFit transport scheme
+	\item Two-dimensional transport tests over steep slopes
+	\item Deformational transport tests on a spherical Earth
+\end{itemize}
+	
+\subsubsection*{A generalisation of the Charney--Phillips staggering}
+\begin{itemize}
+	\setlength\itemsep{0.1em}
+	\item Describe the generalised Charney--Phillips formulation
+	\item A nonhydrostatic model for arbitrary meshes
+	\item A test of a quiescent atmosphere above steep slopes
+	\item One or two tests that excite the Lorenz computational mode
+	\item Mountain waves test case
+\end{itemize}
+
 \section{Personal development}
 This section highlights some of my recent personal developments.  A complete training record is available in the appendix.
 
-I hope to attend two conferences next year.  Hilary recommended PDEs on the Sphere as an excellent venue to present my work to an audience of numerical geoscientists.  I would also like to attend SciCADE, a conference on Scientific Computation and Differential Equations, in order to meet numerical scientists and mathematicians working in other discplines.
+I hope to attend two conferences next year.  Hilary recommended PDEs on the Sphere as an excellent venue to present my work to an audience of numerical geoscientists.  I would also like to attend SciCADE, a conference on Scientific Computation and Differential Equations, in order to meet numerical scientists and mathematicians working in other disciplines.
 
 I have gained more experience as a reviewer, having provided feedback on the MSc dissertation of Hilary's most recent MSc student, Christiana Skea.  We were extremely pleased that Christiana was awarded the MSc dissertation prize for her work.  I have also reviewed a second manuscript for Monthly Weather Review.
 
