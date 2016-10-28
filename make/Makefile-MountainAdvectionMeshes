@@ -1,16 +1,16 @@
-$(eval $(call PlotMesh,build/mountainAdvection-mesh-btf-1000,src/mc-report-2016-11/mountainAdvectionMesh))
-$(eval $(call PlotMesh,build/mountainAdvection-mesh-cutCell-1000,src/mc-report-2016-11/mountainAdvectionMeshW))
-$(eval $(call PlotMesh,build/mountainAdvection-mesh-slantedCell-1000,src/mc-report-2016-11/mountainAdvectionMeshW))
+$(eval $(call PlotMesh,build/mountainAdvection-mesh-btf-6km-1000,src/mc-report-2016-11/mountainAdvectionMesh))
+$(eval $(call PlotMesh,build/mountainAdvection-mesh-cutCell-6km-1000,src/mc-report-2016-11/mountainAdvectionMeshW))
+$(eval $(call PlotMesh,build/mountainAdvection-mesh-slantedCell-6km-1000,src/mc-report-2016-11/mountainAdvectionMeshW))
 
-$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/mountainAdvection-mesh-btf-1000,$(meshFiles) $(systemFiles),build/mountainAdvection-mesh-btf-1000))
-$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/mountainAdvection-mesh-cutCell-1000,$(meshFiles) $(systemFiles),build/mountainAdvection-mesh-cutCell-1000))
-$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/mountainAdvection-mesh-slantedCell-1000,$(meshFiles) $(systemFiles),build/mountainAdvection-mesh-slantedCell-1000))
+$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/mountainAdvection-mesh-btf-6km-1000,$(meshFiles) $(systemFiles),build/mountainAdvection-mesh-btf-6km-1000))
+$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/mountainAdvection-mesh-cutCell-6km-1000,$(meshFiles) $(systemFiles),build/mountainAdvection-mesh-cutCell-6km-1000))
+$(eval $(call CopyNamedFiles,$(ATMOSTESTS_DIR)/build/mountainAdvection-mesh-slantedCell-6km-1000,$(meshFiles) $(systemFiles),build/mountainAdvection-mesh-slantedCell-6km-1000))
 
-$(eval $(call MakeDir,build/mountainAdvection-mesh-btf-1000/$(polyMesh)))
-$(eval $(call MakeDir,build/mountainAdvection-mesh-cutCell-1000/$(polyMesh)))
-$(eval $(call MakeDir,build/mountainAdvection-mesh-slantedCell-1000/$(polyMesh)))
+$(eval $(call MakeDir,build/mountainAdvection-mesh-btf-6km-1000/$(polyMesh)))
+$(eval $(call MakeDir,build/mountainAdvection-mesh-cutCell-6km-1000/$(polyMesh)))
+$(eval $(call MakeDir,build/mountainAdvection-mesh-slantedCell-6km-1000/$(polyMesh)))
 
-$(eval $(call MakeDir,build/mountainAdvection-mesh-btf-1000/system))
-$(eval $(call MakeDir,build/mountainAdvection-mesh-cutCell-1000/system))
-$(eval $(call MakeDir,build/mountainAdvection-mesh-slantedCell-1000/system))
+$(eval $(call MakeDir,build/mountainAdvection-mesh-btf-6km-1000/system))
+$(eval $(call MakeDir,build/mountainAdvection-mesh-cutCell-6km-1000/system))
+$(eval $(call MakeDir,build/mountainAdvection-mesh-slantedCell-6km-1000/system))
 
