@@ -39,7 +39,7 @@ Monitoring Committee Progress Report \#4\\
 \date{24th November 2016}
 
 \captionsetup{margin=3pt,font={small}}
-\setlength{\bibsep}{0.3em plus 0.1ex}
+\setlength{\bibsep}{0.2em plus 0.1ex}
 
 \makeatletter
 \AtBeginDocument{
@@ -101,8 +101,8 @@ The polynomial for such a face is
 \end{align}
 By choosing a local coordinate with its origin positioned at the face centroid then $\phi_F = a_1$.  The value of $\phi_F$ is calculated as a weighted sum of cell centre values,
 \begin{align}
-	\phi_F = \begin{bmatrix}w_u \\ w_d \\ w_3 \\ \vdots \\ w_n\end{bmatrix} \cdot
-		\begin{bmatrix}\phi_u \\ \phi_d \\ \phi_3 \\ \vdots \\ \phi_n\end{bmatrix}
+	\phi_F = \left[ w_u, w_d, w_3, \cdots, w_n \right]^\intercal \cdot
+\left[ \phi_u, \phi_d, \phi_3, \cdots, \phi_n \right]^\intercal
 	= \mathbf{w} \cdot \bm{\phi}
 \end{align}
 where $n$ is the number of cells in the stencil for face $f$.  By convention the upwind cell is the first component and the downwind cell is the second component.
@@ -128,17 +128,16 @@ The analysis starts by considering the one-dimensional linear transport equation
 \end{align}
 with left- and right-hand face approximations, $\phi_L$ and $\phi_R$, separated by mesh spacing $\Delta x$ (figure~\ref{fig:vonNeumann-2}).  The face approximations are calculated as weighted sums of the neighbouring cell centre values,
 \begin{align}
-\phi_L &= w_u \phi_{j-1} + w_d \phi_j \\
-\phi_R &= w_u \phi_j + w_d \phi_{j+1}
+	\phi_L = w_u \phi_{j-1} + w_d \phi_j \quad \text{ and } \quad \phi_R = w_u \phi_j + w_d \phi_{j+1}
 \end{align}
 where we assume that the upwind weight $w_u$ and downwind weight $w_d$ are the same for both left- and right-hand faces.  We replace $\phi$ with the Fourier decomposition 
 \begin{align}
 	\phi_j^{(n)} &= A^n e^{\iu j k \Delta x}
 \end{align}
-where $\phi_j^{(n)}$ denotes the value of $\phi$ at position $j \Delta x$ and time level $(n)$, and $k$ is a wavenumber.  The wind $u$ is taken to be positive.  The amplification factor $A$ is constrained such that $|A| \leq 1$ and $\arg(A) < 0$ so that the solution has a physical phase speed and does not amplify.  Additionally, $A$ must be no less than the amplification factor for a first-order upwind scheme (in which $w_u = 1$, $w_d = 0$).  Similar analyses are performed for three-point approximations (figure~\ref{fig:vonNeumann-3}) and four-point approximations (figure~\ref{fig:vonNeumann-4}) to obtain the constraints on $\mathbf{w}$,
+where $\phi_j^{(n)}$ denotes the value of $\phi$ at position $j \Delta x$ and time level $(n)$, and $k$ is a wavenumber.  The wind $u$ is taken to be positive.  The amplification factor $A$ is constrained such that $|A| \leq 1$ and $\arg(A) < 0$ so that the solution has a physical phase speed and does not amplify.  For accuracy, $A$ must be no less than the amplification factor for a first-order upwind scheme (in which $w_u = 1$, $w_d = 0$).  Similar analyses are performed for three-point approximations (figure~\ref{fig:vonNeumann-3}) and four-point approximations (figure~\ref{fig:vonNeumann-4}) to obtain the constraints on $\mathbf{w}$,
 \begin{align}
-	0.5 \leq w_u \leq 1 \\
-	0 \leq w_d \leq 0.5 \\
+	0.5 \leq w_u \leq 1 \ \text{, } \ 
+	0 \leq w_d \leq 0.5 \ \text{ and }\ 
 	w_u - w_d \geq \max_{p\:\in\:P}(|w_p|)
 \end{align}
 where $P$ are the peripheral cells $\left\{ w_3, \ldots, w_n \right\}$.
@@ -155,19 +154,16 @@ A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are i
 
 \begin{figure}
 	\centering
-	\subcaptionbox{Basic terrain-following mesh \label{fig:mesh-btf}}[.34\linewidth]{\includegraphics{../mountainAdvection-mesh-btf-6km-1000/constant/mesh.pdf}}
-	\subcaptionbox{Cut cell mesh \label{fig:mesh-cutCell}}[.34\linewidth]{\includegraphics{../mountainAdvection-mesh-cutCell-6km-1000/constant/mesh.pdf}}
-	\subcaptionbox{Slanted cell mesh \label{fig:mesh-slantedCell}}[.3\linewidth]{\includegraphics{../mountainAdvection-mesh-slantedCell-6km-1000/constant/mesh.pdf}}
+	\subcaptionbox{Basic terrain-following mesh \label{fig:mesh-btf}}[.34\linewidth]{\includegraphics{../mountainAdvection-mesh-btf-5000-1000/constant/mesh.pdf}}
+	\subcaptionbox{Cut cell mesh \label{fig:mesh-cutCell}}[.34\linewidth]{\includegraphics{../mountainAdvection-mesh-cutCell-5000-1000/constant/mesh.pdf}}
+	\subcaptionbox{Slanted cell mesh \label{fig:mesh-slantedCell}}[.3\linewidth]{\includegraphics{../mountainAdvection-mesh-slantedCell-5000-1000/constant/mesh.pdf}}
 	\caption{The edges of the three meshes used in the two-dimensional tracer transport test.  The same wave-shaped mountain is represented by all three meshes.  The mesh spacing is $\Delta x = \SI{1000}{\meter}$ and $\Delta z = \SI{500}{\meter}$.  The peak mountain height is \SI{6}{\kilo\meter}.  Only part domain near the mountain is shown.  The entire domain is \SI{301}{\kilo\meter} wide and \SI{25}{\kilo\meter} high.}
 	\label{fig:meshes}
 \end{figure}
 
-In MC3 we presented preliminary results of two-dimensional test case that used transported a stably-stratified thermal profile in a terrain-following wind field over orography.  We have since replaced this test with a variation of the standard orographic transport test by \citet{schaer2002}.  Test results are compared on a basic terrain-following (BTF) mesh (figure~\ref{fig:mesh-btf}), cut cell mesh (figure~\ref{fig:mesh-cutCell}), and slanted cell mesh (figure~\ref{fig:mesh-slantedCell}).  Three modifications were made to the standard test:
-\begin{enumerate}
-	\item The peak mountain height was raised to \SI{6}{\kilo\meter} in order to present a greater challenge to the cubicFit scheme.
-	\item A terrain-following wind field was prescribed that is misaligned with all three meshes.  This was done to ensure that flow crosses mesh layers in all tests.
-	\item The tracer was centred at the ground in order to assess transport accuracy over the lower boundary.
-\end{enumerate}
+In MC3 we presented preliminary results of two-dimensional test case that transported a stably-stratified thermal profile in a terrain-following wind field over orography.  We have since replaced this test with a variation of the standard orographic transport test by \citet{schaer2002}.  Test results are compared on a basic terrain-following (BTF) mesh (figure~\ref{fig:mesh-btf}), cut cell mesh (figure~\ref{fig:mesh-cutCell}), and slanted cell mesh (figure~\ref{fig:mesh-slantedCell}).  Three modifications were made to the standard test.  First, the peak mountain height was raised to \SI{5}{\kilo\meter} in order to present a greater challenge to the cubicFit scheme.
+Second, a terrain-following wind field was prescribed that is misaligned with all three meshes.  This was done to ensure that flow crosses mesh layers in all tests.
+Third, the tracer was centred at the ground in order to assess transport accuracy over the lower boundary.
 
 \begin{figure}
 	\centering
@@ -191,7 +187,6 @@ Errors are largest using the linearUpwind scheme on the cut cell mesh.  Results 
 
 We expect that few or no further modifications to the transport scheme will be needed.   Since our meeting in May 2016, we realised that further experiments were needed to demonstrate that the cubicFit scheme is suitable for non-quadrilateral meshes.  To address this, we have performed tests on a sphere using standard deformational flow tests by \citet{lauritzen2012} on hexagonal icosahedra.
 Work is now underway to document the cubicFit scheme and experimental results.
-We intend to submit a manuscript to the Journal of Computational Physics in early 2017.
 
 \section{Future research}
 \label{sec:future}
@@ -200,15 +195,13 @@ Work has progressed well since the previous meeting in May 2016, though an addit
 \begin{description}
 \item[January 2017]{Submit a manuscript documenting the cubicFit transport scheme to the Journal of Computational Physics.}
 \item[February 2017]{Begin work on generalising the Charney--Phillips staggering for arbitrary meshes.  Start by verifying that existing test cases, such as those from \citet{arakawa-konor1996}, are able to excite the Lorenz computational mode using the nonhydrostatic model by \citet{weller-shahrokhi2014}.}
-\item[April 2017]{Complete modifications to the nonhydrostatic model to enable execution using the generalised Charney--Phillips staggering.  The model should include a simple transport scheme for potential temperature.  The model will have a fully-explicit formulation.}
-\item[Summer 2017]{Time permitting, the model should be improved using a more accurate transport scheme.  Such a scheme will likely be based on the cubicFit scheme that we have already implemented.  The model might also be extended with a semi-implicit treatment of gravity waves.}
+\item[April 2017]{Complete modifications to the nonhydrostatic model to enable execution using the generalised Charney--Phillips staggering.  The model should include a simple transport scheme for potential temperature.  The model will treat gravity waves explicitly.}
+\item[Summer 2017]{Time permitting, the model should be improved using a more accurate transport scheme.  Such a scheme will likely be based on the cubicFit scheme that we have already implemented.  The model might also be extended with an implicit treatment of gravity waves.}
 \item[Autumn 2017]{Complete main thesis chapters (outlined in Appendix A) including all test results.}
 \item[Early 2018]{Complete PhD.}
 \end{description}
 
 \section{Personal development}
-This section highlights some of my recent personal developments.  A complete training record is available in appendix B.
-
 I hope to attend two conferences next year.  Hilary recommended PDEs on the Sphere as an excellent venue to present my work to an audience of numerical geoscientists.  I would also like to attend SciCADE, a conference on Scientific Computation and Differential Equations, in order to meet numerical scientists and mathematicians working in other disciplines.
 
 I have gained more experience as a reviewer, having provided feedback on the MSc dissertation of Hilary's most recent MSc student, Christiana Skea.  We were extremely pleased that Christiana was awarded the MSc dissertation prize for her work.  I have also reviewed a second manuscript for Monthly Weather Review.

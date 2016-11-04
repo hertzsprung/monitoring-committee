@@ -1,22 +1,22 @@
 $(eval $(call LaTeX,src/mc-report-2016-11,build/fig-mountainAdvection-tracer,fig-mountainAdvection-tracer))
 
 build/fig-mountainAdvection-tracer/fig-mountainAdvection-tracer.pdf: \
-  build/mountainAdvection-btf-6km-cubicUpwind-1000/10000/tracerContours.pdf
+  build/mountainAdvection-btf-5000-cubicUpwind-1000/10000/tracerContours.pdf
 
 $(eval $(call LaTeX,src/mc-report-2016-11,build/fig-mountainAdvection-error,fig-mountainAdvection-error))
 
 build/fig-mountainAdvection-error/fig-mountainAdvection-error.pdf: \
-  build/mountainAdvection-btf-6km-linearUpwind-1000/10000/errorContoursW.pdf \
-  build/mountainAdvection-cutCell-6km-linearUpwind-1000/10000/errorContours.pdf \
-  build/mountainAdvection-slantedCell-6km-linearUpwind-1000/10000/errorContours.pdf \
-  build/mountainAdvection-btf-6km-cubicUpwind-1000/10000/errorContoursSW.pdf \
-  build/mountainAdvection-cutCell-6km-cubicUpwind-1000/10000/errorContoursS.pdf \
-  build/mountainAdvection-slantedCell-6km-cubicUpwind-1000/10000/errorContoursS.pdf
+  build/mountainAdvection-btf-5000-linearUpwind-1000/10000/errorContoursW.pdf \
+  build/mountainAdvection-cutCell-5000-linearUpwind-1000/10000/errorContours.pdf \
+  build/mountainAdvection-slantedCell-5000-linearUpwind-1000/10000/errorContours.pdf \
+  build/mountainAdvection-btf-5000-cubicUpwind-1000/10000/errorContoursSW.pdf \
+  build/mountainAdvection-cutCell-5000-cubicUpwind-1000/10000/errorContoursS.pdf \
+  build/mountainAdvection-slantedCell-5000-cubicUpwind-1000/10000/errorContoursS.pdf
 
-$(eval $(call MountainAdvectionPlots,build/mountainAdvection-btf-6km-linearUpwind-1000,W))
-$(eval $(call MountainAdvectionPlots,build/mountainAdvection-cutCell-6km-linearUpwind-1000,))
-$(eval $(call MountainAdvectionPlots,build/mountainAdvection-slantedCell-6km-linearUpwind-1000,))
-$(eval $(call MountainAdvectionPlots,build/mountainAdvection-btf-6km-cubicUpwind-1000,SW))
-$(eval $(call MountainAdvectionPlots,build/mountainAdvection-cutCell-6km-cubicUpwind-1000,S))
-$(eval $(call MountainAdvectionPlots,build/mountainAdvection-slantedCell-6km-cubicUpwind-1000,S))
+$(eval $(call MountainAdvectionPlots,build/mountainAdvection-btf-5000-linearUpwind-1000,W))
+$(eval $(call MountainAdvectionPlots,build/mountainAdvection-cutCell-5000-linearUpwind-1000,))
+$(eval $(call MountainAdvectionPlots,build/mountainAdvection-slantedCell-5000-linearUpwind-1000,))
+$(eval $(call MountainAdvectionPlots,build/mountainAdvection-btf-5000-cubicUpwind-1000,SW))
+$(eval $(call MountainAdvectionPlots,build/mountainAdvection-cutCell-5000-cubicUpwind-1000,S))
+$(eval $(call MountainAdvectionPlots,build/mountainAdvection-slantedCell-5000-cubicUpwind-1000,S))
 

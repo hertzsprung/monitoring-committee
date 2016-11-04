@@ -11,6 +11,6 @@ build/mc-report-2016-11/mc-report-2016-11.pdf: \
   src/mc-report-2016-11/fig-stencil-6.tex \
   build/fig-mountainAdvection-tracer/fig-mountainAdvection-tracer.pdf \
   build/fig-mountainAdvection-error/fig-mountainAdvection-error.pdf \
-  build/mountainAdvection-mesh-btf-6km-1000/constant/mesh.pdf \
-  build/mountainAdvection-mesh-cutCell-6km-1000/constant/mesh.pdf \
-  build/mountainAdvection-mesh-slantedCell-6km-1000/constant/mesh.pdf
+  build/mountainAdvection-mesh-btf-5000-1000/constant/mesh.pdf \
+  build/mountainAdvection-mesh-cutCell-5000-1000/constant/mesh.pdf \
+  build/mountainAdvection-mesh-slantedCell-5000-1000/constant/mesh.pdf
