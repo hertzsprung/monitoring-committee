@@ -20,3 +20,15 @@ $(eval $(call MountainAdvectionPlots,build/mountainAdvection-btf-5000-cubicUpwin
 $(eval $(call MountainAdvectionPlots,build/mountainAdvection-cutCell-5000-cubicUpwind-1000,S))
 $(eval $(call MountainAdvectionPlots,build/mountainAdvection-slantedCell-5000-cubicUpwind-1000,S))
 
+$(eval $(call Gnuplot,build/mountainAdvection-l2ByMountainHeight,mountainAdvection-l2ByMountainHeight.tex,src/mc-report-2016-11/mountainAdvection-l2ByMountainHeight.plt))
+
+build/mountainAdvection-l2ByMountainHeight/mountainAdvection-l2ByMountainHeight.tex: \
+  $(ATMOSTESTS_DIR)/build/mountainAdvection-btf-collated-linearUpwind-1000/10000/l2errorT.txt \
+  $(ATMOSTESTS_DIR)/build/mountainAdvection-btf-collated-cubicUpwind-1000/10000/l2errorT.txt \
+  $(ATMOSTESTS_DIR)/build/mountainAdvection-cutCell-collated-linearUpwind-1000/10000/l2errorT.txt \
+  $(ATMOSTESTS_DIR)/build/mountainAdvection-cutCell-collated-cubicUpwind-1000/10000/l2errorT.txt \
+  $(ATMOSTESTS_DIR)/build/mountainAdvection-slantedCell-collated-linearUpwind-1000/10000/l2errorT.txt \
+  $(ATMOSTESTS_DIR)/build/mountainAdvection-slantedCell-collated-cubicUpwind-1000/10000/l2errorT.txt \
+| build/mountainAdvection-l2ByMountainHeight
+
+$(eval $(call MakeDir,build/mountainAdvection-l2ByMountainHeight))

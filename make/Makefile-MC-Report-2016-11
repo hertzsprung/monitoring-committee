@@ -9,6 +9,7 @@ build/mc-report-2016-11/mc-report-2016-11.pdf: \
   src/mc-report-2016-11/fig-stencil-12.tex \
   src/mc-report-2016-11/fig-stencil-9.tex \
   src/mc-report-2016-11/fig-stencil-6.tex \
+  build/mountainAdvection-l2ByMountainHeight/mountainAdvection-l2ByMountainHeight.tex \
   build/fig-mountainAdvection-tracer/fig-mountainAdvection-tracer.pdf \
   build/fig-mountainAdvection-error/fig-mountainAdvection-error.pdf \
   build/mountainAdvection-mesh-btf-5000-1000/constant/mesh.pdf \

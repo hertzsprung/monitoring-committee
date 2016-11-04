@@ -39,7 +39,7 @@ Monitoring Committee Progress Report \#4\\
 \date{24th November 2016}
 
 \captionsetup{margin=3pt,font={small}}
-\setlength{\bibsep}{0.2em plus 0.1ex}
+\setlength{\bibsep}{0.3em plus 0.1ex}
 
 \makeatletter
 \AtBeginDocument{
@@ -95,7 +95,7 @@ where $\sum_{f \in\:c}$ denotes a summation over faces $f$ of cell $c$, $\mathbf
 \end{figure}
 
 The cubicFit scheme approximates the value $\phi_F$ by fitting a multidimensional polynomial over a stencil of cell centre values using a least-squares approach.  An example stencil for a face in the interior of a two-dimensional quadrilateral mesh is shown in figure~\ref{fig:stencil-interior}.
-The polynomial for such a face is
+The polynomial for such a stencil is
 \begin{align}
 	\phi = a_1 + a_2 x + a_3 y + a_4 x^2 + a_5 xy + a_6 y^2 + a_7 x^3 + a_8 x^2 y + a_9 x y^2 \label{eqn:nine-poly}
 \end{align}
@@ -161,29 +161,32 @@ A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are i
 	\label{fig:meshes}
 \end{figure}
 
-In MC3 we presented preliminary results of two-dimensional test case that transported a stably-stratified thermal profile in a terrain-following wind field over orography.  We have since replaced this test with a variation of the standard orographic transport test by \citet{schaer2002}.  Test results are compared on a basic terrain-following (BTF) mesh (figure~\ref{fig:mesh-btf}), cut cell mesh (figure~\ref{fig:mesh-cutCell}), and slanted cell mesh (figure~\ref{fig:mesh-slantedCell}).  Three modifications were made to the standard test.  First, the peak mountain height was raised to \SI{5}{\kilo\meter} in order to present a greater challenge to the cubicFit scheme.
+In MC3 we presented preliminary results of a two-dimensional test case that transported a stably-stratified thermal profile in a terrain-following wind field over orography.  We have since replaced this test with a variation of the standard orographic transport test by \citet{schaer2002}.
+Test results are compared on a basic terrain-following (BTF) mesh (figure~\ref{fig:mesh-btf}), cut cell mesh (figure~\ref{fig:mesh-cutCell}), and slanted cell mesh (figure~\ref{fig:mesh-slantedCell}).  Three modifications were made to the standard test.
+First, the peak mountain height was varied between \SI{0}{\kilo\meter} and \SI{6}{\kilo\meter} in order to assess the sensitivity of cubicFit to varying degrees of mesh distortion.
 Second, a terrain-following wind field was prescribed that is misaligned with all three meshes.  This was done to ensure that flow crosses mesh layers in all tests.
 Third, the tracer was centred at the ground in order to assess transport accuracy over the lower boundary.
 
 \begin{figure}
 	\centering
 	\includegraphics{../fig-mountainAdvection-tracer/fig-mountainAdvection-tracer.pdf}
-	\caption{Evolution of the tracer in the two-dimensional transport test over steep terrain.  The tracer is transported to the right over the wave-shaped terrain.  Tracer contours are every \SI{0.1}{\kilo\gram\per\meter\cubed}.  The result obtained using the cubicFit scheme on the basic terrain-following mesh is shown at $t=\SI{0}{\second}$, $t=\SI{5000}{\second}$ and $t=\SI{10000}{\second}$ with solid black contours. The analytic solution at $t=\SI{10000}{\second}$ is shown with dotted contours.
-	The shaded box indicates the region that is plotted in figure~\ref{fig:mountainAdvection-errors}.}
+	\caption{Evolution of the tracer in the two-dimensional transport test over steep terrain.  The tracer is transported to the right over the wave-shaped terrain.  Tracer contours are every \SI{0.1}{\kilo\gram\per\meter\cubed}.  The result obtained using the cubicFit scheme on the basic terrain-following mesh is shown at $t=\SI{0}{\second}$, $t=\SI{5000}{\second}$ and $t=\SI{10000}{\second}$ with solid black contours. The analytic solution at $t=\SI{10000}{\second}$ is shown with dotted contours.}
 	\label{fig:mountainAdvection-tracer}
 \end{figure}
 
-Figure~\ref{fig:mountainAdvection-tracer} shows the evolution of the tracer with snapshots plotted at the initial time $t = \SI{0}{\second}$, half-way time $t = \SI{5000}{\second}$, and end time $t= \SI{10000}{\second}$.  At $t = \SI{5000}{\second}$ the tracer is positioned above the mountain and has been distorted by the terrain-following winds.  Once the tracer clears the mountain the analytic solution returns to its original shape (shown by dotted contours in figure~\ref{fig:mountainAdvection-tracer}).  The numerical result plotted with solid contours in figure~\ref{fig:mountainAdvection-tracer} was obtained on the basic terrain-following mesh using the cubicFit scheme.  Slight distortions are apparent at $t = \SI{10000}{\second}$ compared to the analytic solution.
+Figure~\ref{fig:mountainAdvection-tracer} shows the evolution of the tracer over a mountain with peak height $h_0 = \SI{5}{\kilo\meter}$ with snapshots plotted at the initial time $t = \SI{0}{\second}$, half-way time $t = \SI{5000}{\second}$, and end time $t= \SI{10000}{\second}$.  At $t = \SI{5000}{\second}$ the tracer is positioned above the mountain and has been distorted by the terrain-following winds.  Once the tracer clears the mountain the analytic solution returns to its original shape (shown by dotted contours in figure~\ref{fig:mountainAdvection-tracer}).  The numerical result plotted with solid contours in figure~\ref{fig:mountainAdvection-tracer} was obtained on the BTF mesh using the cubicFit scheme.  Slight distortions are apparent at $t = \SI{10000}{\second}$ compared to the analytic solution.
 
 \begin{figure}
 	\centering
-	\includegraphics{../fig-mountainAdvection-error/fig-mountainAdvection-error.pdf}
-	\caption{Tracer contours at $t=\SI{10000}{\second}$ for the two-dimensional tracer transport tests.  A region in the lee of the mountain is plotted corresponding to the shaded area in figure~\ref{fig:mountainAdvection-tracer}.  Results are presented on BTF, cut cell and slanted cell meshes (shown in figure~\ref{fig:meshes}) using the linearUpwind and cubicFit transport schemes.  The numerical solutions are marked by solid black lines.  The analytic solution is marked by dotted lines.  Contours are every \SI{0.1}{\kilo\gram\per\meter\cubed}.  The error field is shaded in colour.}
+	\input{../mountainAdvection-l2ByMountainHeight/mountainAdvection-l2ByMountainHeight}
+	\caption{Comparison of $\ell_2$ errors in the two-dimensional transport test over mountains of varying steepness.  Results are compared between the cubicFit (shown with solid lines, filled markers and a regular typeface) and linearUpwind schemes (shown with dashed lines, open markers and an italicised typeface).  The peak mountain height $h_0$ ranges from \SIrange{0}{6}{\kilo\meter}.}
 	\label{fig:mountainAdvection-errors}
 \end{figure}
 
-To assess the accuracy of cubicFit, results are compared against a standard linearUpwind scheme \citepalias{openfoam}.  Numerical solutions are presented using solid contours in figure~\ref{fig:mountainAdvection-errors}.  The analytic solutions are shown with dotted contours and the error field is shaded in colour.
-Errors are largest using the linearUpwind scheme on the cut cell mesh.  Results are improved using the linearUpwind scheme with slanted cell mesh or basic terrain-following mesh.  A greater improvement is found using the cubicFit scheme, which is seen to be largely insensitive to the choice of mesh.
+To assess the accuracy of cubicFit, results are compared against a standard linearUpwind scheme \citepalias{openfoam}.
+The $\ell_2$ error is presented for the two schemes on the BTF, cut cell and slanted cell meshes for mountains of varying steepness (figure~\ref{fig:mountainAdvection-errors}).
+The linearUpwind scheme is sensitive to the type of mesh with errors growing most rapidly on the cut cell and slanted cell meshes.  The scheme becomes unstable on the slanted cell mesh using the steepest mountain with peak height $h_0 = \SI{6}{\kilo\meter}$.
+In contrast, the cubicFit scheme is largely insensitive to the mesh type and errors grow slowly with increasing mountain heights.
 
 We expect that few or no further modifications to the transport scheme will be needed.   Since our meeting in May 2016, we realised that further experiments were needed to demonstrate that the cubicFit scheme is suitable for non-quadrilateral meshes.  To address this, we have performed tests on a sphere using standard deformational flow tests by \citet{lauritzen2012} on hexagonal icosahedra.
 Work is now underway to document the cubicFit scheme and experimental results.
@@ -194,7 +197,7 @@ Work is now underway to document the cubicFit scheme and experimental results.
 Work has progressed well since the previous meeting in May 2016, though an additional 1--2 months was taken with additional transport tests on the sphere.  Here we present a revised timeline of tasks:
 \begin{description}
 \item[January 2017]{Submit a manuscript documenting the cubicFit transport scheme to the Journal of Computational Physics.}
-\item[February 2017]{Begin work on generalising the Charney--Phillips staggering for arbitrary meshes.  Start by verifying that existing test cases, such as those from \citet{arakawa-konor1996}, are able to excite the Lorenz computational mode using the nonhydrostatic model by \citet{weller-shahrokhi2014}.}
+\item[February 2017]{Begin work on generalising the Charney--Phillips staggering for arbitrary meshes.  Start by verifying that existing test cases \citep[such as][]{arakawa-konor1996} are able to excite the Lorenz computational mode using the nonhydrostatic model by \citet{weller-shahrokhi2014}.}
 \item[April 2017]{Complete modifications to the nonhydrostatic model to enable execution using the generalised Charney--Phillips staggering.  The model should include a simple transport scheme for potential temperature.  The model will treat gravity waves explicitly.}
 \item[Summer 2017]{Time permitting, the model should be improved using a more accurate transport scheme.  Such a scheme will likely be based on the cubicFit scheme that we have already implemented.  The model might also be extended with an implicit treatment of gravity waves.}
 \item[Autumn 2017]{Complete main thesis chapters (outlined in Appendix A) including all test results.}
