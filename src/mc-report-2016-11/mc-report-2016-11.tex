@@ -55,7 +55,6 @@ Monitoring Committee Progress Report \#4\\
 \patchcmd{\ttlh@hang}{\noindent}{}{}{}
 \makeatother
 
-\newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
 \newcommand{\iu}{{i\mkern1mu}}
 
 \defcitealias{openfoam}{{OpenFOAM user guide}}
@@ -222,32 +221,51 @@ I have gained more experience as a reviewer, having provided feedback on the MSc
 \titlespacing\subsubsection{0pt}{0.8em plus 4pt minus 2pt}{0.2em plus 2pt minus 2pt}
 
 \subsection*{Appendix A: Thesis plan}
-The thesis work chapters are expected to be as follows:
+The thesis chapters are expected to be as follows:
+
+\subsubsection*{Existing methodologies}
+\begin{itemize}[itemsep=0.1em]
+	\item Describe Lorenz and Charney--Phillips staggerings for structured quadrilateral meshes
+	\item Describe the nonhydrostatic finite volume model with Lorenz staggering for arbitrary meshes \citep{weller-shahrokhi2014}
+\end{itemize}
 
 \subsubsection*{A new mesh for representing terrain}
-\begin{itemize}
-	\setlength\itemsep{0.1em}
-	\item Introduce existing types of mesh
+\noindent The slanted cell mesh improves pressure gradient accuracy and avoids severe timestep contraints for explicit methods.
+\begin{itemize}[itemsep=0.1em]
+	\item Introduce existing types of mesh: terrain-following layers and cut cells
 	\item Describe the new slanted cell method
+	\item {Two-dimensional test results comparing terrain-following, cut cell and slanted cell meshes
+	\begin{itemize}[itemsep=0.1em,topsep=0pt]
+		\item Maximum stable timesteps in a prescribed wind field (depends on the mesh geometry only)
+		\item A test of a quiescent atmosphere above steep slopes (using the linearUpwind scheme?)
+	\end{itemize}}
 \end{itemize}
 
 \subsubsection*{A new transport scheme for steep slopes}
-\begin{itemize}
-	\setlength\itemsep{0.1em}
+\noindent The cubicFit transport scheme is stable and accurate over steep slopes with arbitrary, distorted meshes.
+\begin{itemize}[itemsep=0.1em]
 	\item Document the cubicFit transport scheme
-	\item Two-dimensional transport tests over steep slopes
-	\item Deformational transport tests on a spherical Earth
+	\item {Test results comparing linearUpwind and cubicFit transport schemes
+	\begin{itemize}[itemsep=0.1em,topsep=0pt]
+		\item Two-dimensional transport test over steep slopes, as presented in this report
+		\item \citet{lauritzen2012} deformational transport tests on a spherical Earth
+		\item \citet{schaer2002} mountain waves test case (should demonstrate that cubicFit is necessary to obtain the reference solution)
+	\end{itemize}}
 \end{itemize}
 	
 \subsubsection*{A generalisation of the Charney--Phillips staggering}
-\begin{itemize}
-	\setlength\itemsep{0.1em}
+\noindent The Charney--Phillips staggering avoids the Lorenz computational mode, but it has only been formulated for structured quadrilateral meshes.  A generalised formulation will be suitable for arbitrary meshes, including the slanted cell mesh.
+\begin{itemize}[itemsep=0.1em]
 	\item Describe the generalised Charney--Phillips formulation
-	\item A nonhydrostatic model for arbitrary meshes
-	\item A test of a quiescent atmosphere above steep slopes
-	\item One or two tests that excite the Lorenz computational mode
-	\item Mountain waves test case
+	\item Describe its implementation into the nonhydrostatic model of \citet{weller-shahrokhi2014}
+	\item One or two tests that excite the Lorenz computational mode; compare results between the Lorenz and Charney--Phillips variants of the model
 \end{itemize}
+
+\subsubsection*{Possible chapter: grid-scale perturbations and diabatic heating over orography}
+\noindent We should demonstrate the efficacy of combining all three work items: the slanted cell mesh, the cubicFit transport scheme, and the generalised Charney--Phillips formulation.  In order to achieve this, we may be able to introduce orography into the two-dimensional idealised simulations of \citet{arakawa-konor1996}.
+Results should be compared between Lorenz and Charney--Phillips model variants.  Results could also be compared between mesh types, or results could be compared using the cubicFit and linearUpwind transport schemes.
+
+\newpage
 
 \subsection*{Appendix B: Training record}
 
@@ -305,7 +323,7 @@ Sep 2014 & Course teacher & MPE python and linux short course \\
 July 2016 & Organised visit from \href{https://www.youtube.com/user/SimonOxfPhys}{Simon Clark}, stratospheric PhD researcher and YouTube vlogger \\
 Summer 2016 & Worked with Hilary's MSc student, Christiana Skea, studying variable timestepping for ODEs \\
 June 2016 & Visited NCAR, hosted by Ram Nair \\
-2015 -- 2016 & Coauthoring an article about dimensionally-split and multidimensional advection schemes, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office \\
+2015 -- 2016 & Coauthoring an article about dimensionally-split and multidimensional transport schemes, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office \\
 \end{tabularx}
 
 \subsubsection*{Outreach}
