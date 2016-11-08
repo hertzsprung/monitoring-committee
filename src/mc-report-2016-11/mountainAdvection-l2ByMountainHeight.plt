@@ -1,5 +1,6 @@
-set term epslatex color colortext size 5.5,3
+set term epslatex color colortext size 5.5,2.3
 
+set tmargin 0.5
 set xrange [0:10]
 set yrange [0:0.2]
 

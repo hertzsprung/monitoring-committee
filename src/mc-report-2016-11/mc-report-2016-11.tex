@@ -39,7 +39,7 @@ Monitoring Committee Progress Report \#4\\
 \date{Transfer meeting 24th November 2016}
 
 \captionsetup{margin=3pt,font={small}}
-\setlength{\bibsep}{0.2em plus 0.1ex}
+\setlength{\bibsep}{0.3em plus 0.1ex}
 
 \makeatletter
 \AtBeginDocument{
@@ -175,12 +175,12 @@ Third, the tracer was centred at the ground in order to assess transport accurac
 	\label{fig:mountainAdvection-tracer}
 \end{figure}
 
-Figure~\ref{fig:mountainAdvection-tracer} shows the evolution of the tracer over a mountain with peak height $h_0 = \SI{5}{\kilo\meter}$ with snapshots plotted at the initial time $t = \SI{0}{\second}$, half-way time $t = \SI{5000}{\second}$, and end time $t= \SI{10000}{\second}$.  At $t = \SI{5000}{\second}$ the tracer is positioned above the mountain and has been distorted by the terrain-following winds.  Once the tracer clears the mountain the analytic solution returns to its original shape (shown by dotted contours in figure~\ref{fig:mountainAdvection-tracer}).  The numerical result plotted with solid contours in figure~\ref{fig:mountainAdvection-tracer} was obtained on the BTF mesh using the cubicFit scheme.  Slight distortions are apparent at $t = \SI{10000}{\second}$ compared to the analytic solution.
+Figure~\ref{fig:mountainAdvection-tracer} shows the evolution of the tracer over a mountain with peak height $h_0 = \SI{5}{\kilo\meter}$ with snapshots plotted at the initial time $t = \SI{0}{\second}$, half-way time $t = \SI{5000}{\second}$, and end time $t= \SI{10000}{\second}$.  At $t = \SI{5000}{\second}$ the tracer is positioned above the mountain and has been distorted by the terrain-following winds.  Once the tracer clears the mountain the analytic solution returns to its original shape (shown by dotted contours in figure~\ref{fig:mountainAdvection-tracer}).  The numerical result plotted with solid contours was obtained on the BTF mesh using the cubicFit scheme.  Slight distortions are apparent at $t = \SI{10000}{\second}$ compared to the analytic solution.
 
 \begin{figure}
 	\centering
 	\input{../mountainAdvection-l2ByMountainHeight/mountainAdvection-l2ByMountainHeight}
-	\caption{Comparison of $\ell_2$ errors in the two-dimensional transport test over mountains of varying steepness.  Results are compared between the cubicFit (shown with solid lines, filled markers and a regular typeface) and linearUpwind schemes (shown with dashed lines, open markers and an italicised typeface).  The peak mountain height $h_0$ ranges from \SIrange{0}{6}{\kilo\meter}.}
+	\caption{Comparison of $\ell_2$ errors in the 2D transport test over mountains of varying steepness.  Results are compared between the cubicFit scheme (shown with solid lines, filled markers and a regular typeface) and linearUpwind scheme (shown with dashed lines, open markers and an italicised typeface).  The peak mountain height $h_0$ ranges from \SIrange{0}{6}{\kilo\meter}.}
 	\label{fig:mountainAdvection-errors}
 \end{figure}
 
