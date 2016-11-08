@@ -36,10 +36,10 @@ Monitoring Committee Progress Report \#4\\
 \large{Supervisors: Hilary Weller, John Methven, Terry Davies}
 \vspace{0.5em} \\
 \large{Monitoring Committee: Paul Williams, Maarten Ambaum}}
-\date{24th November 2016}
+\date{Transfer meeting 24th November 2016}
 
 \captionsetup{margin=3pt,font={small}}
-\setlength{\bibsep}{0.3em plus 0.1ex}
+\setlength{\bibsep}{0.2em plus 0.1ex}
 
 \makeatletter
 \AtBeginDocument{
@@ -66,18 +66,18 @@ Monitoring Committee Progress Report \#4\\
 
 An atmospheric model solves the equations of motion in discrete form on a numerical mesh.  This mesh becomes distorted over sloping terrain, and the distortions can result in numerical errors.  With new atmospheric models using increasingly fine mesh spacing, steep slopes become resolved by the mesh.  These steep slopes can result in highly-distorted meshes that can lead to larger numerical errors.  My PhD project seeks out new techniques for reducing numerical errors in regions of steep terrain.
 
-There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh layers to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to larger errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cells that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \citep{mesinger2012} and unstructured tetrahedral meshes \citep{smolarkiewicz-szmelter2011}.
+There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh layers to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to larger errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cell volumes that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \citep{mesinger2012} and unstructured tetrahedral meshes \citep{smolarkiewicz-szmelter2011}.
 
 The wide variety of mesh types motivates the development of finite volume methods for arbitrary meshes.  This enables a like-for-like comparison between different types of mesh and allows us to assess the characteristics of new types of mesh.  Further, we hope that the new methods we develop will be less sensitive to mesh distortions compared to traditional methods.
 
-My project comprises three parts.  First, a new type of mesh called the slanted cell mesh has been developed that is less distorted than terrain-following meshes and avoids arbitrarily small cells that are associated with the cut cell method \citep{shaw-weller2016}.  Second, we have designed an explicit, Eulerian transport scheme that is accurate near highly-distorted lower boundaries and is suitable for a variety of mesh types.  Third, we intend to generalise the Charney--Phillips staggering for arbitrary meshes and hope that this new formulation will alleviate the computational mode that is associated with the Lorenz staggering of variables \citep{arakawa-konor1996}.
+My project comprises three parts.  First, a new type of mesh called the slanted cell mesh has been developed that is less distorted than terrain-following meshes and avoids arbitrarily small cell volumes that are associated with the cut cell method \citep{shaw-weller2016}.  Second, we have designed a second-order, explicit, Eulerian transport scheme that is accurate near highly-distorted lower boundaries and is suitable for a variety of mesh types.  Third, we intend to generalise the Charney--Phillips staggering for arbitrary meshes and hope that this new formulation will alleviate the computational mode that is associated with the Lorenz staggering of variables \citep{arakawa-konor1996}.
 
 \section{A new finite volume scheme for transport over steep slopes}
-In May 2016, monitoring committee report \#3 (hereafter MC3) described our progress developing an explicit, Eulerian transport scheme which has been named ``cubicFit''.  At that time the scheme was numerically unstable on some meshes.  We have since improved stability using additional constraints derived from a von Neumann analysis.  No further stability problems have been encountered since the improvement was implemented.  In this section, an overview of the cubicFit scheme is provided, and some details of the von Neumann stability analysis are outlined.
+In May 2016, \href{http://www.datumedge.co.uk/publications/mc-report-2016-05.pdf}{monitoring committee report \#3} (hereafter MC3) described our progress developing an explicit, Eulerian transport scheme which has been named ``cubicFit''.  At that time the scheme was numerically unstable on some meshes.  We have since improved stability using additional constraints derived from a von Neumann analysis.  No further stability problems have been encountered since the improvement was implemented.  In this section, an overview of the cubicFit scheme is provided, and some details of the von Neumann stability analysis are outlined.
 
 The discretisation starts from the flux form transport equation of a dependent variable $\phi$,
 \begin{align}
-	\frac{\partial \phi}{\partial t} - \nabla \cdot \left( \mathbf{u} \phi \right) = 0 \label{eqn:transport}
+	\frac{\partial \phi}{\partial t} + \nabla \cdot \left( \mathbf{u} \phi \right) = 0 \label{eqn:transport}
 \end{align}
 where $\mathbf{u}$ is the wind field.  A C-grid staggering is used such that the dependent variable $\phi$ is prognosed at cell centroids and the wind is prescribed at face centroids.  The divergence term in equation~\eqref{eqn:transport} is discretised using Gauss' divergence theorem,
 \begin{align}
@@ -99,6 +99,7 @@ The polynomial for such a stencil is
 \begin{align}
 	\phi = a_1 + a_2 x + a_3 y + a_4 x^2 + a_5 xy + a_6 y^2 + a_7 x^3 + a_8 x^2 y + a_9 x y^2 \label{eqn:nine-poly}
 \end{align}
+where the $y^3$ term is omitted.
 By choosing a local coordinate with its origin positioned at the face centroid then $\phi_F = a_1$.  The value of $\phi_F$ is calculated as a weighted sum of cell centre values,
 \begin{align}
 	\phi_F = \left[ w_u, w_d, w_3, \cdots, w_n \right]^\intercal \cdot
@@ -107,7 +108,7 @@ By choosing a local coordinate with its origin positioned at the face centroid t
 \end{align}
 where $n$ is the number of cells in the stencil for face $f$.  By convention the upwind cell is the first component and the downwind cell is the second component.
 
-For stencils near boundaries (figure~\ref{fig:stencil-boundary}) and for stencils in some distorted mesh regions (figure~\ref{fig:stencil-sloped}), there is insufficient information to fit all nine polynomial terms in equation~\eqref{eqn:nine-poly}.  We can detect such cases by checking whether the matrix equation that results from the least squares procedure is numerically full rank (details are provided in MC3).
+For stencils near boundaries (figure~\ref{fig:stencil-boundary}) and for stencils in some distorted mesh regions (figure~\ref{fig:stencil-sloped}), there is insufficient information to fit all nine polynomial terms in equation~\eqref{eqn:nine-poly}.  We can detect such cases by checking whether the matrix equation that results from the least squares procedure is numerically full rank (details are provided in \href{http://www.datumedge.co.uk/publications/mc-report-2016-05.pdf}{MC3}).
 
 \begin{figure}
 	\centering
@@ -130,7 +131,7 @@ with left- and right-hand face approximations, $\phi_L$ and $\phi_R$, separated 
 \begin{align}
 	\phi_L = w_u \phi_{j-1} + w_d \phi_j \quad \text{ and } \quad \phi_R = w_u \phi_j + w_d \phi_{j+1}
 \end{align}
-where we assume that the upwind weight $w_u$ and downwind weight $w_d$ are the same for both left- and right-hand faces.  We replace $\phi$ with the Fourier decomposition 
+where $w_u + w_d = 1$, and we assume that the upwind weight $w_u$ and downwind weight $w_d$ are the same for both left- and right-hand faces.  We replace $\phi$ with the Fourier decomposition 
 \begin{align}
 	\phi_j^{(n)} &= A^n e^{\iu j k \Delta x}
 \end{align}
@@ -140,7 +141,7 @@ where $\phi_j^{(n)}$ denotes the value of $\phi$ at position $j \Delta x$ and ti
 	0 \leq w_d \leq 0.5 \ \text{ and }\ 
 	w_u - w_d \geq \max_{p\:\in\:P}(|w_p|)
 \end{align}
-where $P$ are the peripheral cells $\left\{ w_3, \ldots, w_n \right\}$.
+where $P$ are the peripheral cells $\left\{ w_3, \ldots, w_n \right\}$.  The upwind, downwind and peripheral weights sum to one such that $w_u + w_d + \sum_{p=3}^n w_p = 1$.
 
 The full-rank constraint and von Neumann stability constraints are used to select the most suitable subset of polynomial terms from equation~\eqref{eqn:nine-poly} (the subset includes the set itself).
 The monitoring committee raised a concern about this procedure in our third meeting: which terms should be retained and which should be discarded?  Recent improvements address this issue.  We generate a set of candidate polynomials and select the candidate with the greatest number of terms that satisifies all constraints.  Candidate polynomials are generated such that high-order terms are discarded first.  More precisely, let
@@ -148,7 +149,7 @@ The monitoring committee raised a concern about this procedure in our third meet
 	M(x, y) = { x^i y^j : i,j \geq 0 \text{ and } i+j \leq 3 }
 \end{align}
 be the set of all monomials of degree at most \num{3} in $x, y$.
-A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are in $S$ with $a \leq c$ and $b \leq d$, then $x^i y^j$ is also in $S$ for all $a < i < c$, $b < j < d$.  The candidate polynomials are all the dense subsets of $M(x,y)$.  If multiple candidates with the same number of terms satisfy the constraints, the candidate with the best-conditioned matrix is chosen.
+A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are in $S$ with $a \leq c$ and $b \leq d$, then $x^i y^j$ is also in $S$ for all $a < i < c$, $b < j < d$.  The candidate polynomials are all the dense subsets of $M(x,y)$.  If multiple candidates with the same number of terms satisfy the constraints, the candidate with the best-conditioned matrix is chosen by examining the singular values of the singular value decomposition (see \href{http://www.datumedge.co.uk/publications/mc-report-2016-05.pdf}{MC3}).
 
 \subsection*{A new tracer transport test over steep terrain}
 
@@ -161,10 +162,10 @@ A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are i
 	\label{fig:meshes}
 \end{figure}
 
-In MC3 we presented preliminary results of a two-dimensional test case that transported a stably-stratified thermal profile in a terrain-following wind field over orography.  We have since replaced this test with a variation of the standard orographic transport test by \citet{schaer2002}.
+In \href{http://www.datumedge.co.uk/publications/mc-report-2016-05.pdf}{MC3} we presented preliminary results of a two-dimensional test case that transported a stably-stratified thermal profile in a terrain-following wind field over orography.  We have since replaced this test with a variation of the standard orographic transport test by \citet{schaer2002}.
 Test results are compared on a basic terrain-following (BTF) mesh (figure~\ref{fig:mesh-btf}), cut cell mesh (figure~\ref{fig:mesh-cutCell}), and slanted cell mesh (figure~\ref{fig:mesh-slantedCell}).  Three modifications were made to the standard test.
 First, the peak mountain height was varied between \SI{0}{\kilo\meter} and \SI{6}{\kilo\meter} in order to assess the sensitivity of cubicFit to varying degrees of mesh distortion.
-Second, a terrain-following wind field was prescribed that is misaligned with all three meshes.  This was done to ensure that flow crosses mesh layers in all tests.
+Second, a terrain-following wind field was prescribed that is misaligned with all three meshes away from the lower boundary.  This was done to ensure that flow crosses mesh layers in all tests.
 Third, the tracer was centred at the ground in order to assess transport accuracy over the lower boundary.
 
 \begin{figure}
@@ -186,7 +187,7 @@ Figure~\ref{fig:mountainAdvection-tracer} shows the evolution of the tracer over
 To assess the accuracy of cubicFit, results are compared against a standard linearUpwind scheme \citepalias{openfoam}.
 The $\ell_2$ error is presented for the two schemes on the BTF, cut cell and slanted cell meshes for mountains of varying steepness (figure~\ref{fig:mountainAdvection-errors}).
 The linearUpwind scheme is sensitive to the type of mesh with errors growing most rapidly on the cut cell and slanted cell meshes.  The scheme becomes unstable on the slanted cell mesh using the steepest mountain with peak height $h_0 = \SI{6}{\kilo\meter}$.
-In contrast, the cubicFit scheme is largely insensitive to the mesh type and errors grow slowly with increasing mountain heights.
+In contrast, the cubicFit scheme is largely insensitive to the mesh type and errors grow more slowly with increasing mountain heights.
 
 We expect that few or no further modifications to the transport scheme will be needed.   Since our meeting in May 2016, we realised that further experiments were needed to demonstrate that the cubicFit scheme is suitable for non-quadrilateral meshes.  To address this, we have performed tests on a sphere using standard deformational flow tests by \citet{lauritzen2012} on hexagonal icosahedra.
 Work is now underway to document the cubicFit scheme and experimental results.
@@ -197,10 +198,12 @@ Work is now underway to document the cubicFit scheme and experimental results.
 Work has progressed well since the previous meeting in May 2016, though an additional 1--2 months was taken with additional transport tests on the sphere.  Here we present a revised timeline of tasks:
 \begin{description}
 \item[January 2017]{Submit a manuscript documenting the cubicFit transport scheme to the Journal of Computational Physics.}
-\item[February 2017]{Begin work on generalising the Charney--Phillips staggering for arbitrary meshes.  Start by verifying that existing test cases \citep[such as][]{arakawa-konor1996} are able to excite the Lorenz computational mode using the nonhydrostatic model by \citet{weller-shahrokhi2014}.}
+\item[February 2017]{Begin work on generalising the Charney--Phillips staggering for arbitrary meshes.
+Start by verifying that existing test cases \citep[such as][]{arakawa-konor1996} are able to excite the Lorenz computational mode using the nonhydrostatic model of \citet{weller-shahrokhi2014}.
+We made a brief investigation into suitable prognostic variables for such a generalisation in 2015, as described in \href{http://www.datumedge.co.uk/publications/mc-report-2015-12.pdf}{monitoring committee report \#2}.}
 \item[April 2017]{Complete modifications to the nonhydrostatic model to enable execution using the generalised Charney--Phillips staggering.  The model should include a simple transport scheme for potential temperature.  The model will treat gravity waves explicitly.}
 \item[Summer 2017]{Time permitting, the model should be improved using a more accurate transport scheme.  Such a scheme will likely be based on the cubicFit scheme that we have already implemented.  The model might also be extended with an implicit treatment of gravity waves.}
-\item[Autumn 2017]{Complete main thesis chapters (outlined in Appendix A) including all test results.}
+\item[Autumn 2017]{Complete thesis work chapters (outlined in Appendix A) including all test results.}
 \item[Early 2018]{Complete PhD.}
 \end{description}
 
@@ -219,7 +222,7 @@ I have gained more experience as a reviewer, having provided feedback on the MSc
 \titlespacing\subsubsection{0pt}{0.8em plus 4pt minus 2pt}{0.2em plus 2pt minus 2pt}
 
 \subsection*{Appendix A: Thesis plan}
-The main thesis chapters are expected to be as follows:
+The thesis work chapters are expected to be as follows:
 
 \subsubsection*{A new mesh for representing terrain}
 \begin{itemize}
