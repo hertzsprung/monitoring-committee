@@ -63,16 +63,16 @@ Monitoring Committee Progress Report \#4\\
 
 \section{Introduction}
 
-An atmospheric model solves the equations of motion in discrete form on a numerical mesh.  This mesh becomes distorted over sloping terrain, and the distortions can result in numerical errors.  With new atmospheric models using increasingly fine mesh spacing, steep slopes become resolved by the mesh.  These steep slopes can result in highly-distorted meshes that can lead to larger numerical errors.  My PhD project seeks out new techniques for reducing numerical errors in regions of steep terrain.
+An atmospheric model solves the equations of motion in discrete form on a numerical mesh.  This mesh becomes distorted over sloping terrain, and the distortions can result in numerical errors.  With new atmospheric models using increasingly fine mesh spacing, steep slopes become resolved by the mesh.  These steep slopes can result in highly-distorted meshes that can lead to larger numerical errors.  My PhD project seeks new techniques for reducing numerical errors in regions of steep terrain.
 
-There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh layers to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to larger errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cell volumes that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \citep{mesinger2012} and unstructured tetrahedral meshes \citep{smolarkiewicz-szmelter2011}.
+There are several methods for representing terrain on a mesh.  Operational models use some form of terrain-following transformation that distorts horizontal mesh layers to accommodate the terrain.  Such meshes are straightforward to represent using a uniform rectangular computational mesh, but sloped terrain distorts the mesh far above the surface, leading to larger errors \citep{schaer2002,klemp2011}.  The cut cell method is an alternative to terrain-following transformations in which a piecewise-linear representation of the surface is intersected with a uniform rectangular mesh.  Cut cell meshes are less distorted than terrain-following meshes, but the cut cell method creates arbitrarily small cell volumes that impose severe timestep constraints on explicit numerical methods \citep{klein2009}.  Other representations of terrain have also been used, such as the sloping step method used in the Eta model \citep{mesinger2012} and unstructured tetrahedral meshes \citep{smolarkiewicz-szmelter2011}.
 
 The wide variety of mesh types motivates the development of finite volume methods for arbitrary meshes.  This enables a like-for-like comparison between different types of mesh and allows us to assess the characteristics of new types of mesh.  Further, we hope that the new methods we develop will be less sensitive to mesh distortions compared to traditional methods.
 
 My project comprises three parts.  First, a new type of mesh called the slanted cell mesh has been developed that is less distorted than terrain-following meshes and avoids arbitrarily small cell volumes that are associated with the cut cell method \citep{shaw-weller2016}.  Second, we have designed a second-order, explicit, Eulerian transport scheme that is accurate near highly-distorted lower boundaries and is suitable for a variety of mesh types.  Third, we intend to generalise the Charney--Phillips staggering for arbitrary meshes and hope that this new formulation will alleviate the computational mode that is associated with the Lorenz staggering of variables \citep{arakawa-konor1996}.
 
 \section{A new finite volume scheme for transport over steep slopes}
-In May 2016, \href{http://www.datumedge.co.uk/publications/mc-report-2016-05.pdf}{monitoring committee report \#3} (hereafter MC3) described our progress developing an explicit, Eulerian transport scheme which has been named ``cubicFit''.  At that time the scheme was numerically unstable on some meshes.  We have since improved stability using additional constraints derived from a von Neumann analysis.  No further stability problems have been encountered since the improvement was implemented.  In this section, an overview of the cubicFit scheme is provided, and some details of the von Neumann stability analysis are outlined.
+In May 2016, \href{http://www.datumedge.co.uk/publications/mc-report-2016-05.pdf}{monitoring committee report \#3} (hereafter MC3) described our progress developing an explicit, Eulerian transport scheme which has been named the ``cubicFit'' transport scheme.  At that time the scheme was numerically unstable on some meshes.  We have since improved stability using additional constraints derived from a von Neumann analysis.  No further stability problems have been encountered since the improvement was implemented.  In this section, an overview of the cubicFit scheme is provided, and some details of the von Neumann stability analysis are outlined.
 
 The discretisation starts from the flux form transport equation of a dependent variable $\phi$,
 \begin{align}
@@ -157,7 +157,7 @@ A subset $S$ of $M(x,y)$ is ``dense'' if, whenever $x^a y^b$ and $x^c y^d$ are i
 	\subcaptionbox{Basic terrain-following mesh \label{fig:mesh-btf}}[.34\linewidth]{\includegraphics{../mountainAdvection-mesh-btf-5000-1000/constant/mesh.pdf}}
 	\subcaptionbox{Cut cell mesh \label{fig:mesh-cutCell}}[.34\linewidth]{\includegraphics{../mountainAdvection-mesh-cutCell-5000-1000/constant/mesh.pdf}}
 	\subcaptionbox{Slanted cell mesh \label{fig:mesh-slantedCell}}[.3\linewidth]{\includegraphics{../mountainAdvection-mesh-slantedCell-5000-1000/constant/mesh.pdf}}
-	\caption{The edges of the three meshes used in the two-dimensional tracer transport test.  The same wave-shaped mountain is represented by all three meshes.  The mesh spacing is $\Delta x = \SI{1000}{\meter}$ and $\Delta z = \SI{500}{\meter}$.  The peak mountain height is \SI{6}{\kilo\meter}.  Only part domain near the mountain is shown.  The entire domain is \SI{301}{\kilo\meter} wide and \SI{25}{\kilo\meter} high.}
+	\caption{The edges of the three meshes used in the two-dimensional tracer transport test.  The same wave-shaped mountain is represented by all three meshes.  The mesh spacing is $\Delta x = \SI{1000}{\meter}$ and $\Delta z = \SI{500}{\meter}$.  The peak mountain height is \SI{6}{\kilo\meter}.  Only part of the domain near the mountain is shown.  The entire domain is \SI{301}{\kilo\meter} wide and \SI{25}{\kilo\meter} high.}
 	\label{fig:meshes}
 \end{figure}
 
@@ -179,7 +179,7 @@ Figure~\ref{fig:mountainAdvection-tracer} shows the evolution of the tracer over
 \begin{figure}
 	\centering
 	\input{../mountainAdvection-l2ByMountainHeight/mountainAdvection-l2ByMountainHeight}
-	\caption{Comparison of $\ell_2$ errors in the 2D transport test over mountains of varying steepness.  Results are compared between the cubicFit scheme (shown with solid lines, filled markers and a regular typeface) and linearUpwind scheme (shown with dashed lines, open markers and an italicised typeface).  The peak mountain height $h_0$ ranges from \SIrange{0}{6}{\kilo\meter}.}
+	\caption{Comparison of $\ell_2$ errors in the two-dimensional transport test over mountains of varying steepness.  Results are compared between the cubicFit scheme (shown with solid lines, filled markers and a regular typeface) and linearUpwind scheme (shown with dashed lines, open markers and an italicised typeface).  The peak mountain height $h_0$ ranges from \SIrange{0}{6}{\kilo\meter}.}
 	\label{fig:mountainAdvection-errors}
 \end{figure}
 
@@ -200,7 +200,7 @@ Work has progressed well since the previous meeting in May 2016, though an addit
 \item[February 2017]{Begin work on generalising the Charney--Phillips staggering for arbitrary meshes.
 Start by verifying that existing test cases \citep[such as][]{arakawa-konor1996} are able to excite the Lorenz computational mode using the nonhydrostatic model of \citet{weller-shahrokhi2014}.
 We made a brief investigation into suitable prognostic variables for such a generalisation in 2015, as described in \href{http://www.datumedge.co.uk/publications/mc-report-2015-12.pdf}{monitoring committee report \#2}.}
-\item[April 2017]{Complete modifications to the nonhydrostatic model to enable execution using the generalised Charney--Phillips staggering.  The model should include a simple transport scheme for potential temperature.  The model will treat gravity waves explicitly.}
+\item[May 2017]{Complete modifications to the nonhydrostatic model to enable execution using the generalised Charney--Phillips staggering.  The model should include a simple transport scheme for potential temperature.  The model will treat gravity waves explicitly.}
 \item[Summer 2017]{Time permitting, the model should be improved using a more accurate transport scheme.  Such a scheme will likely be based on the cubicFit scheme that we have already implemented.  The model might also be extended with an implicit treatment of gravity waves.}
 \item[Autumn 2017]{Complete thesis work chapters (outlined in Appendix A) including all test results.}
 \item[Early 2018]{Complete PhD.}
@@ -334,7 +334,7 @@ June 2016 & Visited NCAR, hosted by Ram Nair \\
 
 \subsubsection*{Presentations}
 \begin{tabularx}{\linewidth}{l l X}
-17 Nov 2016 & Comp. Atmos. Dyn. group & \\
+17 Nov 2016 & Comp. Atmos. Dyn. group & A review of atmospheric transport schemes \\
 9 Nov 2016 & PhD group & Replicable computational atmospheric science \\
 31 Oct 2016 & HHH group & Advection over steep slopes \\
 22 Sep 2016 & PhD poster session & Improving numerical accuracy over steep slopes \\
