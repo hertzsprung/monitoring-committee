@@ -29,6 +29,7 @@ include make/Makefile-MountainAdvectionMeshes
 include make/Makefile-GravityWaves
 include make/Makefile-Grids
 include make/Makefile-MountainAdvection
+include make/Makefile-MC-Report-2015-06
 include make/Makefile-MC-Report-2015-12
 include make/Makefile-MC-Report-2016-05
 include make/Makefile-MC-Report-2016-11

@@ -1,0 +1,40 @@
+$(eval $(call LaTeXWithBibTeX,src/mc-report-2015-06,build,mc-report-2015-06))
+
+build/mc-report-2015-06/mc-report-2015-06.pdf: \
+  src/mc-report-2015-06/ametsoc2014.bst \
+  src/mc-report-2015-06/references.bib \
+  src/mc-report-2015-06/fig-gravityWaves-theta.pdf \
+  src/mc-report-2015-06/vertical-staggering.tex \
+  build/advection-initial-conditions/advection-initial-conditions.tex \
+  build/fig-grids/btf.tex \
+  build/fig-grids/sleve.tex \
+  build/fig-grids/cut-cell.tex \
+  build/fig-advection/advection.tex 
+
+$(eval $(call Gnuplot,build/advection-initial-conditions,advection-initial-conditions.tex,src/mc-report-2015-06/advection-initial-conditions.plt))
+$(eval $(call MakeDir,build/advection-initial-conditions))
+build/advection-initial-conditions/advection-initial-conditions.tex: \
+  $(ATMOSTESTS_DIR)/build/advection-horizontal-linear-noOrography/0/T.contour.positive
+
+$(eval $(call MakeDir,build/fig-grids))
+
+$(eval $(call Gnuplot,build/fig-grids,cut-cell.tex,src/mc-report-2015-06/cut-cell.plt))
+$(eval $(call CopyFile,src/mc-report-2015-06/shave-curve.dat,build/fig-grids/shave-curve.dat))
+build/fig-grids/cut-cell.tex: build/fig-grids/shave-curve.dat
+
+$(eval $(call Gnuplot,build/fig-grids,btf.tex,src/mc-report-2015-06/btf.plt))
+$(eval $(call Gnuplot,build/fig-grids,sleve.tex,src/mc-report-2015-06/sleve.plt))
+$(eval $(call CopyNamedFile,src/mc-report-2015-06,tf.plt,build/fig-grids))
+build/fig-grids/btf.tex build/fig-grids/sleve.tex: build/fig-grids/tf.plt
+
+$(eval $(call MakeDir,build/fig-advection))
+$(eval $(call Gnuplot,build/fig-advection,advection.tex,src/mc-report-2015-06/advection.plt))
+build/fig-advection/advection.tex: \
+  $(ATMOSTESTS_DIR)/build/advection-horizontal-cubicUpwind-btf/10000/T_diff.contour.positive \
+  $(ATMOSTESTS_DIR)/build/advection-horizontal-cubicUpwind-btf/10000/T_diff.contour.negative \
+  $(ATMOSTESTS_DIR)/build/advection-horizontal-cubicUpwind-cutCell/10000/T_diff.contour.positive \
+  $(ATMOSTESTS_DIR)/build/advection-horizontal-cubicUpwind-cutCell/10000/T_diff.contour.negative \
+  $(ATMOSTESTS_DIR)/build/advection-terrainFollowing-cubicUpwind-btf/10000/T_diff.contour.positive \
+  $(ATMOSTESTS_DIR)/build/advection-terrainFollowing-cubicUpwind-btf/10000/T_diff.contour.negative \
+  $(ATMOSTESTS_DIR)/build/advection-terrainFollowing-cubicUpwind-cutCell/10000/T_diff.contour.positive \
+  $(ATMOSTESTS_DIR)/build/advection-terrainFollowing-cubicUpwind-cutCell/10000/T_diff.contour.negative
