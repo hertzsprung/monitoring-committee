@@ -67,6 +67,10 @@ First, the cells of latitude-longitude meshes become increasingly small near the
 Second, fine horizontal meshes resolve small-scale steep slopes that severely distort terrain-following coordinate surfaces, resulting in larger numerical errors or even numerical instabilities \TODO{citations}.
 Third, mesh spacing must be reduced in all three dimensions in order to preserve cell aspect ratios and so, for uniform meshes, the computational cost scales $O(n^3)$ where $n$ is a measure of mesh spacing.
 
+In response to these problems, a variety of alternative horizontal and vertical representations are being proposed.  Alternative, quasi-uniform meshes avoid small cells near the poles of latitude-longitude meshes \cite{staniforth-thuburn2012}.  Some operational models are already using quasi-uniform meshes: the German ICON model uses an icosahedral mesh, the Canadian GEM model uses a ying-yang mesh comprising two overlapping sections arranged like a tennis ball \TODO{citation}, and the UK Met Office are preferring a cubed-sphere mesh for their next-generation Gung-Ho model \TODO{citation}.
+
+Improvements have also been made to the vertical representation over steep terrain.  Mesh distortions are less severe when terrain-following coordinates are smoother \citep{leuenberger2010,klemp2011}, and cut cell meshes are orthogonal everywhere except at the ground \TODO{citation}.
+
 % parallel computation and time-step constraints -> quasi-uniform horizontal meshes
 % small-scale steep slopes -> what kind of vertical mesh
 % time-to-solution increases O(n^3) with a uniform mesh -> mesh refinement and mesh adaptivity
