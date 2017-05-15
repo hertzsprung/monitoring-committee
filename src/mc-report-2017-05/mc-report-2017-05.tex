@@ -36,7 +36,7 @@ Monitoring Committee Progress Report \#5\\
 \large{Supervisors: Hilary Weller, John Methven, Terry Davies}
 \vspace{0.5em} \\
 \large{Monitoring Committee: Paul Williams, Maarten Ambaum}}
-\date{May 2017}
+\date{June 2017}
 
 \captionsetup{margin=3pt,font={small}}
 \setlength{\bibsep}{0.3em plus 0.1ex}
@@ -56,11 +56,20 @@ Monitoring Committee Progress Report \#5\\
 \makeatother
 
 \newcommand{\iu}{{i\mkern1mu}}
+\newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
 
 \defcitealias{openfoam}{{OpenFOAM user guide}}
 \begin{document}
 \maketitle
 
+Numerical weather forecast and climate prediction models are using increasingly fine horizontal meshes to resolve small-scale features and make forecasts more accurate.  Traditionally, atmospheric models have used uniform latitude-longitude meshes to represent a spherical Earth with terrain-following vertical coordinates to represent Earth's terrain, but these representations become problematic at fine horizontal resolutions.
+First, the cells of latitude-longitude meshes become increasingly small near the Earth's poles, causing a bottleneck in parallel computation and placing severe time-step constraints on explicit Eulerian methods \TODO{citations}.
+Second, fine horizontal meshes resolve small-scale steep slopes that severely distort terrain-following coordinate surfaces, resulting in larger numerical errors or even numerical instabilities \TODO{citations}.
+Third, mesh spacing must be reduced in all three dimensions in order to preserve cell aspect ratios and so, for uniform meshes, the computational cost scales $O(n^3)$ where $n$ is a measure of mesh spacing.
+
+% parallel computation and time-step constraints -> quasi-uniform horizontal meshes
+% small-scale steep slopes -> what kind of vertical mesh
+% time-to-solution increases O(n^3) with a uniform mesh -> mesh refinement and mesh adaptivity
 
 \bibliographystyle{ametsoc2014}                                                 
 \bibliography{references}
@@ -130,7 +139,6 @@ Spring 2015	& \href{www.reading.ac.uk/modules/document.aspx?modP=MAMNSP&modYR=14
 
 \subsubsection*{RRDP modules}
 \begin{tabular}{l l}
-Summer 2017	& Organising conferences? \\
 3 May 2017	& Effective CVs \\
 28 Feb 2017	& Getting your first post-doc position \\
 9 Nov 2016      & Open Access and research data management \\
@@ -152,8 +160,8 @@ June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
 
 \subsubsection*{Conferences and workshops}
 \begin{tabularx}{\linewidth}{l l X}
-September 2017 & & \href{https://sites.google.com/site/scicade2017/}{SciCADE}, University of Bath \\
-September 2017 & Organiser & NERC student conference (working title) \\
+September 2017 & Applicant & \href{https://sites.google.com/site/scicade2017/}{SciCADE}, University of Bath \\
+August 2017 & Organiser & NERC student conference (working title) \\
 2017 & Speaker & UK Met Office Gung Ho network meeting \\
 April 2017 & Speaker & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, Paris \\
 March 2017 & Attendee & \href{https://blogs.reading.ac.uk/open-research/open-in-practice-inspirations-strategies-and-methods-for-open-research/}{Open in practice: inspirations, strategies and methods for open research}, University of Reading \\
@@ -193,6 +201,7 @@ June 2016 & Visited NCAR, hosted by Ram Nair \\
 
 \subsubsection*{Presentations}
 \begin{tabularx}{\linewidth}{l l X}
+19 Jun 2017 & HHH group & TBD \\
 30 Mar 2017 & Mesoscale group & TBD \\
 17 Nov 2016 & Comp. Atmos. Dyn. group & A review of atmospheric transport schemes \\
 9 Nov 2016 & PhD group & Replicable computational atmospheric science \\
