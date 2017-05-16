@@ -82,14 +82,14 @@ This PhD makes three contributions to improve numerical accuracy on arbitrary me
 Third, the Charney--Phillips staggering of variables is generalised for arbitrary meshes and is shown to eliminate the computational mode associated with the Lorenz staggering.
 
 The OpenFOAM computational fluid dynamics library is used throughout the project to enable like-for-like comparisons.  Different meshes are compared using the same model, and different variable staggerings are compared using variants of a single model.
-The PhD also contributes two new two-dimensional test cases that are suitable for evaluating dynamical cores.  The first test challenges advection schemes near steeply-sloping lower boundaries.
+The PhD also contributes two new two-dimensional test cases that are suitable for evaluating dynamical cores.  The first test challenges advection schemes near steeply-sloping lower boundaries \citep{shaw2017}.
 The second test is designed to excite the Lorenz computational mode.  Existing tests that excite the Lorenz computational mode are poorly suited to dynamical core evaluation: the standing waves test by \citet{arakawa-konor1996} was designed for a model with no horizontal discretisation, and the radiative heating test by \cite{untch-hortal2004} requires a 600-day integration of a three-dimensional geodesic model.  Our new two-dimensional test uses a 2-day integration and is based on the test by \citet{arakawa-konor1996}.
 
 
 \section{Advection over steep slopes on arbitrary meshes}
 We submitted a manuscript to the Journal of Computational Physics in February 2017 documenting the finite volume advection scheme, ``cubicFit''.  The final article \citep{shaw2017} was made available in April 2017 after one round of minor corrections.  The cubicFit scheme is largely insensitive to mesh distortions and maintains second-order convergence on highly distorted meshes.  Idealised tests demonstrate that the cubicFit scheme is more stable and more accurate than a standard multidimensional linear upwind scheme.
 
-Having presented our work at PDEs on the Sphere in April, \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen}, a researcher from the computational research group at Lawrence Berkley National Lab told me that his group have already developed a high-order finite volume scheme for solving Poisson's equation \citep{devendran2015}.  Hans is keen to help me apply their techniques to the cubicFit advection scheme in order to achieve convergence higher than second-order.  If time permits, I hope to collaborate with Hans to take this work further.
+Having presented our work at PDEs on the Sphere in April, \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen}, a researcher from the computational research group at Lawrence Berkley National Lab told me that his group have already developed a high-order finite volume scheme for solving Poisson's equation \citep{devendran2015}.  Hans is keen to help me apply these techniques to the cubicFit advection scheme in order to achieve convergence higher than second-order.  If time permits, I hope to collaborate with Hans to take this work further.
 
 \section{Generalisation of Charney--Phillips for arbitrary meshes}
 
@@ -133,20 +133,63 @@ After a two day integration, preliminary results using the Lorenz model show tha
 \centering
 \subcaptionbox{Initial potential temperature perturbation \label{fig:waves-initial}}[.32\linewidth]{\includegraphics{initial-theta-diff.pdf}}
 \subcaptionbox{Final result using the Lorenz model \label{fig:waves-lorenz}}[.32\linewidth]{\includegraphics{lorenz-theta-diff.pdf}}
-\subcaptionbox{Final result using the generalised Charney--Phillips model \label{fig:waves-cp}}[.32\linewidth]{\includegraphics{lorenz-theta-diff.pdf}}
+\subcaptionbox{Final result using the generalised Charney--Phillips model \label{fig:waves-cp}}[.32\linewidth]{\includegraphics{cp-theta-diff.pdf}}
 \includegraphics[height=5.5in,angle=270]{theta-diff-legend.eps}
-\caption{\TODO{}}
+\caption{Potential temperature perturbations from the isothermal state in the two-dimensional standing waves test case.  Initially, grid-scale perturbations with a maximum amplitude of $\pm \SI{0.5}{\kelvin}$ are added in the centre of the domain near the ground.  These perturbations generate gravity waves that spread through the domain.  A spurious grid-scale oscillation indicates that the Lorenz computational mode is excited using the Lorenz model.  No such error is present using the generalised Charney--Phillips model.  Axes are in units of \si{\meter}.  Only the central part of the domain is shown.}
 \label{fig:cp-results}
 \end{figure}
 
 \section{Future research}
 
-% concrete plan of remaining work
-% time-line (assuming no Mozilla)
-% three-month extension?
+Work is on track according to the schedule set out in MC4.
+
+
+% - standing waves over orography
+% - schaer waves with standing waves
+% - improved CP non-ortho treatment
+% - improved CP advection
+% - SI gravity waves
+
+% - high-order cubicFit
+%   - 1D high-order advection on non-uniform meshes
+%   - 2D high-order advection on non-uniform meshes (away from boundaries)
+
+% June
+%  - improve CP model
+% July
+%  - high-order cubicFit
+% August
+%  - complete cubicFit chapter
+% September
+%  - complete slanted cell chapter
+% October
+%  - complete C--P chapter
+% November
+%  - complete existing methods chapter
+% December
+%  - complete introduction
+
+
+% three-month extension? -- will need it if we want a third paper
+
+%
+% what's the minimum viable paper?
+%
+
+% generalised formulation
+% implementation in ExnerFoam with good non-ortho treatment
+% standing waves no orography
+% non-conforming (block) refinement and conforming refinement
+% standing waves with orography
+
+% schaer waves + standing waves
+% improved advection scheme (likely needed for good schaer waves solutions)
+% semi-implicit gravity waves
 
 \section{Personal development}
 
+% 
+% applied to UKMO
 % Mozilla fellowship and Robert Darby
 % postdocs, letters of introduction
 
@@ -160,6 +203,9 @@ After a two day integration, preliminary results using the Lorenz model show tha
 \section*{Appendix A: Thesis plan}
 The thesis chapters are expected to be as follows:
 
+\subsubsection*{Introduction}
+\noindent This project is motivated by the need for alternative horizontal and vertical representations of the Earth and its terrain.
+
 \subsubsection*{Existing methodologies}
 \begin{itemize}[itemsep=0.1em]
 	\item Describe Lorenz and Charney--Phillips staggerings for structured quadrilateral meshes
@@ -171,11 +217,7 @@ The thesis chapters are expected to be as follows:
 \begin{itemize}[itemsep=0.1em]
 	\item Introduce existing types of mesh: terrain-following layers and cut cells
 	\item Describe the new slanted cell method
-	\item {Two-dimensional test results comparing terrain-following, cut cell and slanted cell meshes
-	\begin{itemize}[itemsep=0.1em,topsep=0pt]
-		\item Maximum stable timesteps in a prescribed wind field (depends on the mesh geometry only)
-		\item A test of a quiescent atmosphere above steep slopes (using the linearUpwind scheme?)
-	\end{itemize}}
+	\item A two-dimensional test of a quiescent atmosphere above steep slopes, comparing terrain-following, cut cell and slanted cell meshes (using the linearUpwind scheme?)
 \end{itemize}
 
 \subsubsection*{A new transport scheme for steep slopes}
@@ -184,23 +226,26 @@ The thesis chapters are expected to be as follows:
 	\item Document the cubicFit transport scheme
 	\item {Test results comparing linearUpwind and cubicFit transport schemes
 	\begin{itemize}[itemsep=0.1em,topsep=0pt]
-		\item Two-dimensional transport test over steep slopes, as presented in this report
+		\item \citet{shaw2017} transport test over steep slopes 
 		\item \citet{lauritzen2012} deformational transport tests on a spherical Earth
 		\item \citet{schaer2002} mountain waves test case (should demonstrate that cubicFit is necessary to obtain the reference solution)
 	\end{itemize}}
 \end{itemize}
+
+\subsubsection*{Possible extension: high-order cubicFit}
+\noindent \TODO{}
 	
 \subsubsection*{A generalisation of the Charney--Phillips staggering}
 \noindent The Charney--Phillips staggering avoids the Lorenz computational mode, but it has only been formulated for structured quadrilateral meshes.  A generalised formulation will be suitable for arbitrary meshes, including the slanted cell mesh.
 \begin{itemize}[itemsep=0.1em]
 	\item Describe the generalised Charney--Phillips formulation
-	\item Describe its implementation into the nonhydrostatic model of \citet{weller-shahrokhi2014}
-	\item One or two tests that excite the Lorenz computational mode; compare results between the Lorenz and Charney--Phillips variants of the model
+	\item Describe the necessary changes to the nonhydrostatic model of \citet{weller-shahrokhi2014}
+	\item Compare results between the Lorenz and Charney--Phillips variants of the model using the two-dimensional standing waves test case
 \end{itemize}
 
-\subsubsection*{Possible chapter: grid-scale perturbations and diabatic heating over orography}
-\noindent We should demonstrate the efficacy of combining all three work items: the slanted cell mesh, the cubicFit transport scheme, and the generalised Charney--Phillips formulation.  In order to achieve this, we may be able to introduce orography into the two-dimensional idealised simulations of \citet{arakawa-konor1996}.
-Results should be compared between Lorenz and Charney--Phillips model variants.  Results could also be compared between mesh types, or results could be compared using the cubicFit and linearUpwind transport schemes.
+\subsubsection*{Possible extension: grid-scale perturbations over orography}
+\noindent We should demonstrate the efficacy of combining all three work items: the slanted cell mesh, the cubicFit transport scheme, and the generalised Charney--Phillips formulation.  In order to achieve this, we may be able to incorporate the grid-scale perturbations from the standing waves test into the mountain waves test case by \citet{schaer2002}.
+Results should be compared between Lorenz and Charney--Phillips model variants and between mesh types.
 
 \newpage
 
@@ -297,14 +342,5 @@ June 2016 & Visited NCAR, hosted by Ram Nair \\
 17 Dec 2014 & MPECDT jamboree & Poster presentation for Mathematics for Planet Earth Centre for Doctoral Training jamboree \\
 12 Sep 2014 & Lunchtime seminar  & Gain control of your documents and code: hands-on with revision control and build automation \\
 \end{tabularx}
-
-\newpage
-
-\TODO{are these steps correct?}
-\begin{align*}
-	\theta_C &= \mathbf{\hat{g}} \cdot \mathrm{inv} \left( \sum_{f \in C} \mathbf{\hat{S}}_f \mathbf{S}_f \right) \cdot \sum_{f \in C} \mathbf{\hat{S}}_f b_f \lvert \mathbf{S}_f \rvert \\
-	\theta_C &= \mathbf{\hat{g}} \cdot \mathrm{inv} \left( \sum_{f \in C} \mathbf{\hat{S}}_f \mathbf{S}_f \right) \cdot \sum_{f \in C} \mathbf{S}_f b_f \\
-	\theta_C &= \mathbf{\hat{g}} \cdot \mathrm{inv} \left( \sum_{f \in C} \mathbf{\hat{n}}_f \right) \cdot \sum_{f \in C} \mathbf{\hat{n}}_f b_f
-\end{align*}
 
 \end{document}
