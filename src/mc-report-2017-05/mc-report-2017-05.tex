@@ -67,7 +67,7 @@ Monitoring Committee Progress Report \#5\\
 Numerical weather forecast and climate prediction models are using increasingly fine horizontal meshes to resolve small-scale features and make forecasts more accurate.  Traditionally, atmospheric models have used uniform latitude-longitude meshes to represent a spherical Earth with terrain-following vertical coordinates to represent Earth's terrain, but these representations become problematic with fine horizontal mesh spacing.
 First, the cells of latitude-longitude meshes become increasingly small near the Earth's poles, causing a bottleneck in parallel computation and placing severe time-step constraints on explicit Eulerian methods \TODO{citations}.
 Second, computer storage and computation time increase dramatically when horizontal mesh spacing is reduced uniformly over a latitude-longitude mesh: halving the horizontal mesh spacing results in four times as many cells and simulations require a smaller time-step.
-Third, fine horizontal meshes resolve small-scale steep slopes that severely distort terrain-following coordinate surfaces, resulting in larger numerical errors or even numerical instabilities \TODO{citations}.
+Third, fine horizontal meshes resolve small-scale steep slopes that severely distort terrain-following coordinate surfaces, resulting in larger numerical errors \citep{schaer2002} or even numerical instability \citep{webster2003}.
 
 In response to these problems, a variety of alternative horizontal and vertical representations have been proposed.  Alternative, quasi-uniform meshes avoid small cells near the poles of latitude-longitude meshes \citep{staniforth-thuburn2012}.  Some operational models are already using quasi-uniform meshes: the German ICON model uses an icosahedral mesh \citep{wan2013}, the Canadian GEM model uses a yin-yang mesh comprising two overlapping sections arranged like a tennis ball \citep{qaddouri2011}, and the UK Met Office are preferring a cubed-sphere mesh for their next-generation Gung-Ho model \TODO{citation}.
 To improve the scalability of computational resources with finer mesh spacing, static mesh refinement \TODO{cite}, dynamic mesh adaptivity \TODO{cite} or moving mesh techniques \TODO{cite} create meshes with fewer cells while retaining numerical accuracy.
@@ -82,24 +82,68 @@ This PhD makes three contributions to improve numerical accuracy on arbitrary me
 Third, the Charney--Phillips staggering of variables is generalised for arbitrary meshes and is shown to eliminate the computational mode associated with the Lorenz staggering.
 
 The OpenFOAM computational fluid dynamics library is used throughout the project to enable like-for-like comparisons.  Different meshes are compared using the same model, and different variable staggerings are compared using variants of a single model.
-The PhD also contributes two new two-dimensional test cases that are suitable for evaluating dynamical cores.  The first test challenges advection schemes near steeply-sloping lower boundaries.  The second two-dimensional test is designed to excite the Lorenz computational mode and is based on the one-dimensional standing waves case by \citet{arakawa-konor1996}.
+The PhD also contributes two new two-dimensional test cases that are suitable for evaluating dynamical cores.  The first test challenges advection schemes near steeply-sloping lower boundaries.
+The second test is designed to excite the Lorenz computational mode.  Existing tests that excite the Lorenz computational mode are poorly suited to dynamical core evaluation: the standing waves test by \citet{arakawa-konor1996} was designed for a model with no horizontal discretisation, and the radiative heating test by \cite{untch-hortal2004} requires a 600-day integration of a three-dimensional geodesic model.  Our new two-dimensional test uses a 2-day integration and is based on the test by \citet{arakawa-konor1996}.
 
 
-\section{An advection scheme for steep slopes and arbitrary meshes}
-We submitted a manuscript to the Journal of Computational Physics in February 2017 documenting the finite volume advection scheme, ``cubicFit''.  The final article \citep{shaw2017} was made available in April 2017 after one round of minor corrections.  The cubicFit scheme is largely insensitive to mesh distortions and maintains second-order convergence on the most highly distorted meshes.  Idealised tests demonstrate that the cubicFit scheme is more stable and more accurate than a standard multidimensional linear upwind scheme.
+\section{Advection over steep slopes on arbitrary meshes}
+We submitted a manuscript to the Journal of Computational Physics in February 2017 documenting the finite volume advection scheme, ``cubicFit''.  The final article \citep{shaw2017} was made available in April 2017 after one round of minor corrections.  The cubicFit scheme is largely insensitive to mesh distortions and maintains second-order convergence on highly distorted meshes.  Idealised tests demonstrate that the cubicFit scheme is more stable and more accurate than a standard multidimensional linear upwind scheme.
 
 Having presented our work at PDEs on the Sphere in April, \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen}, a researcher from the computational research group at Lawrence Berkley National Lab told me that his group have already developed a high-order finite volume scheme for solving Poisson's equation \citep{devendran2015}.  Hans is keen to help me apply their techniques to the cubicFit advection scheme in order to achieve convergence higher than second-order.  If time permits, I hope to collaborate with Hans to take this work further.
 
 \section{Generalisation of Charney--Phillips for arbitrary meshes}
 
-Work is on schedule to develop a generalisation of the Charney--Phillips staggering of variables.  The prognostic thermodynamic variable $b_f$ is stored at all cell faces such that $b_f = \theta_f \bm{\hat{g}} \cdot \bm{\hat{n}}_f$ where $f$ is a face, $\theta_f$ is the potential temperature, $\bm{\hat{g}}$ is the unit vector of gravitational acceleration and $\bm{\hat{n}}_f$ is the unit vector that is outward normal to the face.  This arrangement reduces to the traditional Charney--Phillips staggering on Cartesian meshes since $b_f$ is zero for entirely vertical faces and $b_f = \theta_f$ for entirely horizontal faces.
+\begin{figure}
+\centering
+\caption{\TODO{}}
+\label{fig:cp-staggering}
+\end{figure}
 
-We have formulated a new two-dimensional vertical slice test case that excites the Lorenz computational mode in the model by \citep{weller-shahrokhi2014}.  The new test case is based on the standing waves test by \citet{arakawa-konor1996}, which was designed for a vertically discrete model with horizontally continuous waves \TODO{I still don't understand this model and don't know how best to describe it}.  The test adds grid-scale temperature perturbations to an isothermal atmosphere in hydrostatic balance.
+Work is on schedule to develop a generalisation of the Charney--Phillips staggering of variables.  The prognostic thermodynamic variable $b_f$ is stored at all cell faces such that $b_f = \theta_f \mathbf{\hat{g}} \cdot \mathbf{\hat{n}}_f$ where $f$ is a face, $\theta_f$ is the potential temperature, $\mathbf{\hat{g}}$ is the unit vector of gravitational acceleration and $\mathbf{\hat{n}}_f$ is the unit vector that is outward normal to the face.
+This arrangement is illustrated in figure~\ref{fig:cp-staggering}.
 
-% show diagram with variable placement
-% show work-in-progress test results
+To illustrate the discretisation, let us consider its application to a Cartesian mesh with no diagonal faces.  First, potential temperature is transported in advective form,
+\begin{align*}
+	\theta_f^{n+1} = \theta_f^{\ell} - \Delta t \mathbf{U}_f \cdot \left( \nabla_c \theta_f \right)_F
+\end{align*}
+where $\theta_f^{n+1}$ is the value of $\theta_f$ at the new time-step, $\theta_f^\ell$ is the lagged value from the previous solver iteration, $\mathbf{U}_f$ is the wind, $\left( \cdot \right)_F$ denotes an interpolation from cell centres to faces, and $\nabla_c$ denotes a cell centre gradient \citep{weller-shahrokhi2014}.
+Next, $b_f$ is calculated such that $b_f = \theta_f \mathbf{\hat{g}} \cdot \mathbf{\hat{n}}_f$.  
+On a Cartesian mesh $b_f$ is zero for entirely vertical faces and $b_f = \theta_f$ for entirely horizontal faces.
+
+Where potential temperature is required at the cell centre it is reconstructed from bordering faces,
+\begin{align*}
+	\theta_C &= \mathbf{\hat{g}} \cdot \mathrm{inv} \left( \sum_{f \in c} \mathbf{\hat{n}}_f \mathbf{S}_f \right) \cdot \sum_{f \in c} \mathbf{S}_f b_f
+\end{align*}
+where $\theta_C$ is the reconstructed potential temperature, $f \in c$ denotes the faces $f$ bordering cell $c$, and $\mathbf{S}_f$ is the vector with magnitude equal to the face area and an outward normal direction.  On a Cartesian mesh then $\theta_C$ is simply a linear interpolation from the face values immediately above and below the cell centre.
+
+Finally, $\theta_f$ is recalculated from $b_f$ and $\theta_C$,
+\begin{align*}
+	\theta_f = \lvert \mathbf{\hat{g}} \cdot \mathbf{\hat{n}}_f \theta_f \rvert + \left( 1 - \lvert \mathbf{\hat{g}} \cdot \mathbf{\hat{n}} \rvert \right) \left( \theta_C \right)_F \text{.}
+\end{align*}
+This ensures that values of $\theta_f$ on vertical faces is calculated from nearby $b_f$ values and is not retained across time-steps.
+We have created a new variant of the nonhydrostatic model by \citet{weller-shahrokhi2014} that implements this generalised Charney--Phillips formulation.
+
+We have also created a new two-dimensional vertical slice test case that we use to compare the Lorenz and generalised Charney--Phillips model variants.
+The new test case is based on the standing waves test by \citet{arakawa-konor1996}, which was designed for a vertically discrete model with no horizontal discretisation.
+Grid-scale potential temperature perturbations are added to an isothermal atmosphere in hydrostatic balance (figure~\ref{fig:waves-initial}).  The details of the test configuration have yet to be finalised.
+
+After a two day integration, preliminary results using the Lorenz model show that a spurious grid-scale oscillation occupies the entire depth of the domain, having propagated upwards from the position of the initial perturbation (figure~\ref{fig:waves-lorenz}) indicating that the Lorenz computational mode has been excited.  No such error is found with the generalised Charney--Phillips model (figure~\ref{fig:waves-cp}).
+
+\begin{figure}
+\centering
+\subcaptionbox{Initial potential temperature perturbation \label{fig:waves-initial}}[.32\linewidth]{\includegraphics{initial-theta-diff.pdf}}
+\subcaptionbox{Final result using the Lorenz model \label{fig:waves-lorenz}}[.32\linewidth]{\includegraphics{lorenz-theta-diff.pdf}}
+\subcaptionbox{Final result using the generalised Charney--Phillips model \label{fig:waves-cp}}[.32\linewidth]{\includegraphics{lorenz-theta-diff.pdf}}
+\includegraphics[height=5.5in,angle=270]{theta-diff-legend.eps}
+\caption{\TODO{}}
+\label{fig:cp-results}
+\end{figure}
 
 \section{Future research}
+
+% concrete plan of remaining work
+% time-line (assuming no Mozilla)
+% three-month extension?
 
 \section{Personal development}
 
@@ -111,11 +155,9 @@ We have formulated a new two-dimensional vertical slice test case that excites t
 
 \newpage
 
-\section*{Appendices}
-
 \titlespacing\subsubsection{0pt}{0.8em plus 4pt minus 2pt}{0.2em plus 2pt minus 2pt}
 
-\subsection*{Appendix A: Thesis plan}
+\section*{Appendix A: Thesis plan}
 The thesis chapters are expected to be as follows:
 
 \subsubsection*{Existing methodologies}
@@ -162,7 +204,7 @@ Results should be compared between Lorenz and Charney--Phillips model variants. 
 
 \newpage
 
-\subsection*{Appendix B: Training record}
+\section*{Appendix B: Training record}
 
 \subsubsection*{Mathematics modules}
 \footnotesize
@@ -238,8 +280,8 @@ June 2016 & Visited NCAR, hosted by Ram Nair \\
 
 \subsubsection*{Presentations}
 \begin{tabularx}{\linewidth}{l l X}
-19 Jun 2017 & HHH group & TBD \\
-30 Mar 2017 & Mesoscale group & TBD \\
+19 Jun 2017 & HHH group & Quantifying uncertainty with effective sub-sampling (working title) \\
+30 Mar 2017 & Mesoscale group & Modern advection schemes for weather and climate models (working title) \\
 17 Nov 2016 & Comp. Atmos. Dyn. group & A review of atmospheric transport schemes \\
 9 Nov 2016 & PhD group & Replicable computational atmospheric science \\
 31 Oct 2016 & HHH group & Advection over steep slopes \\
@@ -255,5 +297,14 @@ June 2016 & Visited NCAR, hosted by Ram Nair \\
 17 Dec 2014 & MPECDT jamboree & Poster presentation for Mathematics for Planet Earth Centre for Doctoral Training jamboree \\
 12 Sep 2014 & Lunchtime seminar  & Gain control of your documents and code: hands-on with revision control and build automation \\
 \end{tabularx}
+
+\newpage
+
+\TODO{are these steps correct?}
+\begin{align*}
+	\theta_C &= \mathbf{\hat{g}} \cdot \mathrm{inv} \left( \sum_{f \in C} \mathbf{\hat{S}}_f \mathbf{S}_f \right) \cdot \sum_{f \in C} \mathbf{\hat{S}}_f b_f \lvert \mathbf{S}_f \rvert \\
+	\theta_C &= \mathbf{\hat{g}} \cdot \mathrm{inv} \left( \sum_{f \in C} \mathbf{\hat{S}}_f \mathbf{S}_f \right) \cdot \sum_{f \in C} \mathbf{S}_f b_f \\
+	\theta_C &= \mathbf{\hat{g}} \cdot \mathrm{inv} \left( \sum_{f \in C} \mathbf{\hat{n}}_f \right) \cdot \sum_{f \in C} \mathbf{\hat{n}}_f b_f
+\end{align*}
 
 \end{document}
