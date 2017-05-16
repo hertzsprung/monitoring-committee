@@ -74,7 +74,7 @@ Improvements have also been made to the vertical representation over steep terra
 These alternative meshes alleviate many of the computational and numerical problems that arise due to finer horizontal mesh spacing, but they introduce problems of their own.
 Unlike latitude-longitude meshes that are everywhere orthogonal, quasi-uniform meshes can produce grid imprinting errors and excite computational modes \citep{weller2012}.
 Mesh refinement, mesh adaptivity and moving mesh techniques also create mesh geometries with non-orthogonalities or hanging nodes \TODO{cite?}.
-Cut cell meshes are orthogonal nearly everywhere but the cut cell method creates arbitrarily small cells that impose severe time-step constraints on explicit Eulerian methods \TODO{klein2009}.
+Cut cell meshes are orthogonal nearly everywhere but the cut cell method creates arbitrarily small cells that impose severe time-step constraints on explicit Eulerian methods \citep{klein2009}.
 
 This PhD makes three contributions to improve numerical accuracy on arbitrary meshes.  First, a new mesh for representing steep terrain avoids the severe distortions associated with terrain-following meshes and avoids severe time-step constraints associated with cut cell meshes.  Second, a new advection scheme is formulated for numerical stability on high-distorted meshes.  It is second-order convergent on quasi-uniform spherical meshes, terrain-following and cut cell meshes.
 Third, the Charney--Phillips staggering of variables is generalised for arbitrary meshes and is shown to eliminate the computational mode associated with the Lorenz staggering.
