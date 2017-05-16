@@ -62,6 +62,8 @@ Monitoring Committee Progress Report \#5\\
 \begin{document}
 \maketitle
 
+\section{Introduction}
+
 Numerical weather forecast and climate prediction models are using increasingly fine horizontal meshes to resolve small-scale features and make forecasts more accurate.  Traditionally, atmospheric models have used uniform latitude-longitude meshes to represent a spherical Earth with terrain-following vertical coordinates to represent Earth's terrain, but these representations become problematic with fine horizontal mesh spacing.
 First, the cells of latitude-longitude meshes become increasingly small near the Earth's poles, causing a bottleneck in parallel computation and placing severe time-step constraints on explicit Eulerian methods \TODO{citations}.
 Second, computer storage and computation time increase dramatically when horizontal mesh spacing is reduced uniformly over a latitude-longitude mesh: halving the horizontal mesh spacing results in four times as many cells and simulations require a smaller time-step.
@@ -76,11 +78,33 @@ Unlike latitude-longitude meshes that are everywhere orthogonal, quasi-uniform m
 Mesh refinement, mesh adaptivity and moving mesh techniques also create mesh geometries with non-orthogonalities or hanging nodes \TODO{cite?}.
 Cut cell meshes are orthogonal nearly everywhere but the cut cell method creates arbitrarily small cells that impose severe time-step constraints on explicit Eulerian methods \citep{klein2009}.
 
-This PhD makes three contributions to improve numerical accuracy on arbitrary meshes.  First, a new mesh for representing steep terrain avoids the severe distortions associated with terrain-following meshes and avoids severe time-step constraints associated with cut cell meshes.  Second, a new advection scheme is formulated for numerical stability on high-distorted meshes.  It is second-order convergent on quasi-uniform spherical meshes, terrain-following and cut cell meshes.
+This PhD makes three contributions to improve numerical accuracy on arbitrary meshes.  First, a new mesh for representing steep terrain avoids the severe distortions associated with terrain-following meshes and avoids severe time-step constraints associated with cut cell meshes \citep{shaw-weller2016}.  Second, a new advection scheme is formulated for numerical stability on high-distorted meshes \citep{shaw2017}.  It is second-order convergent on quasi-uniform spherical meshes, terrain-following and cut cell meshes.
 Third, the Charney--Phillips staggering of variables is generalised for arbitrary meshes and is shown to eliminate the computational mode associated with the Lorenz staggering.
 
 The OpenFOAM computational fluid dynamics library is used throughout the project to enable like-for-like comparisons.  Different meshes are compared using the same model, and different variable staggerings are compared using variants of a single model.
-The PhD also contributes two new two-dimensional test cases that are suitable for evaluating dynamical cores.  The first test challenges advection schemes near steeply-sloping lower boundaries.  The second two-dimensional test is designed to excite the Lorenz computational mode and is based on the one-dimensional standing waves case of \citet{arakawa-konor1996}.
+The PhD also contributes two new two-dimensional test cases that are suitable for evaluating dynamical cores.  The first test challenges advection schemes near steeply-sloping lower boundaries.  The second two-dimensional test is designed to excite the Lorenz computational mode and is based on the one-dimensional standing waves case by \citet{arakawa-konor1996}.
+
+
+\section{An advection scheme for steep slopes and arbitrary meshes}
+We submitted a manuscript to the Journal of Computational Physics in February 2017 documenting the finite volume advection scheme, ``cubicFit''.  The final article \citep{shaw2017} was made available in April 2017 after one round of minor corrections.  The cubicFit scheme is largely insensitive to mesh distortions and maintains second-order convergence on the most highly distorted meshes.  Idealised tests demonstrate that the cubicFit scheme is more stable and more accurate than a standard multidimensional linear upwind scheme.
+
+Having presented our work at PDEs on the Sphere in April, \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen}, a researcher from the computational research group at Lawrence Berkley National Lab told me that his group have already developed a high-order finite volume scheme for solving Poisson's equation \citep{devendran2015}.  Hans is keen to help me apply their techniques to the cubicFit advection scheme in order to achieve convergence higher than second-order.  If time permits, I hope to collaborate with Hans to take this work further.
+
+\section{Generalisation of Charney--Phillips for arbitrary meshes}
+
+Work is on schedule to develop a generalisation of the Charney--Phillips staggering of variables.  The prognostic thermodynamic variable $b_f$ is stored at all cell faces such that $b_f = \theta_f \bm{\hat{g}} \cdot \bm{\hat{n}}_f$ where $f$ is a face, $\theta_f$ is the potential temperature, $\bm{\hat{g}}$ is the unit vector of gravitational acceleration and $\bm{\hat{n}}_f$ is the unit vector that is outward normal to the face.  This arrangement reduces to the traditional Charney--Phillips staggering on Cartesian meshes since $b_f$ is zero for entirely vertical faces and $b_f = \theta_f$ for entirely horizontal faces.
+
+We have formulated a new two-dimensional vertical slice test case that excites the Lorenz computational mode in the model by \citep{weller-shahrokhi2014}.  The new test case is based on the standing waves test by \citet{arakawa-konor1996}, which was designed for a vertically discrete model with horizontally continuous waves \TODO{I still don't understand this model and don't know how best to describe it}.  The test adds grid-scale temperature perturbations to an isothermal atmosphere in hydrostatic balance.
+
+% show diagram with variable placement
+% show work-in-progress test results
+
+\section{Future research}
+
+\section{Personal development}
+
+% Mozilla fellowship and Robert Darby
+% postdocs, letters of introduction
 
 \bibliographystyle{ametsoc2014}                                                 
 \bibliography{references}
@@ -150,6 +174,7 @@ Spring 2015	& \href{www.reading.ac.uk/modules/document.aspx?modP=MAMNSP&modYR=14
 
 \subsubsection*{RRDP modules}
 \begin{tabular}{l l}
+23 June 2017    & Graduate school conference \\
 3 May 2017	& Effective CVs \\
 28 Feb 2017	& Getting your first post-doc position \\
 9 Nov 2016      & Open Access and research data management \\
@@ -171,10 +196,11 @@ June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
 
 \subsubsection*{Conferences and workshops}
 \begin{tabularx}{\linewidth}{l l X}
-September 2017 & Applicant & \href{https://sites.google.com/site/scicade2017/}{SciCADE}, University of Bath \\
-August 2017 & Organiser & NERC student conference (working title) \\
-2017 & Speaker & UK Met Office Gung Ho network meeting \\
-April 2017 & Speaker & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, Paris \\
+September 2017 & Applicant & \href{https://sites.google.com/site/scicade2017/}{International conference on scientific computation and differential equations}, University of Bath \\
+August 2017 & Co-organiser & NERC student conference (working title) \\
+July 2017 & Speaker & UK Met Office Gung Ho network meeting \\
+June 2017 & Participant & \href{https://www.software.ac.uk/c4rr}{Docker containers for reproducible research}, University of Cambridge \\
+April 2017 & Speaker & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, École normale supérieure, Paris \\
 March 2017 & Attendee & \href{https://blogs.reading.ac.uk/open-research/open-in-practice-inspirations-strategies-and-methods-for-open-research/}{Open in practice: inspirations, strategies and methods for open research}, University of Reading \\
 March 2017 & Participant & \href{http://www.effective-quadratures.org/eq2017}{Effective quadratures workshop}, University of Cambridge \\
 February 2017 & Speaker & Numerical methods for geophysical fluid dynamics, Imperial College London \\
