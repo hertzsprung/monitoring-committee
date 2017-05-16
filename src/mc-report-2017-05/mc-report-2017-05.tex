@@ -36,7 +36,7 @@ Monitoring Committee Progress Report \#5\\
 \large{Supervisors: Hilary Weller, John Methven, Terry Davies}
 \vspace{0.5em} \\
 \large{Monitoring Committee: Paul Williams, Maarten Ambaum}}
-\date{May 2017}
+\date{June 2017}
 
 \captionsetup{margin=3pt,font={small}}
 \setlength{\bibsep}{0.3em plus 0.1ex}
@@ -56,11 +56,31 @@ Monitoring Committee Progress Report \#5\\
 \makeatother
 
 \newcommand{\iu}{{i\mkern1mu}}
+\newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
 
 \defcitealias{openfoam}{{OpenFOAM user guide}}
 \begin{document}
 \maketitle
 
+Numerical weather forecast and climate prediction models are using increasingly fine horizontal meshes to resolve small-scale features and make forecasts more accurate.  Traditionally, atmospheric models have used uniform latitude-longitude meshes to represent a spherical Earth with terrain-following vertical coordinates to represent Earth's terrain, but these representations become problematic with fine horizontal mesh spacing.
+First, the cells of latitude-longitude meshes become increasingly small near the Earth's poles, causing a bottleneck in parallel computation and placing severe time-step constraints on explicit Eulerian methods \TODO{citations}.
+Second, computer storage and computation time increase dramatically when horizontal mesh spacing is reduced uniformly over a latitude-longitude mesh: halving the horizontal mesh spacing results in four times as many cells and simulations require a smaller time-step.
+Third, fine horizontal meshes resolve small-scale steep slopes that severely distort terrain-following coordinate surfaces, resulting in larger numerical errors or even numerical instabilities \TODO{citations}.
+
+In response to these problems, a variety of alternative horizontal and vertical representations have been proposed.  Alternative, quasi-uniform meshes avoid small cells near the poles of latitude-longitude meshes \citep{staniforth-thuburn2012}.  Some operational models are already using quasi-uniform meshes: the German ICON model uses an icosahedral mesh \citep{wan2013}, the Canadian GEM model uses a yin-yang mesh comprising two overlapping sections arranged like a tennis ball \citep{qaddouri2011}, and the UK Met Office are preferring a cubed-sphere mesh for their next-generation Gung-Ho model \TODO{citation}.
+To improve the scalability of computational resources with finer mesh spacing, static mesh refinement \TODO{cite}, dynamic mesh adaptivity \TODO{cite} or moving mesh techniques \TODO{cite} create meshes with fewer cells while retaining numerical accuracy.
+Improvements have also been made to the vertical representation over steep terrain.  Mesh distortions are less severe when terrain-following coordinates are smoothed \citep{leuenberger2010,klemp2011}, and cut cell meshes are orthogonal everywhere except at the ground \TODO{citation}.
+
+These alternative meshes alleviate many of the computational and numerical problems that arise due to finer horizontal mesh spacing, but they introduce problems of their own.
+Unlike latitude-longitude meshes that are everywhere orthogonal, quasi-uniform meshes can produce grid imprinting errors and excite computational modes \citep{weller2012}.
+Mesh refinement, mesh adaptivity and moving mesh techniques also create mesh geometries with non-orthogonalities or hanging nodes \TODO{cite?}.
+Cut cell meshes are orthogonal nearly everywhere but the cut cell method creates arbitrarily small cells that impose severe time-step constraints on explicit Eulerian methods \TODO{klein2009}.
+
+This PhD makes three contributions to improve numerical accuracy on arbitrary meshes.  First, a new mesh for representing steep terrain avoids the severe distortions associated with terrain-following meshes and avoids severe time-step constraints associated with cut cell meshes.  Second, a new advection scheme is formulated for numerical stability on high-distorted meshes.  It is second-order convergent on quasi-uniform spherical meshes, terrain-following and cut cell meshes.
+Third, the Charney--Phillips staggering of variables is generalised for arbitrary meshes and is shown to eliminate the computational mode associated with the Lorenz staggering.
+
+The OpenFOAM computational fluid dynamics library is used throughout the project to enable like-for-like comparisons.  Different meshes are compared using the same model, and different variable staggerings are compared using variants of a single model.
+The PhD also contributes two new two-dimensional test cases that are suitable for evaluating dynamical cores.  The first test challenges advection schemes near steeply-sloping lower boundaries.  The second two-dimensional test is designed to excite the Lorenz computational mode and is based on the one-dimensional standing waves case of \citet{arakawa-konor1996}.
 
 \bibliographystyle{ametsoc2014}                                                 
 \bibliography{references}
@@ -130,9 +150,8 @@ Spring 2015	& \href{www.reading.ac.uk/modules/document.aspx?modP=MAMNSP&modYR=14
 
 \subsubsection*{RRDP modules}
 \begin{tabular}{l l}
-Summer 2017	& Organising conferences \\
+3 May 2017	& Effective CVs \\
 28 Feb 2017	& Getting your first post-doc position \\
-21 Feb 2017	& Writing a thesis as a collection of papers \\
 9 Nov 2016      & Open Access and research data management \\
 24 Mar 2016	& Voice coaching: looking after your voice \\
 26--27 Jan 2016 & Preparing to teach (introduction, marking \& feedback, leading small groups) \\
@@ -152,11 +171,12 @@ June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
 
 \subsubsection*{Conferences and workshops}
 \begin{tabularx}{\linewidth}{l l X}
-September 2017 & & \href{https://sites.google.com/site/scicade2017/}{SciCADE}, University of Bath \\
+September 2017 & Applicant & \href{https://sites.google.com/site/scicade2017/}{SciCADE}, University of Bath \\
+August 2017 & Organiser & NERC student conference (working title) \\
 2017 & Speaker & UK Met Office Gung Ho network meeting \\
-April 2017 & & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, Paris \\
+April 2017 & Speaker & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, Paris \\
 March 2017 & Attendee & \href{https://blogs.reading.ac.uk/open-research/open-in-practice-inspirations-strategies-and-methods-for-open-research/}{Open in practice: inspirations, strategies and methods for open research}, University of Reading \\
-March 2017 & Participant & \href{https://www.eventbrite.co.uk/e/opendatahack-ecmwf-beyond-weather-explore-creative-uses-of-open-data-tickets-28733656139}{Beyond weather: explore creative uses of open data}, ECMWF hack weekend \\
+March 2017 & Participant & \href{http://www.effective-quadratures.org/eq2017}{Effective quadratures workshop}, University of Cambridge \\
 February 2017 & Speaker & Numerical methods for geophysical fluid dynamics, Imperial College London \\
 January 2017 & Attendee & Research software management, sharing and sustainability, British Library \\
 October 2016 & Speaker & \href{http://www.ecmwf.int/en/learning/workshops-and-seminars/workshop-numerical-and-computational-methods-simulation-all-scale-geophysical-flows}{Numerical and computational methods for simulation of all-scale geophysical flows}, ECMWF \\
@@ -179,11 +199,12 @@ Sep 2014 & Course teacher & MPE python and linux short course \\
 July 2016 & Organised visit from \href{https://www.youtube.com/user/SimonOxfPhys}{Simon Clark}, stratospheric PhD researcher and YouTube vlogger \\
 Summer 2016 & Worked with Hilary's MSc student, Christiana Skea, studying variable timestepping for ODEs \\
 June 2016 & Visited NCAR, hosted by Ram Nair \\
-2015 -- 2016 & Coauthoring an article about dimensionally-split and multidimensional transport schemes, written with Hilary, her former student Yumeng Chen, and Stephen Pring at the UK Met Office \\
+2015 -- 2017 & Coauthoring an article about dimensionally-split and multidimensional transport schemes, written with Hilary, her former student \href{https://www.clisap.de/research/a:-climate-dynamics-and-variability/crg-numerical-methods-in-geosciences/team-members/yumeng-chen/}{Yumeng Chen}, and Stephen Pring at the UK Met Office \\
 \end{tabularx}
 
 \subsubsection*{Outreach}
 \begin{tabular}{l l l}
+17 Mar 2017 & ``\href{https://thesocialmetwork.wordpress.com/2017/03/17/simulating-wind-on-computers/}{The advection process: simulating wind on computers}'', Social Metwork blog article \\
 14 Jul 2015 & Schools physicist of the year awards \\
 14 Jun 2015 & East Reading festival \\
 15 Feb 2015 & Brighton science festival \\
@@ -191,6 +212,8 @@ June 2016 & Visited NCAR, hosted by Ram Nair \\
 
 \subsubsection*{Presentations}
 \begin{tabularx}{\linewidth}{l l X}
+19 Jun 2017 & HHH group & TBD \\
+30 Mar 2017 & Mesoscale group & TBD \\
 17 Nov 2016 & Comp. Atmos. Dyn. group & A review of atmospheric transport schemes \\
 9 Nov 2016 & PhD group & Replicable computational atmospheric science \\
 31 Oct 2016 & HHH group & Advection over steep slopes \\
