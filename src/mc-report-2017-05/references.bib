@@ -1,6 +1,7 @@
 %
 % JOURNAL ABBREVIATIONS
 %
+@STRING{ACME    = "Arch.\ Comput.\ Method.\ E."}        % added by jshaw
 @STRING{AMS 	= "Amer.\ Meteor.\ Soc."}
 @STRING{AGU 	= "Amer.\ Geophys.\ Union"}
 @STRING{AIP 	= "Amer. Inst. Phys."}
@@ -82,6 +83,7 @@
 @STRING{QJRMS     = "Quart.\ J.\ Roy.\ Meteor.\ Soc."}
 @STRING{RGEO      = "Rev. Geophys."}
 @STRING{SCI       = "Science"}
+@STRING{SCICHI    = "Sci.\ China\ Ser.\ D"}             % added by jshaw
 @STRING{SIAMJSC   = "SIAM J. Sci. Comput."}             % added by jshaw
 @STRING{SOLA      = "SOLA"}				% Scientific Online Letters on the Atmosphere
 @STRING{TAGU      = "Eos, Trans.\ Amer.\ Geophys.\ Union"}
@@ -103,12 +105,58 @@
 	doi={https://doi.org/10.1175/1520-0493(1996)124\%3C0511:VDOTPE\%3E2.0.CO;2}
 }
 
+@article{charney-phillips1953,
+	title={Numerical integration of the quasi-geostrophic equations for barotropic and simple baroclinic flows},
+	author={Charney, J. G. and Phillips, N. A.},
+	journal=JM,
+	volume={10},
+	number={2},
+	pages={71--99},
+	year={1953},
+	doi={10.1175/1520-0469(1953)010\%3C0071:NIOTQG\%3E2.0.CO;2}
+}
+
+@article{davies2005,
+	title={A new dynamical core for the {Met Office's} global and regional modelling of the atmosphere},
+	author={Davies, T and Cullen, MJP and Malcolm, AJ and Mawson, MH and Staniforth, A and White, AA and Wood, N},
+	journal=QJRMS,
+	volume={131},
+	number={608},
+	pages={1759--1782},
+	year={2005},
+	publisher={Wiley Online Library},
+	doi={10.1256/qj.04.101}
+}
+
 @article{devendran2015,
 	title={A higher-order finite-volume discretization method for {Poisson's} equation in cut cell geometries},
 	author={Devendran, D and Graves, DT and Johansen, H},
 	journal=SIAMJSC,
 	year={2015},
 	note={submitted; preprint, \url{http://arxiv.org/abs/1411.4283}}
+}
+
+@article{girard2014,
+	title={Staggered vertical discretization of the {Canadian} Environmental Multiscale ({GEM}) model using a coordinate of the log-hydrostatic-pressure type},
+	author={Girard, Claude and Plante, Andr{\'e} and Desgagn{\'e}, Michel and McTaggart-Cowan, Ron and C{\^o}t{\'e}, Jean and Charron, Martin and Gravel, Sylvie and Lee, Vivian and Patoine, Alain and Qaddouri, Abdessamad and others},
+	journal=MWR,
+	volume={142},
+	number={3},
+	pages={1183--1196},
+	year={2014},
+	doi={10.1175/MWR-D-13-00255.1}
+}
+
+@article{jablonowski2009,
+	title={Block-structured adaptive meshes and reduced grids for atmospheric general circulation models},
+	author={Jablonowski, Christiane and Oehmke, Robert C and Stout, Quentin F},
+	journal=PTRSA,
+	volume={367},
+	number={1907},
+	pages={4497--4522},
+	year={2009},
+	publisher={The Royal Society},
+	doi={}
 }
 
 @article{klein2009,
@@ -153,6 +201,18 @@
 	pages={3683--3689},
 	year={2010},
 	doi={10.1175/2010MWR3307.1}
+}
+
+@article{marras2016,
+	title={A review of element-based {Galerkin} methods for numerical weather prediction: Finite elements, spectral elements, and discontinuous {Galerkin}},
+	author={Marras, Simone and Kelly, James F and Moragues, Margarida and M{\"u}ller, Andreas and Kopera, Michal A and V{\'a}zquez, Mariano and Giraldo, Francis X and Houzeaux, Guillaume and Jorba, Oriol},
+	journal=ACME,
+	volume={23},
+	number={4},
+	pages={673--722},
+	year={2016},
+	publisher={Springer},
+	doi={10.1007/s11831-015-9152-1}
 }
 
 @article{qaddouri2011,
@@ -265,6 +325,18 @@
 	volume={142},
 	pages={4439--4457},
 	doi={10.1175/MWR-D-14-00054.1}
+}
+
+@article{yang2007,
+	title={A semi-implicit {semi-Lagrangian} global nonhydrostatic model and the polar discretization scheme},
+	author={Yang, XueSheng and Chen, JiaBin and Hu, JiangLin and Chen, DeHui and Shen, XueShun and Zhang, HongLiang},
+	journal=SCICHI,
+	volume={50},
+	number={12},
+	pages={1885--1891},
+	year={2007},
+	publisher={Springer},
+	doi={10.1007/s11430-007-0124-7}
 }
 
 @article{zaengl2015,

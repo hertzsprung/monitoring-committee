@@ -65,17 +65,17 @@ Monitoring Committee Progress Report \#5\\
 \section{Introduction}
 
 Numerical weather forecast and climate prediction models are using increasingly fine horizontal meshes to resolve small-scale features and make forecasts more accurate.  Traditionally, atmospheric models have used uniform latitude-longitude meshes to represent a spherical Earth with terrain-following vertical coordinates to represent Earth's terrain, but these representations become problematic with fine horizontal mesh spacing.
-First, the cells of latitude-longitude meshes become increasingly small near the Earth's poles, causing a bottleneck in parallel computation and placing severe time-step constraints on explicit Eulerian methods \TODO{citations}.
+First, the cells of latitude-longitude meshes become increasingly small near the Earth's poles, causing a bottleneck in parallel computation \citep{staniforth-thuburn2012} and placing severe time-step constraints on explicit Eulerian methods \TODO{citation? or remove this clause?}.
 Second, computer storage and computation time increase dramatically when horizontal mesh spacing is reduced uniformly over a latitude-longitude mesh: halving the horizontal mesh spacing results in four times as many cells and simulations require a smaller time-step.
 Third, fine horizontal meshes resolve small-scale steep slopes that severely distort terrain-following coordinate surfaces, resulting in larger numerical errors \citep{schaer2002} or even numerical instability \citep{webster2003}.
 
-In response to these problems, a variety of alternative horizontal and vertical representations have been proposed.  Alternative, quasi-uniform meshes avoid small cells near the poles of latitude-longitude meshes \citep{staniforth-thuburn2012}.  Some operational models are already using quasi-uniform meshes: the German ICON model uses an icosahedral mesh \citep{wan2013}, the Canadian GEM model uses a yin-yang mesh comprising two overlapping sections arranged like a tennis ball \citep{qaddouri2011}, and the UK Met Office are preferring a cubed-sphere mesh for their next-generation Gung-Ho model \TODO{citation}.
-To improve the scalability of computational resources with finer mesh spacing, static mesh refinement \TODO{cite}, dynamic mesh adaptivity \TODO{cite} or moving mesh techniques \TODO{cite} create meshes with fewer cells while retaining numerical accuracy.
-Improvements have also been made to the vertical representation over steep terrain.  Mesh distortions are less severe when terrain-following coordinates are smoothed \citep{leuenberger2010,klemp2011}, and cut cell meshes are orthogonal everywhere except at the ground \TODO{citation}.
+In response to these problems, a variety of alternative horizontal and vertical representations have been proposed.  Alternative, quasi-uniform meshes avoid small cells near the poles of latitude-longitude meshes \citep{staniforth-thuburn2012}.  Some operational models are already using quasi-uniform meshes: the German ICON model uses an icosahedral mesh \citep{wan2013}, the Canadian GEM model uses a yin-yang mesh comprising two overlapping sections arranged like a tennis ball \citep{qaddouri2011}, and the UK Met Office are preferring a cubed-sphere mesh for their next-generation Gung-Ho model \TODO{citation? personal communication?}.
+To improve the scalability of computational resources with finer mesh spacing, static mesh refinement and dynamic adaptive mesh techniques create meshes with fewer cells while retaining numerical accuracy when compared to a uniformly fine mesh \citep{jablonowski2009}.
+Improvements have also been made to the vertical representation over steep terrain.  Mesh distortions are less severe when terrain-following coordinates are smoothed \citep{leuenberger2010,klemp2011}, and cut cell meshes are orthogonal everywhere except at the ground.
 
 These alternative meshes alleviate many of the computational and numerical problems that arise due to finer horizontal mesh spacing, but they introduce problems of their own.
 Unlike latitude-longitude meshes that are everywhere orthogonal, quasi-uniform meshes can produce grid imprinting errors and excite computational modes \citep{weller2012}.
-Mesh refinement, mesh adaptivity and moving mesh techniques also create mesh geometries with non-orthogonalities or hanging nodes \TODO{cite?}.
+Mesh refinement and adaptive mesh techniques also create mesh geometries with non-orthogonalities or hanging nodes \citep{marras2016}.
 Cut cell meshes are orthogonal nearly everywhere but the cut cell method creates arbitrarily small cells that impose severe time-step constraints on explicit Eulerian methods \citep{klein2009}.
 
 This PhD makes three contributions to improve numerical accuracy on arbitrary meshes.  First, a new mesh for representing steep terrain avoids the severe distortions associated with terrain-following meshes and avoids severe time-step constraints associated with cut cell meshes \citep{shaw-weller2016}.  Second, a new advection scheme is formulated for numerical stability on high-distorted meshes \citep{shaw2017}.  It is second-order convergent on quasi-uniform spherical meshes, terrain-following and cut cell meshes.
@@ -92,6 +92,11 @@ We submitted a manuscript to the Journal of Computational Physics in February 20
 Having presented our work at PDEs on the Sphere in April, \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen}, a researcher from the computational research group at Lawrence Berkley National Lab told me that his group have already developed a high-order finite volume scheme for solving Poisson's equation \citep{devendran2015}.  Hans is keen to help me apply these techniques to the cubicFit advection scheme in order to achieve convergence higher than second-order.  If time permits, I hope to collaborate with Hans to take this work further.
 
 \section{Generalisation of Charney--Phillips for arbitrary meshes}
+
+\TODO{a bit more introduction? take from proposal wiki page}
+The Charney--Phillips vertical staggering of variables \citep{charney-phillips1953} is suitable for structured meshes with cells stacked in columns. This staggering has been adopted by several operational models \citep{davies2005,yang2007,girard2014} because it avoids the computational mode that is associated with the Lorenz vertical staggering \citep{arakawa-konor1996}. The generalisation of the Lorenz staggering for unstructured or arbitrarily-structured meshes is straightforward \citep{weller-shahrokhi2014} but this is not true for the Charney--Phillips staggering.
+
+On a finite volume mesh, variables are ordinarily placed at cell centres or cell faces. In the Charney--Phillips staggering, the thermodynamic variable is placed at only those cell faces that lie on vertical coordinate surfaces, and vertically-oriented faces have no thermodynamic information. This arrangement is unsuitable for arbitrarily-structured finite volume meshes because faces can have any orientation.
 
 \begin{figure}
 \centering
@@ -115,7 +120,7 @@ Where potential temperature is required at the cell centre it is reconstructed f
 \begin{align}
 	\theta_C &= \mathbf{\hat{g}} \cdot \mathrm{inv} \left( \sum_{f \in c} \mathbf{\hat{n}}_f \mathbf{S}_f \right) \cdot \sum_{f \in c} \mathbf{S}_f b_f \label{eqn:reconstruct}
 \end{align}
-where $\theta_C$ is the reconstructed potential temperature, $f \in c$ denotes the faces $f$ bordering cell $c$, and $\mathbf{S}_f$ is the vector with magnitude equal to the face area and an outward normal direction.  On a Cartesian mesh then $\theta_C$ is simply a linear interpolation from the face values immediately above and below the cell centre.
+where $\theta_C$ is the reconstructed potential temperature, $f \in c$ denotes the faces $f$ bordering cell $c$, and $\mathbf{S}_f$ is the vector with magnitude equal to the face area and an outward normal direction.  On a Cartesian mesh $\theta_C$ is simply a linear interpolation from the face values immediately above and below the cell centre.
 
 Finally, $\theta_f$ is recalculated from $b_f$ and $\theta_C$,
 \begin{align}
@@ -138,21 +143,33 @@ After a two day integration, preliminary results using the Lorenz model show tha
 \includegraphics[height=5.5in,angle=270]{theta-diff-legend.eps}
 \caption{Potential temperature perturbations from the isothermal state in the two-dimensional standing waves test case.  Initially, grid-scale perturbations with a maximum amplitude of $\pm \SI{0.5}{\kelvin}$ are added in the centre of the domain near the ground.  These perturbations generate gravity waves that spread through the domain.  A spurious grid-scale oscillation indicates that the Lorenz computational mode is excited using the Lorenz model.  No such error is present using the generalised Charney--Phillips model.
 Only the central part of the domain is shown with cell edges marked by grey lines.
-Axes are in units of \si{\meter}.
+Axes are in units of metres.
 }
 \label{fig:cp-results}
 \end{figure}
 
 \section{Future research}
 
-Work is on track according to the schedule set out in MC4.
+%Work is on track according to the schedule set out in MC4.
 
-
-% - standing waves over orography
-% - schaer waves with standing waves
-% - improved CP non-ortho treatment
-% - improved CP advection
-% - SI gravity waves
+\TODO{
+Do we want to get another paper out before submitting?  If so, what is a minimum viable paper?
+\begin{itemize}
+	\item A generalised formulation of Charney--Phillips for arbitrary meshes
+	\item A Charney--Phillips OpenFOAM model with reasonably accurate non-orthogonal treatment
+	\item The new standing waves test case with a comparison of results:
+	\begin{itemize}
+		\item uniform mesh, meshes with non-conformal block refinement and conformal refinement (with diagonal faces)
+		\item Lorenz and Charney--Phillips model variants to demonstrate the presence and absence of the Lorenz computational mode respectively
+	\end{itemize}
+\end{itemize}
+Additionally and, in my opinion, optionally, the paper could include
+\begin{itemize}
+	\item Improved $\theta$ advection in Charney--Phillips model, possibly similar to cubicFit in advective form
+	\item Evaluate $\theta$ advection scheme using a variant of the \citet{schaer2002} gravity waves test that incorporates standing waves that excite the Lorenz computational mode
+	\item A semi-implicit gravity wave formulation for the Charney--Phillips model
+\end{itemize}
+}
 
 % - high-order cubicFit
 %   - 1D high-order advection on non-uniform meshes
@@ -192,10 +209,19 @@ Work is on track according to the schedule set out in MC4.
 
 \section{Personal development}
 
-% 
-% applied to UKMO
-% Mozilla fellowship and Robert Darby
-% postdocs, letters of introduction
+Since the last monitoring committee meeting in November 2016 I have been invited to speak at the RMetS south-east meeting at the University of Reading, and at a numerical methods for geophysical fluid dynamic workshop at Imperial College.  I am helping to organise the NERC student conference, lead by students from NERC DTPs in London, and I have applied to present at SciCADE, a conference on scientific computation and differential equations.
+
+I have been considering my options for future employment.  I am keen to continue research in numerical methods, either applied to weather and climate modelling or other disciplines.
+Hilary has kindly introduced me to a number of colleagues in UK institutions and I am following up with those who may have positions opening soon.
+
+I am also interested other academic roles that promote good practices in reproducible science and research software engineering.
+I have applied for a 10-month Mozilla science fellowship that supports researchers wanting to promote open science within their institution.
+The international programme selects four fellows each year, with this year's fellows being chosen in June 2017.
+Mozilla allowing fellows to spend 20\% of their time on their own research and so, should I be chosen, I would need to work on my PhD part-time and postpone the completion date for 8 months.
+
+If I cannot find a suitable academic job I am considering computational fluid dynamics positions and software engineering positions elsewhere.
+I have submitted an application to the UK Met Office who have several software engineering vacancies.
+
 
 \bibliographystyle{ametsoc2014}                                                 
 \bibliography{references}
@@ -258,7 +284,7 @@ Results should be compared between Lorenz and Charney--Phillips model variants a
 \subsubsection*{Mathematics modules}
 \footnotesize
 \begin{tabular}{l l l l}
-Spring 2017	& \href{https://finite-element.github.io}{M5A47}  & Finite elements: numerical analysis and implementation & unassessed \\
+Spring 2017	& \href{https://finite-element.github.io}{M5A47}  & Finite elements: numerical analysis and implementation & unassessed, partially completed \\
 Spring 2016	& \href{www.reading.ac.uk/module/document.aspx?modP=MA3NAT&modYR=1516}{MA3NAT} & Numerical Analysis II & unassessed \\
 Spring 2015	& \href{www.reading.ac.uk/modules/document.aspx?modP=MAMNSP&modYR=1415}{MAMNSP} & Numerical Solution of Partial Differential Equations  & 78\% \\
 \end{tabular}
@@ -289,13 +315,14 @@ June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
 \begin{tabularx}{\linewidth}{l l X}
 September 2017 & Applicant & \href{https://sites.google.com/site/scicade2017/}{International conference on scientific computation and differential equations}, University of Bath \\
 August 2017 & Co-organiser & NERC student conference (working title) \\
-July 2017 & Speaker & UK Met Office Gung Ho network meeting \\
+July 2017 & Speaker & UK Met Office GungHo network meeting, University of Exeter \\
 June 2017 & Participant & \href{https://www.software.ac.uk/c4rr}{Docker containers for reproducible research}, University of Cambridge \\
 April 2017 & Speaker & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, École normale supérieure, Paris \\
 March 2017 & Attendee & \href{https://blogs.reading.ac.uk/open-research/open-in-practice-inspirations-strategies-and-methods-for-open-research/}{Open in practice: inspirations, strategies and methods for open research}, University of Reading \\
 March 2017 & Participant & \href{http://www.effective-quadratures.org/eq2017}{Effective quadratures workshop}, University of Cambridge \\
-February 2017 & Speaker & Numerical methods for geophysical fluid dynamics, Imperial College London \\
+February 2017 & Invited speaker & Numerical methods for geophysical fluid dynamics, Imperial College London \\
 January 2017 & Attendee & Research software management, sharing and sustainability, British Library \\
+December 2016 & Invited speaker & \href{https://www.rmets.org/events/meteorological-research-within-university-reading-2016}{South-East local centre meeting, Royal Meteorological Society} \\
 October 2016 & Speaker & \href{http://www.ecmwf.int/en/learning/workshops-and-seminars/workshop-numerical-and-computational-methods-simulation-all-scale-geophysical-flows}{Numerical and computational methods for simulation of all-scale geophysical flows}, ECMWF \\
 November 2015 & Attendee & GungHo workshop on next generation weather and climate prediction, UK Met Office \\
 June 2015 & Attendee & Hoskins@70 \\
@@ -346,5 +373,19 @@ June 2016 & Visited NCAR, hosted by Ram Nair \\
 17 Dec 2014 & MPECDT jamboree & Poster presentation for Mathematics for Planet Earth Centre for Doctoral Training jamboree \\
 12 Sep 2014 & Lunchtime seminar  & Gain control of your documents and code: hands-on with revision control and build automation \\
 \end{tabularx}
+
+\section*{Appendix C: Milestones}
+
+\begin{tabular}{l l}
+10 Jun 2015 & First MWR manuscript submitted \\
+19 Aug 2015 & Major revisions required to MWR manuscript \\
+29 Oct 2015 & Second MWR manuscript submitted\\
+9 Dec 2015 & Major revisions required to MWR manuscript \\
+5 Feb 2016 & Third MWR manuscript submitted
+	\vspace*{1em} \\
+2 Feb 2017 & First JCP manuscript submitted \\
+13 Mar 2017 & Minor revisions required to JCP manuscript \\
+21 Apr 2017 & Second JCP manuscript submitted \\
+\end{tabular}
 
 \end{document}
