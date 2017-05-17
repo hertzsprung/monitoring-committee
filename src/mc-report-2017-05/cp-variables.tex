@@ -3,11 +3,18 @@
 \usepackage{bm}
 \begin{document}
 \begin{tikzpicture}[
-%  scale=0.56,
+  scale=0.5,
   cpnt/.style={fill=gray}
 ]
 
-\draw (3,3) -- (0,10) -- (7,12) -- (7,0) -- (3,3);
+\draw (2,3) -- (0,7) -- (7,9) -- (7,0) -- (2,3);
+
+\path [cpnt] (4.1,5) circle [radius=0.2] node [right] {$\theta_C$};
+
+\draw [thick] (7,4.5) circle [radius=0.2];
+\draw [thick] (4.5,1.5) circle [radius=0.2];
+\draw [thick] (3.5,8) circle [radius=0.2];
+\draw [thick] (1,5) circle [radius=0.2];
 
 \end{tikzpicture}
 \end{document}
