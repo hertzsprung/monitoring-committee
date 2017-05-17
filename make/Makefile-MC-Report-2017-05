@@ -6,4 +6,5 @@ build/mc-report-2017-05/mc-report-2017-05.pdf: \
   src/mc-report-2017-05/initial-theta-diff.pdf \
   src/mc-report-2017-05/lorenz-theta-diff.pdf \
   src/mc-report-2017-05/cp-theta-diff.pdf \
-  src/mc-report-2017-05/theta-diff-legend.eps
+  src/mc-report-2017-05/theta-diff-legend.eps \
+  src/mc-report-2017-05/cp-variables.tex
