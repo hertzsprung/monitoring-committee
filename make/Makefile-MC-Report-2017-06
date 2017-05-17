@@ -1,0 +1,10 @@
+$(eval $(call LaTeXWithBibTeX,src/mc-report-2017-06,build,mc-report-2017-06))
+
+build/mc-report-2017-06/mc-report-2017-06.pdf: \
+  src/mc-report-2017-06/ametsoc2014.bst \
+  src/mc-report-2017-06/references.bib \
+  src/mc-report-2017-06/initial-theta-diff.pdf \
+  src/mc-report-2017-06/lorenz-theta-diff.pdf \
+  src/mc-report-2017-06/cp-theta-diff.pdf \
+  src/mc-report-2017-06/theta-diff-legend.eps \
+  src/mc-report-2017-06/cp-variables.tex
