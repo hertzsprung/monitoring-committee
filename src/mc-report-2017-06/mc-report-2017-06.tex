@@ -78,18 +78,18 @@ Unlike latitude-longitude meshes, quasi-uniform meshes have non-zero skewness or
 Mesh refinement and adaptive mesh techniques also create mesh geometries with non-orthogonalities or hanging nodes \citep{marras2016}.
 Cut cell meshes are orthogonal nearly everywhere but the cut cell method creates arbitrarily small cells that impose severe time-step constraints on explicit Eulerian methods \citep{klein2009}.
 
-This PhD makes three contributions to improve numerical accuracy on arbitrary meshes.  First, a new mesh for representing steep terrain avoids the severe distortions associated with terrain-following meshes \citep{shaw-weller2016} and avoids severe time-step constraints associated with cut cell meshes \citep{shaw2017}.  Second, a new advection scheme is formulated for numerical stability on high-distorted meshes \citep{shaw2017}.  It is second-order convergent on quasi-uniform spherical meshes, terrain-following and cut cell meshes.
+This PhD makes three contributions to improve numerical accuracy on arbitrary meshes.  First, a new mesh for representing steep terrain avoids the severe distortions associated with terrain-following meshes \citep{shaw-weller2016} and avoids severe time-step constraints associated with cut cell meshes \citep{shaw2017}.  Second, a new transport scheme is formulated for numerical stability on high-distorted meshes \citep{shaw2017}.  It is second-order convergent on quasi-uniform spherical meshes, terrain-following and cut cell meshes.
 Third, the Charney--Phillips staggering of variables is generalised for arbitrary meshes and is shown to eliminate the computational mode associated with a Lorenz staggering.
 
 The OpenFOAM computational fluid dynamics library is used throughout the project to enable like-for-like comparisons.  Different types of mesh are compared using the same model, and different variable staggerings are compared using variants of a single model.
-The PhD also contributes two new two-dimensional test cases that are suitable for evaluating dynamical cores.  The first test challenges advection schemes near steeply-sloping lower boundaries \citep{shaw2017}.
+The PhD also contributes two new two-dimensional test cases that are suitable for evaluating dynamical cores.  The first test challenges transport schemes near steeply-sloping lower boundaries \citep{shaw2017}.
 The second test is designed to excite the Lorenz computational mode.  Existing tests that excite the Lorenz computational mode are poorly suited to dynamical core evaluation: the standing waves test by \citet{arakawa-konor1996} was designed for a model with no horizontal discretisation, and the radiative heating test by \cite{untch-hortal2004} requires a 600-day integration using a three-dimensional spherical Earth.  The test that we propose requires a 2-day integration using a two-dimensional Cartesian plane and is based on the test by \citet{arakawa-konor1996}.
 
 
 \section{Advection over steep slopes on arbitrary meshes}
-We submitted a manuscript to the Journal of Computational Physics in February 2017 documenting the finite volume advection scheme, ``cubicFit''.  The final article \citep{shaw2017} was made available in April 2017 after one round of minor corrections.  The cubicFit scheme is largely insensitive to mesh distortions and maintains second-order convergence on highly distorted meshes.  Idealised tests demonstrate that the cubicFit scheme is more stable and more accurate than a standard multidimensional linear upwind scheme.
+We submitted a manuscript to the Journal of Computational Physics in February 2017 documenting the finite volume transport scheme, ``cubicFit''.  The final article \citep{shaw2017} was made available in April 2017 after one round of minor corrections.  The cubicFit scheme is largely insensitive to mesh distortions and maintains second-order convergence on highly distorted meshes.  Idealised tests demonstrate that the cubicFit scheme is more stable and more accurate than a standard multidimensional linear upwind scheme.
 
-Having presented our work at PDEs on the Sphere in April \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen}, a researcher from the computational research group at Lawrence Berkley National Lab, told me that his group have developed a high-order finite volume scheme for solving Poisson's equation on cut cell meshes \citep{devendran2015}.  Hans is keen to help me apply these techniques to the cubicFit advection scheme in order to achieve convergence higher than second-order.  If time permits, I hope to collaborate with Hans to take this work further.
+Having presented our work at PDEs on the Sphere in April \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen}, a researcher from the computational research group at Lawrence Berkley National Lab, told me that his group have developed a high-order finite volume scheme for solving Poisson's equation on cut cell meshes \citep{devendran2015}.  Hans is keen to help me apply these techniques to the cubicFit transport scheme in order to achieve convergence higher than second-order.  If time permits, I hope to collaborate with Hans to take this work further.
 
 \section{Generalisation of Charney--Phillips for arbitrary meshes}
 
@@ -149,56 +149,15 @@ Axes are in units of metres.
 
 \section{Future research}
 
-%Work is on track according to the schedule set out in MC4.
+I have completed tasks up to May 2017 according to the schedule set out in \href{http://www.datumedge.co.uk/publications/mc-report-2016-11.pdf}{monitoring committee report \#4}.  We are making progress on generalising Charney--Phillips and my supervisors and I are keen to develop this work into a third article to be submitted to the Quarterly Journal of the Royal Meteorological Society, and I believe a third publication will benefit a future career in academia.
 
-\subsection*{A third paper?}
-\TODO{
-Do we want to get another paper out before submitting?  If so, what is a minimum viable paper?
-\begin{itemize}
-	\item A generalised formulation of Charney--Phillips for arbitrary meshes
-	\item A Charney--Phillips OpenFOAM model with reasonably accurate non-orthogonal treatment
-	\item The new standing waves test case with a comparison of results:
-	\begin{itemize}
-		\item uniform mesh, meshes with non-conformal block refinement and conformal refinement (with diagonal faces)
-		\item Lorenz and Charney--Phillips model variants to demonstrate the presence and absence of the Lorenz computational mode respectively
-	\end{itemize}
-\end{itemize}
-Additionally and, in my opinion, optionally, the paper could include
-\begin{itemize}
-	\item Try the standing waves test over orography
-	\item Improved $\theta$ advection in Charney--Phillips model, possibly similar to cubicFit in advective form
-	\item Evaluate the $\theta$ advection scheme using a variant of the \citet{schaer2002} gravity waves test that incorporates standing waves that excite the Lorenz computational mode
-\end{itemize}
-}
+With the agreement of the monitoring committee, I would like to apply for a six-month extension for the completion of my PhD.  This extension application is based on a number of grounds.
+First, as of May 2017, I have spent a total of five months addressing reviewer comments: designing new mesh generation techniques, performing new experiments and revising manuscripts (Appendix C).
+Second, I expect to spend about two months writing a third journal article.
+Third, there are overlaps between my first and second articles, and the second article supercedes parts of the first.  As such, there is no one-to-one mapping between articles and thesis chapters, and reorganisation and some new prose and new figures will be required for the thesis.
+Finally, I have completed two masters modules, one of which was assessed.
 
-\subsection*{Timeline of work}
-
-\TODO{
-Do I need to discuss a possible extension of funding at this meeting?  If so:
-\begin{itemize}
-	\item I've spent a lot of time writing papers, including a total of five months revising manuscripts (details in Appendix C)
-	\item I've also taken two Masters modules, one of which was assessed
-	\item Do I want to budget some time for making the cubicFit scheme high-order?
-	\item Does 1 month per chapter sound reasonable?  If so, I could likely be finished by January, but only if I don't write a third paper.
-\end{itemize}
-}
-
-
-% June
-%  - improve CP model
-% July
-%  - high-order cubicFit
-% August
-%  - complete cubicFit chapter
-% September
-%  - complete slanted cell chapter
-% October
-%  - complete C--P chapter
-% November
-%  - complete existing methods chapter
-% December
-%  - complete introduction
-
+\TODO{timeline of work}
 
 
 \section{Personal development}
@@ -225,26 +184,27 @@ I submitted an application in May to the UK Met Office who have several software
 \titlespacing\subsubsection{0pt}{0.8em plus 4pt minus 2pt}{0.2em plus 2pt minus 2pt}
 
 \section*{Appendix A: Thesis plan}
-The thesis chapters are expected to be as follows:
+\footnotesize
+\TODO{indicate completion status of each item}
 
-\subsubsection*{Introduction}
+\subsubsection*{1. Introduction}
 \noindent This project is motivated by the need for alternative horizontal and vertical representations of the Earth and its terrain.
 
-\subsubsection*{Existing methodologies}
+\subsubsection*{2. Existing methodologies}
 \begin{itemize}[itemsep=0.1em]
 	\item Describe Lorenz and Charney--Phillips staggerings for structured quadrilateral meshes
-	\item Describe the nonhydrostatic finite volume model with Lorenz staggering for arbitrary meshes \citep{weller-shahrokhi2014}
+	\item Describe the nonhydrostatic model with Lorenz staggering based on \citep{weller-shahrokhi2014}
 \end{itemize}
 
-\subsubsection*{A new mesh for representing terrain}
-\noindent The slanted cell mesh improves pressure gradient accuracy and avoids severe timestep constraints for explicit methods.
+\subsubsection*{3. A new mesh for representing terrain}
+\noindent The slanted cell mesh improves pressure gradient accuracy and avoids severe time-step constraints.
 \begin{itemize}[itemsep=0.1em]
 	\item Introduce existing types of mesh: terrain-following layers and cut cells
 	\item Describe the new slanted cell method
 	\item A two-dimensional test of a quiescent atmosphere above steep slopes, comparing terrain-following, cut cell and slanted cell meshes (using the linearUpwind scheme?)
 \end{itemize}
 
-\subsubsection*{A new transport scheme for steep slopes}
+\subsubsection*{4. A new transport scheme for steep slopes}
 \noindent The cubicFit transport scheme is stable and accurate over steep slopes with arbitrary, distorted meshes.
 \begin{itemize}[itemsep=0.1em]
 	\item Document the cubicFit transport scheme
@@ -256,27 +216,38 @@ The thesis chapters are expected to be as follows:
 	\end{itemize}}
 \end{itemize}
 
-\subsubsection*{Possible extension: making the cubicFit transport scheme high-order}
-\noindent Hans Johansen is keen to help me improve the cubicFit scheme.  I should start with advection on non-uniform, one-dimensional meshes before attempting advection in the interior of arbitrary, two-dimensional meshes.  I do not expect to investigate discretisation issues near domain boundaries.
-	
-\subsubsection*{A generalisation of the Charney--Phillips staggering}
-\noindent The Charney--Phillips staggering avoids the Lorenz computational mode, but it has only been formulated for structured quadrilateral meshes.  A generalised formulation will be suitable for arbitrary meshes, including the slanted cell mesh.
+\subsubsection*{5. Generalisation of the Charney--Phillips staggering}
+\noindent The Charney--Phillips staggering avoids the Lorenz computational mode, but it has only been formulated for structured quadrilateral meshes.  A generalised formulation will be suitable for arbitrary meshes.
 \begin{itemize}[itemsep=0.1em]
 	\item Describe the generalised Charney--Phillips formulation
+	\item Describe the \TODO{simple} advective-form transport scheme
 	\item Describe the necessary changes to the nonhydrostatic model of \citet{weller-shahrokhi2014}
-	\item Compare results between the Lorenz and Charney--Phillips variants of the model using the two-dimensional standing waves test case
+	\item Describe the new two-dimensional standing waves test case and compare results:
+	\item Compare results between
+	\begin{itemize}
+		\item a uniform mesh, and meshes with non-conformal block refinement and conformal refinement (with diagonal faces)
+		\item Lorenz and Charney--Phillips model variants to demonstrate the presence and absence of the Lorenz computational mode respectively
+	\end{itemize}
 \end{itemize}
 
-\subsubsection*{Possible extension: grid-scale perturbations over orography}
-\noindent We should demonstrate the efficacy of combining all three work items: the slanted cell mesh, the cubicFit transport scheme, and the generalised Charney--Phillips formulation.  In order to achieve this, we may be able to incorporate the grid-scale perturbations from the standing waves test into the mountain waves test case by \citet{schaer2002}.
-Results should be compared between Lorenz and Charney--Phillips model variants and between mesh types.
+\subsubsection*{6. Thermodynamic transport for generalised Charney--Phillips meshes}
+\noindent The final chapter demonstrates the efficacy of combining all three work items: the slanted cell mesh, the cubicFit scheme, and the generalised Charney--Phillips formulation.
+\begin{itemize}
+	\item Document the new advective-form transport scheme for potential temperature, adopting methods used in the cubicFit scheme
+	\item Evaluate the $\theta$ transport scheme using a new variant of the \citet{schaer2002} gravity waves test that incorporates standing waves that excite the Lorenz computational mode.  Results should be compared between
+	\begin{itemize}
+		\item \TODO{simple and advanced} advective-form transport schemes
+		\item Lorenz and Charney--Phillips model variants
+		\item terrain-following, cut cell and slanted cell meshes
+	\end{itemize}
+	\item \TODO{cubicFit won't really feature here, although it might still be used for transporting momentum.  we could use it to transport a passive tracer?}
+\end{itemize}
 
 \newpage
 
 \section*{Appendix B: Training record}
 
 \subsubsection*{Mathematics modules}
-\footnotesize
 \begin{tabular}{l l l l}
 Spring 2017	& \href{https://finite-element.github.io}{M5A47}  & Finite elements: numerical analysis and implementation & unassessed, partially completed \\
 Spring 2016	& \href{www.reading.ac.uk/module/document.aspx?modP=MA3NAT&modYR=1516}{MA3NAT} & Numerical Analysis II & unassessed \\
