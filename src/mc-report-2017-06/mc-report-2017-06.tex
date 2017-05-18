@@ -149,15 +149,28 @@ Axes are in units of metres.
 
 \section{Future research}
 
-I have completed tasks up to May 2017 according to the schedule set out in \href{http://www.datumedge.co.uk/publications/mc-report-2016-11.pdf}{monitoring committee report \#4}.  We are making progress on generalising Charney--Phillips and my supervisors and I are keen to develop this work into a third article to be submitted to the Quarterly Journal of the Royal Meteorological Society, and I believe a third publication will benefit a future career in academia.
+I have completed tasks up to May 2017 according to the schedule set out in \href{http://www.datumedge.co.uk/publications/mc-report-2016-11.pdf}{monitoring committee report \#4} and we are making good progress generalising Charney--Phillips.  My supervisors and I are keen to develop this work into a third article to be submitted to the Quarterly Journal of the Royal Meteorological Society, and I believe a third publication will benefit a future academic career.
 
 With the agreement of the monitoring committee, I would like to apply for a six-month extension for the completion of my PhD.  This extension application is based on a number of grounds.
 First, as of May 2017, I have spent a total of five months addressing reviewer comments: designing new mesh generation techniques, performing new experiments and revising manuscripts (Appendix C).
 Second, I expect to spend about two months writing a third journal article.
-Third, there are overlaps between my first and second articles, and the second article supercedes parts of the first.  As such, there is no one-to-one mapping between articles and thesis chapters, and reorganisation and some new prose and new figures will be required for the thesis.
+Third, my second article supercedes parts of my first article.  As such, a one-to-one mapping between articles and thesis chapters in all instances, and reorganisation, new prose and new figures will be required for the thesis.
 Finally, I have completed two masters modules, one of which was assessed.
 
-\TODO{timeline of work}
+\subsection*{Timeline of future work}
+
+I intend to interleave the writing of my thesis with technical work on generalised Charney--Phillips.  Chapters 5 and 6 will be largely copied from the third manuscript.
+
+\begin{description}
+	\item[July 2017]{Complete technical work for the generalised Charney--Phillips staggering (chapter 5): improve non-orthogonal treatment of the thermodynamic discretisation, create refined meshes, and obtain accurate results comparable to those obtained with the Lorenz model}
+	\item[August 2017]{Complete chapter 4, documenting and assessing the flux-form cubicFit transport scheme}
+	\item[September 2017]{Complete chapter 3, covering the slanted cell method}
+	\item[October 2017]{Complete chapter 2, documenting existing methodologies}
+	\item[December 2017]{Develop a new advective-form transport scheme for chapter 6}
+	\item[March 2018]{Submit a manuscript to the Quarterly Journal of the Royal Meteorological Society}
+	\item[April 2018]{Complete chapters 5 and 6 on the generalisation of Charney--Phillips}
+	\item[May 2018]{Complete chapter 1, introduction}
+\end{description}
 
 
 \section{Personal development}
@@ -212,15 +225,14 @@ I submitted an application in May to the UK Met Office who have several software
 	\begin{itemize}[itemsep=0.1em,topsep=0pt]
 		\item \citet{shaw2017} transport test over steep slopes 
 		\item \citet{lauritzen2012} deformational transport tests on a spherical Earth
-		\item \citet{schaer2002} mountain waves test case (should demonstrate that cubicFit is necessary to obtain the reference solution)
 	\end{itemize}}
 \end{itemize}
 
-\subsubsection*{5. Generalisation of the Charney--Phillips staggering}
+\subsubsection*{5. A generalisation of the Charney--Phillips staggering}
 \noindent The Charney--Phillips staggering avoids the Lorenz computational mode, but it has only been formulated for structured quadrilateral meshes.  A generalised formulation will be suitable for arbitrary meshes.
 \begin{itemize}[itemsep=0.1em]
 	\item Describe the generalised Charney--Phillips formulation
-	\item Describe the \TODO{simple} advective-form transport scheme
+	\item Describe the simple advective-form transport scheme
 	\item Describe the necessary changes to the nonhydrostatic model of \citet{weller-shahrokhi2014}
 	\item Describe the new two-dimensional standing waves test case and compare results:
 	\item Compare results between
@@ -231,16 +243,16 @@ I submitted an application in May to the UK Met Office who have several software
 \end{itemize}
 
 \subsubsection*{6. Thermodynamic transport for generalised Charney--Phillips meshes}
-\noindent The final chapter demonstrates the efficacy of combining all three work items: the slanted cell mesh, the cubicFit scheme, and the generalised Charney--Phillips formulation.
+\noindent The final chapter brings together the three aspects of the project: the slanted cell mesh, the generalised Charney--Phillips formulation, and the cubicFit transport scheme.
 \begin{itemize}
-	\item Document the new advective-form transport scheme for potential temperature, adopting methods used in the cubicFit scheme
-	\item Evaluate the $\theta$ transport scheme using a new variant of the \citet{schaer2002} gravity waves test that incorporates standing waves that excite the Lorenz computational mode.  Results should be compared between
+	\item Document a new advective-form transport scheme for potential temperature, based on the flux-form cubicFit scheme
+	\item Compare accuracy with the simple transport scheme from chapter 5, using the tracer transport test from \citep{shaw2017}
+	\item Evaluate the transport scheme using the \citet{schaer2002} gravity waves test.  Results should be compared between
 	\begin{itemize}
-		\item \TODO{simple and advanced} advective-form transport schemes
+		\item the two advective-form transport schemes
 		\item Lorenz and Charney--Phillips model variants
 		\item terrain-following, cut cell and slanted cell meshes
 	\end{itemize}
-	\item \TODO{cubicFit won't really feature here, although it might still be used for transporting momentum.  we could use it to transport a passive tracer?}
 \end{itemize}
 
 \newpage
