@@ -200,6 +200,26 @@ I submitted an application in May to the UK Met Office who have several software
 \footnotesize
 \TODO{indicate completion status of each item}
 
+\subsubsection*{3. A new mesh for representing terrain}
+\noindent The slanted cell mesh improves pressure gradient accuracy and avoids severe time-step constraints.
+
+\begin{tabularx}{\linewidth}{>{\hsize=2.2in}X X}
+Not started & Introduce existing types of mesh: terrain-following layers and cut cells \\
+\citet{shaw-weller2016,shaw2017} & Describe the new slanted cell method \\
+\citet{shaw-weller2016}, revision needed & A two-dimensional test of a quiescent atmosphere above steep slopes, comparing terrain-following, cut cell and slanted cell meshes using the standard linear upwind scheme \\
+\end{tabularx}
+
+\subsubsection*{4. A new transport scheme for steep slopes}
+\noindent The cubicFit transport scheme is stable and accurate over steep slopes with arbitrary, distorted meshes.
+
+
+\begin{tabularx}{\linewidth}{>{\hsize=2.2in}X X}
+	\citet{shaw2017} & Document the cubicFit transport scheme \\
+	 & Test results comparing linearUpwind and cubicFit transport schemes \\
+	\citet{shaw2017} & Transport test over steep slopes \\
+	\citet{shaw2017} & Deformational transport tests on a spherical Earth \citep{lauritzen2012} \\
+\end{tabularx}
+
 \subsubsection*{1. Introduction}
 \noindent This project is motivated by the need for alternative horizontal and vertical representations of the Earth and its terrain.
 
