@@ -161,7 +161,7 @@ Finally, I have completed two masters modules, one of which was assessed.
 
 I intend to interleave the writing of my thesis with technical work on generalised Charney--Phillips.  Chapters 5 and 6 will be largely copied from the third manuscript.
 
-\begin{description}
+\begin{description}[itemsep=0.15em,topsep=0.1em]
 	\item[July 2017]{Complete technical work for the generalised Charney--Phillips staggering (chapter 5): improve non-orthogonal treatment of the thermodynamic discretisation, create refined meshes, and obtain accurate results comparable to those obtained with the Lorenz model}
 	\item[August 2017]{Complete chapter 4, documenting and assessing the flux-form cubicFit transport scheme}
 	\item[September 2017]{Complete chapter 3, covering the slanted cell method}
@@ -198,82 +198,74 @@ I submitted an application in May to the UK Met Office who have several software
 
 \section*{Appendix A: Thesis plan}
 \footnotesize
-\TODO{indicate completion status of each item}
+The progress of each section is recorded here.  I have provided a citation where a section is documented in an article but has not yet been included in the thesis.  I also note where technical and mathematic work is still in development and documentation has yet to be written.
+
+\subsubsection*{1. Introduction}
+\begin{tabularx}{\linewidth}{>{\hsize=1.3in}X X}
+Not started & This project is motivated by the need for alternative horizontal and vertical representations of the Earth and its terrain
+\end{tabularx}
+
+\subsubsection*{2. Existing methodologies}
+
+\begin{tabularx}{\linewidth}{>{\hsize=1.3in}X X}
+Not started & Describe Lorenz and Charney--Phillips staggerings for structured quadrilateral meshes \\
+\cite{shaw-weller2016} & Describe the nonhydrostatic model with Lorenz staggering
+\end{tabularx}
 
 \subsubsection*{3. A new mesh for representing terrain}
 \noindent The slanted cell mesh improves pressure gradient accuracy and avoids severe time-step constraints.
+\vspace*{0.5em}
 
-\begin{tabularx}{\linewidth}{>{\hsize=2.2in}X X}
-Not started & Introduce existing types of mesh: terrain-following layers and cut cells \\
+\begin{tabularx}{\linewidth}{>{\hsize=1.3in}X X}
+\citet{shaw-weller2016} & Introduce existing types of mesh: terrain-following layers and cut cells \\
+\addlinespace[0.5em]
 \citet{shaw-weller2016,shaw2017} & Describe the new slanted cell method \\
+\addlinespace[0.5em]
 \citet{shaw-weller2016}, revision needed & A two-dimensional test of a quiescent atmosphere above steep slopes, comparing terrain-following, cut cell and slanted cell meshes using the standard linear upwind scheme \\
 \end{tabularx}
 
 \subsubsection*{4. A new transport scheme for steep slopes}
 \noindent The cubicFit transport scheme is stable and accurate over steep slopes with arbitrary, distorted meshes.
+\vspace*{0.5em}
 
-
-\begin{tabularx}{\linewidth}{>{\hsize=2.2in}X X}
+\begin{tabularx}{\linewidth}{>{\hsize=1.3in}X X}
 	\citet{shaw2017} & Document the cubicFit transport scheme \\
-	 & Test results comparing linearUpwind and cubicFit transport schemes \\
-	\citet{shaw2017} & Transport test over steep slopes \\
-	\citet{shaw2017} & Deformational transport tests on a spherical Earth \citep{lauritzen2012} \\
+\addlinespace[0.5em]
+	 & Test results comparing linearUpwind and cubicFit transport schemes: \\
+	\citet{shaw2017} & \quad\textbullet\enspace transport test over steep slopes \\
+	\citet{shaw2017} & \quad\textbullet\enspace deformational transport tests on a spherical Earth \\
 \end{tabularx}
-
-\subsubsection*{1. Introduction}
-\noindent This project is motivated by the need for alternative horizontal and vertical representations of the Earth and its terrain.
-
-\subsubsection*{2. Existing methodologies}
-\begin{itemize}[itemsep=0.1em]
-	\item Describe Lorenz and Charney--Phillips staggerings for structured quadrilateral meshes
-	\item Describe the nonhydrostatic model with Lorenz staggering based on \citep{weller-shahrokhi2014}
-\end{itemize}
-
-\subsubsection*{3. A new mesh for representing terrain}
-\noindent The slanted cell mesh improves pressure gradient accuracy and avoids severe time-step constraints.
-\begin{itemize}[itemsep=0.1em]
-	\item Introduce existing types of mesh: terrain-following layers and cut cells
-	\item Describe the new slanted cell method
-	\item A two-dimensional test of a quiescent atmosphere above steep slopes, comparing terrain-following, cut cell and slanted cell meshes (using the linearUpwind scheme?)
-\end{itemize}
-
-\subsubsection*{4. A new transport scheme for steep slopes}
-\noindent The cubicFit transport scheme is stable and accurate over steep slopes with arbitrary, distorted meshes.
-\begin{itemize}[itemsep=0.1em]
-	\item Document the cubicFit transport scheme
-	\item {Test results comparing linearUpwind and cubicFit transport schemes
-	\begin{itemize}[itemsep=0.1em,topsep=0pt]
-		\item \citet{shaw2017} transport test over steep slopes 
-		\item \citet{lauritzen2012} deformational transport tests on a spherical Earth
-	\end{itemize}}
-\end{itemize}
 
 \subsubsection*{5. A generalisation of the Charney--Phillips staggering}
 \noindent The Charney--Phillips staggering avoids the Lorenz computational mode, but it has only been formulated for structured quadrilateral meshes.  A generalised formulation will be suitable for arbitrary meshes.
-\begin{itemize}[itemsep=0.1em]
-	\item Describe the generalised Charney--Phillips formulation
-	\item Describe the simple advective-form transport scheme
-	\item Describe the necessary changes to the nonhydrostatic model of \citet{weller-shahrokhi2014}
-	\item Describe the new two-dimensional standing waves test case and compare results:
-	\item Compare results between
-	\begin{itemize}
-		\item a uniform mesh, and meshes with non-conformal block refinement and conformal refinement (with diagonal faces)
-		\item Lorenz and Charney--Phillips model variants to demonstrate the presence and absence of the Lorenz computational mode respectively
-	\end{itemize}
-\end{itemize}
+\vspace*{0.5em}
+
+\begin{tabularx}{\linewidth}{>{\hsize=1.3in}X X}
+	In development & Describe the generalised Charney--Phillips formulation \\
+	In development & Describe the simple advective-form transport scheme \\
+	In development & Describe the necessary changes to the nonhydrostatic model \\
+\addlinespace[0.5em]
+&  Describe the new two-dimensional standing waves test case and compare results: \\
+\addlinespace[0.2em]
+	In development & \quad\textbullet\enspace Lorenz and Charney--Phillips model variants to demonstrate the presence and absence of the Lorenz computational mode respectively \\
+\addlinespace[0.2em]
+	Not started & \quad\textbullet\enspace a uniform mesh, and meshes with non-conformal block refinement and conformal refinement (with diagonal faces) \\
+\end{tabularx}
 
 \subsubsection*{6. Thermodynamic transport for generalised Charney--Phillips meshes}
 \noindent The final chapter brings together the three aspects of the project: the slanted cell mesh, the generalised Charney--Phillips formulation, and the cubicFit transport scheme.
-\begin{itemize}
-	\item Document a new advective-form transport scheme for potential temperature, based on the flux-form cubicFit scheme
-	\item Compare accuracy with the simple transport scheme from chapter 5, using the tracer transport test from \citep{shaw2017}
-	\item Evaluate the transport scheme using the \citet{schaer2002} gravity waves test.  Results should be compared between
-	\begin{itemize}
-		\item the two advective-form transport schemes
-		\item Lorenz and Charney--Phillips model variants
-		\item terrain-following, cut cell and slanted cell meshes
-	\end{itemize}
-\end{itemize}
+\vspace*{0.5em}
+
+\begin{tabularx}{\linewidth}{>{\hsize=1.3in}X X}
+Not started &  Document a new advective-form transport scheme for potential temperature, based on the flux-form cubicFit scheme \\
+\addlinespace[0.5em]
+Not started & Compare accuracy with the simple transport scheme from chapter 5, using the tracer transport test from \citep{shaw2017} \\
+\addlinespace[0.5em]
+& Evaluate the transport scheme using the \citet{schaer2002} gravity waves test.  Results should be compared between \\
+Not started & \quad\textbullet\enspace the two advective-form transport schemes \\
+Not started & \quad\textbullet\enspace Lorenz and Charney--Phillips model variants \\
+Not started & \quad\textbullet\enspace terrain-following, cut cell and slanted cell meshes \\
+\end{tabularx}
 
 \newpage
 
