@@ -12,3 +12,5 @@ mc-report-2017-06.pdf
 *.log
 legends
 colourScale.cpt
+build.ninja
+build.ninja.generated
