@@ -1,0 +1,236 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{fullpage}
+\usepackage{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage{csquotes}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{mathptmx}
+\usepackage{natbib}
+\usepackage[final,babel]{microtype}
+\usepackage[colorlinks,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{doi}
+\usepackage{siunitx}
+\usepackage[margin=3pt]{subcaption}
+\usepackage{xcolor}
+\PassOptionsToPackage{final}{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{patterns}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{colortbl}
+
+\title{
+\vspace*{-2em}
+Monitoring Committee Progress Report \#6\\
+\vspace*{1em}
+\Large{Numerical Representation of Mountains in Atmospheric Models}}
+\author{James Shaw
+\vspace{0.5em} \\
+\large{Supervisors: Hilary Weller, John Methven, Terry Davies}
+\vspace{0.5em} \\
+\large{Monitoring Committee: Paul Williams, Maarten Ambaum}}
+\date{December 2017}
+
+\captionsetup{margin=3pt,font={small}}
+\setlength{\bibsep}{0.3em plus 0.1ex}
+
+\makeatletter
+\AtBeginDocument{
+  \hypersetup{
+    pdftitle = {Monitoring Committee Progress Report \#6},
+    pdfauthor = {James Shaw}
+  }
+}
+\makeatother
+
+% https://tex.stackexchange.com/q/139401/23339
+\graphicspath{{src/mc-report-2017-12/}{build/}}
+
+% https://tex.stackexchange.com/a/79060/23339
+\makeatletter
+\def\input@path{{src/mc-report-2017-12/}{build/mc-report-2017-12/}{build/}}
+\makeatother
+
+\definecolor{done}{rgb}{0.87,0.96,0.87}
+
+\makeatletter
+\patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}
+\patchcmd{\ttlh@hang}{\noindent}{}{}{}
+\makeatother
+
+\newcommand{\iu}{{i\mkern1mu}}
+\newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
+
+\defcitealias{openfoam}{{OpenFOAM user guide}}
+\begin{document}
+\maketitle
+
+\nocite{*}
+
+\bibliographystyle{ametsoc2014}                                                 
+\bibliography{src/mc-report-2017-12/references}
+
+\newpage
+
+\titlespacing\subsubsection{0pt}{0.8em plus 4pt minus 2pt}{0.2em plus 2pt minus 2pt}
+
+\section*{Appendix A: Thesis plan}
+\footnotesize
+A work-in-progress draft is available at \url{http://www.datumedge.co.uk/publications/phd-thesis.pdf}.
+
+\subsubsection*{1. Introduction}
+\begin{tabularx}{\linewidth}{>{\hsize=0.9in}X X}
+Not started & This project is motivated by the need for alternative horizontal and vertical representations of Earth's atmosphere in the proximity to mountainous terrain
+\end{tabularx}
+
+\subsubsection*{2. Numerically stable transport over steep slopes}
+\noindent The cubicFit transport scheme is stable and accurate over steep slopes with arbitrary, distorted meshes.
+\vspace*{0.5em}
+
+\begin{tabularx}{\linewidth}{>{\hsize=0.9in}X X}
+	Mostly complete & Review of existing transport schemes and motivation for the cubicFit transport scheme \\
+\rowcolor{done}	Complete & Document the cubicFit transport scheme \\
+\addlinespace[0.5em]
+	 & Test results comparing a standard linear upwind scheme and the cubicFit transport scheme: \\
+	Mostly complete & \quad\textbullet\enspace horizontal transport test above steep slopes \\
+	Mostly complete & \quad\textbullet\enspace terrain-following transport test above steep slopes \\
+	Mostly complete & \quad\textbullet\enspace deformational transport tests on a spherical Earth \\
+\end{tabularx}
+
+\subsubsection*{3. A new mesh for representing the atmosphere above terrain}
+\noindent The slanted cell mesh improves pressure gradient accuracy and avoids severe time-step constraints.
+\vspace*{0.5em}
+
+\begin{tabularx}{\linewidth}{>{\hsize=0.9in}X X}
+\rowcolor{done} Complete & Introduction to pressure gradient errors and existing methods to improve pressure gradient accuracy \\
+\rowcolor{done} Complete & Describe the new slanted cell method \\
+\rowcolor{done} Complete & Transport test over a mountainous lower boundary using terrain-following, cut cell and slanted cell meshes \\
+\rowcolor{done} Complete & A two-dimensional test of a quiescent atmosphere above steep slopes, comparing terrain-following, cut cell and slanted cell meshes \\
+\end{tabularx}
+
+
+\newpage
+
+\section*{Appendix B: Training record}
+
+\subsubsection*{Mathematics modules}
+\begin{tabular}{l l l l}
+Spring 2017	& \href{https://finite-element.github.io}{M5A47}  & Finite elements: numerical analysis and implementation & unassessed, partially completed \\
+Spring 2016	& \href{www.reading.ac.uk/module/document.aspx?modP=MA3NAT&modYR=1516}{MA3NAT} & Numerical Analysis II & unassessed \\
+Spring 2015	& \href{www.reading.ac.uk/modules/document.aspx?modP=MAMNSP&modYR=1415}{MAMNSP} & Numerical Solution of Partial Differential Equations  & 78\% \\
+\end{tabular}
+
+\subsubsection*{RRDP modules}
+I have completed the requisite 11 RRDP modules.
+
+\vspace*{0.5em}
+\begin{tabular}{l l}
+23 June 2017    & Graduate school conference \\
+3 May 2017	& Effective CVs \\
+28 Feb 2017	& Getting your first post-doc position \\
+9 Nov 2016      & Open Access and research data management \\
+24 Mar 2016	& Voice coaching: looking after your voice \\
+26--27 Jan 2016 & Preparing to teach (introduction, marking \& feedback, leading small groups) \\
+2 Dec 2015	& An essential guide to critical academic writing \\
+17 Nov 2015	& Understanding the UK higher education context \\
+19 May 2015	& How to avoid plagiarism \\
+10 Mar 2015	& How to write a literature review \\
+19 Feb 2015	& How to write a paper \\
+\end{tabular}
+
+\subsubsection*{External courses}
+\begin{tabular}{l l}
+June 2016 & Dynamical core intercomparison project summer school, NCAR \\
+13 May 2016 & Peer review: the nuts and bolts, Sense about Science \\
+June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
+\end{tabular}
+
+\subsubsection*{Conferences and workshops}
+\begin{tabularx}{\linewidth}{l l X}
+September 2017 & Speaker & \href{https://sites.google.com/site/scicade2017/}{International conference on scientific computation and differential equations}, University of Bath \\
+August 2017 & Co-organiser & \href{https://frontiers2017.wordpress.com/}{Frontiers in natural environment research}, Imperial College London \\
+July 2017 & Speaker & UK Met Office GungHo network meeting, University of Exeter \\
+June 2017 & Participant & \href{https://www.software.ac.uk/c4rr}{Docker containers for reproducible research}, University of Cambridge \\
+April 2017 & Speaker & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, École normale supérieure, Paris \\
+March 2017 & Attendee & \href{https://blogs.reading.ac.uk/open-research/open-in-practice-inspirations-strategies-and-methods-for-open-research/}{Open in practice: inspirations, strategies and methods for open research}, University of Reading \\
+March 2017 & Participant & \href{http://www.effective-quadratures.org/eq2017}{Effective quadratures workshop}, University of Cambridge \\
+February 2017 & Invited speaker & Numerical methods for geophysical fluid dynamics, Imperial College London \\
+January 2017 & Attendee & Research software management, sharing and sustainability, British Library \\
+December 2016 & Invited speaker & \href{https://www.rmets.org/events/meteorological-research-within-university-reading-2016}{South-East local centre meeting, Royal Meteorological Society} \\
+October 2016 & Speaker & \href{http://www.ecmwf.int/en/learning/workshops-and-seminars/workshop-numerical-and-computational-methods-simulation-all-scale-geophysical-flows}{Numerical and computational methods for simulation of all-scale geophysical flows}, ECMWF \\
+November 2015 & Attendee & GungHo workshop on next generation weather and climate prediction, UK Met Office \\
+June 2015 & Attendee & Hoskins@70 \\
+June 2015 & Poster & SCENARIO DTP conference \\
+March 2015 & Speaker & \href{http://www.icms.org.uk/workshop.php?id=334}{Galerkin methods with applications in weather and climate forecasting}, ICMS \\
+\end{tabularx}
+
+\subsubsection*{Teaching}
+\begin{tabular}{l l l}
+Oct 2016 & Teaching assistant & MTMW11 fluid dynamics \\
+Oct 2015 & Teaching assistant & MTMG02 atmospheric physics \\
+Sep 2015 & Teaching assistant & NCAS summer school \\
+Sep 2014 & Course teacher & MPE python and linux short course \\
+\end{tabular}
+
+\subsubsection*{Visits and collaborations}
+\begin{tabularx}{\linewidth}{l X}
+July 2016 & Organised visit from \href{https://www.youtube.com/user/SimonOxfPhys}{Simon Clark}, stratospheric PhD researcher and YouTube vlogger \\
+Summer 2016 & Worked with Hilary's MSc student, Christiana Skea, studying variable timestepping for ODEs \\
+June 2016 & Visited NCAR, hosted by \href{http://www.image.ucar.edu/staff/rnair/}{Ram Nair} \\
+2015 -- 2017 & Coauthoring an article about dimensionally-split and multidimensional transport schemes, written with Hilary, her former student \href{https://www.clisap.de/research/a:-climate-dynamics-and-variability/crg-numerical-methods-in-geosciences/team-members/yumeng-chen/}{Yumeng Chen}, and Stephen Pring at the UK Met Office \\
+\end{tabularx}
+
+\subsubsection*{Outreach}
+\begin{tabular}{l l l}
+17 Mar 2017 & ``\href{https://thesocialmetwork.wordpress.com/2017/03/17/simulating-wind-on-computers/}{The advection process: simulating wind on computers}'', Social Metwork blog article \\
+14 Jul 2015 & Schools physicist of the year awards \\
+14 Jun 2015 & East Reading festival \\
+15 Feb 2015 & Brighton science festival \\
+\end{tabular}
+
+\subsubsection*{Presentations}
+\begin{tabularx}{\linewidth}{l l X}
+26 Oct 2017 & Comp. Atmos. Dyn. group & High-order finite volume advection \\
+17 Oct 2017 & Mesoscale group & Numerical advection of chemical species \\
+27 Sep 2017 & DARC group & Subsampling for uncertainty quantification \\
+6 Jul 2017 & Comp. Atmos. Dyn. group & Charney--Phillips review and automated testing for OpenFOAM applications \\
+19 Jun 2017 & HHH group & Subsampling for uncertainty quantification \\
+17 Nov 2016 & Comp. Atmos. Dyn. group & A review of atmospheric transport schemes \\
+9 Nov 2016 & PhD group & Replicable computational atmospheric science \\
+31 Oct 2016 & HHH group & Advection over steep slopes \\
+22 Sep 2016 & PhD poster session & Improving numerical accuracy over steep slopes \\
+23 Mar 2016 & Quo Vadis & Numerical representation of orography in dynamical cores (honourable mention) \\
+17 Feb 2016 & PhD group & Multidimensional advection schemes for arbitrary meshes \\
+9 Feb 2016 & Mesoscale group & Curl-free pressure gradients for accurate modelling of cold air pools \\
+19 Oct 2015 & HHH group & Improving modelled mountain flows with alternative representations of terrain \\
+27 Apr 2015 & HHH group & A like-for-like comparison between terrain following and cut cell grids \\
+21 Apr 2015 & PhD group & Discrete vector calculus on Arakawa C grids \\
+12 Feb 2015 & UK Met Office & Poster presentation for Met Office Academic Partnership \\
+18 Jan 2015 & PhD group & Python and linux tips \\
+17 Dec 2014 & MPECDT jamboree & Poster presentation for Mathematics for Planet Earth Centre for Doctoral Training jamboree \\
+12 Sep 2014 & Lunchtime seminar  & Gain control of your documents and code: hands-on with revision control and build automation \\
+\end{tabularx}
+
+\section*{Appendix C: Publication milestones}
+
+\begin{tabular}{l l}
+10 Jun 2015 & First MWR manuscript submitted \\
+19 Aug 2015 & Major revisions required to MWR manuscript \\
+29 Oct 2015 & Second MWR manuscript submitted\\
+9 Dec 2015 & Major revisions required to MWR manuscript \\
+5 Feb 2016 & Third MWR manuscript submitted
+	\vspace*{1em} \\
+2 Feb 2017 & First JCP manuscript submitted \\
+13 Mar 2017 & Minor revisions required to JCP manuscript \\
+21 Apr 2017 & Second JCP manuscript submitted \\
+\end{tabular}
+
+\end{document}
