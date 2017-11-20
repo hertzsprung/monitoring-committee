@@ -69,9 +69,14 @@ Monitoring Committee Progress Report \#6\\
 \newcommand{\iu}{{i\mkern1mu}}
 \newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
 
-\defcitealias{openfoam}{{OpenFOAM user guide}}
 \begin{document}
 \maketitle
+
+\section{Introduction}
+
+\section{Generalising the Charney--Phillips staggering for arbitrary meshes}
+
+\section{High-order transport for arbitrary meshes}
 
 \section{Future research}
 
@@ -90,8 +95,7 @@ I was also interviewed for a postdoctoral position developing numerical methods 
 
 I have worked with David Dritschel at the University of St Andrews and Alan Blyth, Doug Parker and Steven B\"{o}ing at the University of Leeds to submit an EPSRC proposal that extends the Moist Parcel-in-a-Cell model \citep{boeing2017} for studying cloud turbulence.  We expect the EPSRC to reach a decision around March 2018.
 I am also a named postdoctoral researcher on a NERC proposal to study physics-dynamics coupling that Hilary submitted in collaboration with Jemma Shipton, Colin Cotter, Peter Clark and John Thuburn in July 2017.
-
-\nocite{*}
+\TODO{what happens next to the NERC proposal?}
 
 \bibliographystyle{ametsoc2014}                                                 
 \bibliography{src/mc-report-2017-12/references}
@@ -120,18 +124,46 @@ Not started & This project is motivated by the need for alternative horizontal a
 	 & Test results comparing a standard linear upwind scheme and the cubicFit transport scheme: \\
 \rowcolor{done}	Complete & \quad\textbullet\enspace horizontal transport test above steep slopes \\
 \rowcolor{done}	Complete & \quad\textbullet\enspace terrain-following transport test above steep slopes \\
-	Mostly complete & \quad\textbullet\enspace deformational transport tests on a spherical Earth \\
+\rowcolor{done} Complete & \quad\textbullet\enspace deformational transport tests on a spherical Earth \\
 \end{tabularx}
 
-\subsubsection*{3. A new mesh for representing the atmosphere above terrain}
-\noindent The slanted cell mesh improves pressure gradient accuracy and avoids severe time-step constraints.
+\subsubsection*{3. High-order transport for arbitrary meshes}
+\noindent The cubicFit transport scheme is limited to second-order convergence because it uses a point-wise reconstruction of cell centre values.  If instead the reconstruction uses cell centre volume averages then higher-order convergence is achievable.
 \vspace*{0.5em}
 
 \begin{tabularx}{\linewidth}{>{\hsize=0.9in}X X}
-\rowcolor{done} Complete & Introduction to pressure gradient errors and existing methods to improve pressure gradient accuracy \\
+Not started & Document the high-order transport scheme \\
+Not started & Compare cubicFit and highOrderFit using the horizontal transport test from chapter 2
+\end{tabularx}
+
+\subsubsection*{4. A new mesh for representing the atmosphere above terrain}
+\noindent The slanted cell mesh reduces errors associated with pressure gradient calculations and avoids severe time-step constraints.
+\vspace*{0.5em}
+
+\begin{tabularx}{\linewidth}{>{\hsize=0.9in}X X}
+\rowcolor{done} Complete & Introduction to pressure gradient calculations and existing methods to reduce errors associated with pressure gradient calculations \\
 \rowcolor{done} Complete & Describe the new slanted cell method \\
 \rowcolor{done} Complete & Transport test over a mountainous lower boundary using terrain-following, cut cell and slanted cell meshes \\
 \rowcolor{done} Complete & A two-dimensional test of a quiescent atmosphere above steep slopes, comparing terrain-following, cut cell and slanted cell meshes \\
+\end{tabularx}
+
+\subsubsection*{5. Generalising the Charney--Phillips staggering for arbitrary meshes}
+\noindent The Charney--Phillips staggering avoids the Lorenz computational mode, but it has only been formulated for structured quadrilateral meshes.  A generalised formulation will be suitable for arbitrary meshes.
+\vspace*{0.5em}
+
+\begin{tabularx}{\linewidth}{>{\hsize=1.3in}X X}
+	In development & Describe the generalised Charney--Phillips formulation \\
+	In development & Document the necessary changes to the nonhydrostatic model including the advective-form transport scheme \\
+	In development & Compare the Charney--Phillips model variant with the Lorenz model using a standard mountain waves test case \citep{schaer2002} \\
+	Not started & Document the new two-dimensional standing waves test case \\
+	In development & Compare standing waves test results using Lorenz and Charney--Phillips model variants on a uniform mesh and rectangular meshes with sloping faces
+\end{tabularx}
+
+\subsubsection*{6. Discussion}
+\vspace*{0.5em}
+
+\begin{tabularx}{\linewidth}{>{\hsize=0.9in}X X}
+Not started & 
 \end{tabularx}
 
 
