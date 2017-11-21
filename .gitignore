@@ -11,6 +11,7 @@ mc-report-2017-12.pdf
 *~
 *.aux
 *.log
+*-eps-converted-to.pdf
 legends
 colourScale.cpt
 build.ninja

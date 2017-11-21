@@ -1,4 +1,4 @@
-set term epslatex color size 4,2.5
+set term epslatex color size 3.5,2
 set output 'tracer.tex'
 
 set style data linespoints

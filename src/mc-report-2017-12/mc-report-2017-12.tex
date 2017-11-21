@@ -29,14 +29,14 @@
 
 \title{
 \vspace*{-2em}
-Monitoring Committee Progress Report \#6\\
+Monitoring committee progress report \#6\\
 \vspace*{1em}
-\Large{Numerical Representation of Mountains in Atmospheric Models}}
+\Large{Numerical representation of mountains in atmospheric models}}
 \author{James Shaw
 \vspace{0.5em} \\
 \large{Supervisors: Hilary Weller, John Methven, Terry Davies}
 \vspace{0.5em} \\
-\large{Monitoring Committee: Paul Williams, Maarten Ambaum}}
+\large{Monitoring committee: Paul Williams, Maarten Ambaum}}
 \date{December 2017}
 
 \captionsetup{margin=3pt,font={small}}
@@ -77,28 +77,63 @@ Monitoring Committee Progress Report \#6\\
 
 \section{Generalising the Charney--Phillips staggering for arbitrary meshes}
 
-% MC5 talked about developing a more accurate scheme for transporting potential temperature
+\href{http://www.datumedge.co.uk/publications/mc-report-2017-06.pdf}{Monitoring committee report \#5} demonstrated results of a new test case designed to excite the Lorenz computational mode.  A fully-compressible Euler model included a newly-formulated generalisation of the Charney--Phillips staggering for arbitrary meshes.
+Unlike the model with Lorenz staggering, the Lorenz computational mode was not present in the new Charney--Phillips model.
+These results were obtained on a uniform mesh using a low-accuracy advective form scheme for transporting potential temperature.  We set out to design a more accurate transport scheme and perform tests using distorted meshes in order to exercise the generalised Charney--Phillips staggering more thoroughly.
+
+% however, I've been unable to concoct a more accurate transport scheme, and the low-accuracy scheme produces bad results on distorted meshes
 % advective form is non-conservative and this has spoiled test results
 % but not obvious how to formulate a flux-form scheme, and would require averaging of winds, too
+% I'll write up what we've achieved so far in the thesis (but not into a paper)
+% but I don't want to spend further time on C--P because it looks like a dead end
+% instead, I want to pursue work on highOrderFit, which has already been successful in 1D
 
 \section{High-order transport for arbitrary meshes}
 
 The cubicFit transport scheme solves the transport equation by approximating fluxes through faces using a multidimensional polynomial reconstruction \citep{shaw2017}.
 The reconstruction fits a polynomial over known values stored at cell centre points, and this point-wise approach limits the cubicFit scheme to second-order convergence.
-\citet{devendran2017} have developed a high-order finite volume scheme for solving Poisson's equation, and we will apply their approach to obtain a transport scheme with high-order convergence.
+\citet{devendran2017} have developed a high-order finite volume scheme for solving Poisson's equation, and we apply their approach to obtain a transport scheme with high-order convergence.
 Since it has much in common with the cubicFit scheme, we name this high-order scheme `highOrderFit'. 
 
 Instead of a point-wise reconstruction that uses cell centre positions, the highOrderFit scheme constrains the polynomial fit so that the average of the polynomial integrated over a cell volume equals the cell average value.
 Applying this constraint to each cell in the reconstruction stencil produces an overdetermined linear system that is solved using a weighted least squares approach in a similar manner to the cubicFit scheme \citep{shaw2017}.
 Since we use the same reconstruction stencil, the highOrderFit scheme has the same computational cost per time-stage as the cubicFit scheme.
 
-We have verified that high-order convergence is obtained for a simple one-dimensional transport test.  The periodic domain is defined over the interval $[0,1]$ with a uniform velocity field $u = 1$ and an initial tracer field $\phi$ being defined as
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[
+	  scale=0.53,
+	  cpnt/.style={fill=gray},
+	]
+	\draw [->] (-5,0) -- (5.5,0) node [right] {$x$};
+	\draw (-3,-0.5) -- (-3,0.5);
+	\draw (-1,-0.5) -- (-1,0.5);
+	\draw (1,-0.5) -- (1,0.5) node [above] {$\phi_L$};
+	\draw (3,-0.5) -- (3,0.5) node [above] {$\phi_R$};
+
+	\path [cpnt] (-4,0) circle [radius=0.1] node [below] {$\phi_{j-2}$};
+	\path [cpnt] (-2,0) circle [radius=0.1] node [below] {$\phi_{j-1}$};
+	\path [cpnt] (0,0) circle [radius=0.1] node [below] {$\phi_j$};
+	\path [cpnt] (2,0) circle [radius=0.1] node [below] {$\phi_{j+1}$};
+	\path [cpnt] (4,0) circle [radius=0.1] node [below] {$\phi_{j+2}$};
+	\draw [thick] (1,0) circle [radius=0.15];
+	\draw [thick] (3,0) circle [radius=0.15];
+	\end{tikzpicture}
+	\caption{One-dimensional fluxes through a cell $\phi_{j+1}$ using four-point upwind-biased stencils to approximate fluxes $\phi_L$ and $\phi_R$.}
+	\label{fig:1d-stencil}
+\end{figure}
+
+In one dimension, the reconstruction stencil comprises three upwind cells and one downwind cell.
+Every cell has a left and right face, each with its own four-point stencil (figure~\ref{fig:1d-stencil}).
+Hence, assuming a suitably high-order time-stepping scheme, highOrderFit should achieve fourth-order convergence because the flux divergence is approximated with five points.
+
+We verify that highOrderFit achieves fourth-order convergence using a simple one-dimensional transport test.  The periodic domain is defined over the interval $[0,1]$ with a uniform velocity field $u = 1$ and an initial tracer field $\phi$ being defined as
 \begin{align}
 	\phi(x) = \exp \left( -b \left( x - x_0 \right)^2 \right)
 \end{align}
 where the Gaussian hill is centred at $x_0 = 0.5$ with $b = 80$.
 
-Since we are interested in achieving high-order convergence on arbitrary meshes, the one-dimensional domain is divided into $N$ unequal intervals such that $\Delta x_i, i = 1\isep N$ becomes coarser with increasing $i$.  The nonuniform mesh is smooth except for a discontinuity between $\Delta x_1$ and $\Delta x_N$ at the periodic boundary.
+Since we are interested in achieving high-order convergence on arbitrary meshes, the one-dimensional domain is divided into $N$ unequal intervals such that $\Delta x_i, \: i = 1\isep N$ becomes gradually coarser with increasing $i$.  The nonuniform mesh is smooth except for a discontinuity between $\Delta x_1$ and $\Delta x_N$ at the periodic boundary.
 
 \begin{figure}
 	\centering
@@ -112,10 +147,12 @@ The test is integrated forward by one time unit such that the tracer is transpor
 \begin{figure}
 	\centering
 	\input{convergence}
-	\caption{Convergence of the cubicFit and highOrderFit schemes in the one-dimensional transport test.  \TODO{define error norms}}
+	\caption{Convergence of the cubicFit and highOrderFit schemes in the one-dimensional transport test.
+	The error norms are defined as $\ell_2 = \left( \sum \left( \left( \phi - \phi_T \right)^2 \Delta x \right) / \sum \left( \phi_T^2 \Delta x \right)\right)^{1/2}$ and $\ell_\infty = \max \left| \phi - \phi_T \right| / \max \left| \phi_T \right|$ where $\phi$ is the numerical solution and $\phi_T$ is the analytic solution.}
 	\label{fig:advect1D-convergence}
 \end{figure}
 
+Convergence tests are performed comparing cubicFit and highOrderFit transport schemes using meshes with cell counts between $N = 2^4$ and $N = 2^8$.  The classical fourth-order Runge--Kutta time-stepping scheme \citep[p. 53]{durran2013} is used for both transport schemes.  The cubicFit scheme is limited to second-order convergence while the highOrderFit scheme is fourth-order convergent (figure~\ref{fig:advect1D-convergence}).
 
 \section{Future research}
 
@@ -250,7 +287,7 @@ June 2015 & Advanced numerical methods for Earth-system modelling, ECMWF \\
 \begin{tabularx}{\linewidth}{l l X}
 September 2017 & Speaker & \href{https://sites.google.com/site/scicade2017/}{International conference on scientific computation and differential equations}, University of Bath \\
 August 2017 & Co-organiser & \href{https://frontiers2017.wordpress.com/}{Frontiers in natural environment research}, Imperial College London \\
-July 2017 & Speaker & UK Met Office GungHo network meeting, University of Exeter \\
+July 2017 & Speaker & Met Office GungHo network meeting, University of Exeter \\
 June 2017 & Participant & \href{https://www.software.ac.uk/c4rr}{Docker containers for reproducible research}, University of Cambridge \\
 April 2017 & Speaker & \href{https://forge.ipsl.jussieu.fr/heat/wiki/PDEs2017}{PDEs on the Sphere}, École normale supérieure, Paris \\
 March 2017 & Attendee & \href{https://blogs.reading.ac.uk/open-research/open-in-practice-inspirations-strategies-and-methods-for-open-research/}{Open in practice: inspirations, strategies and methods for open research}, University of Reading \\
@@ -259,7 +296,7 @@ February 2017 & Invited speaker & Numerical methods for geophysical fluid dynami
 January 2017 & Attendee & Research software management, sharing and sustainability, British Library \\
 December 2016 & Invited speaker & \href{https://www.rmets.org/events/meteorological-research-within-university-reading-2016}{South-East local centre meeting, Royal Meteorological Society} \\
 October 2016 & Speaker & \href{http://www.ecmwf.int/en/learning/workshops-and-seminars/workshop-numerical-and-computational-methods-simulation-all-scale-geophysical-flows}{Numerical and computational methods for simulation of all-scale geophysical flows}, ECMWF \\
-November 2015 & Attendee & GungHo workshop on next generation weather and climate prediction, UK Met Office \\
+November 2015 & Attendee & GungHo workshop on next generation weather and climate prediction, Met Office \\
 June 2015 & Attendee & Hoskins@70 \\
 June 2015 & Poster & SCENARIO DTP conference \\
 March 2015 & Speaker & \href{http://www.icms.org.uk/workshop.php?id=334}{Galerkin methods with applications in weather and climate forecasting}, ICMS \\
@@ -276,9 +313,9 @@ Sep 2014 & Course teacher & MPE python and linux short course \\
 \subsubsection*{Visits and collaborations}
 \begin{tabularx}{\linewidth}{l X}
 July 2016 & Organised visit from \href{https://www.youtube.com/user/SimonOxfPhys}{Simon Clark}, stratospheric PhD researcher and YouTube vlogger \\
-Summer 2016 & Worked with Hilary's MSc student, Christiana Skea, studying variable timestepping for ODEs \\
+Summer 2016 & Worked with Hilary's MSc student, Christiana Skea, studying variable time-stepping for ODEs \\
 June 2016 & Visited NCAR, hosted by \href{http://www.image.ucar.edu/staff/rnair/}{Ram Nair} \\
-2015 -- 2017 & Coauthoring an article about dimensionally-split and multidimensional transport schemes, written with Hilary, her former student \href{https://www.clisap.de/research/a:-climate-dynamics-and-variability/crg-numerical-methods-in-geosciences/team-members/yumeng-chen/}{Yumeng Chen}, and Stephen Pring at the UK Met Office \\
+2015 -- 2017 & Coauthoring an article about dimensionally-split and multidimensional transport schemes, written with Hilary, her former student \href{https://www.clisap.de/research/a:-climate-dynamics-and-variability/crg-numerical-methods-in-geosciences/team-members/yumeng-chen/}{Yumeng Chen}, and Stephen Pring at the Met Office \\
 \end{tabularx}
 
 \subsubsection*{Outreach}
@@ -309,7 +346,7 @@ June 2016 & Visited NCAR, hosted by \href{http://www.image.ucar.edu/staff/rnair/
 19 Oct 2015 & HHH group & Improving modelled mountain flows with alternative representations of terrain \\
 27 Apr 2015 & HHH group & A like-for-like comparison between terrain following and cut cell grids \\
 21 Apr 2015 & PhD group & Discrete vector calculus on Arakawa C grids \\
-12 Feb 2015 & UK Met Office & Poster presentation for Met Office Academic Partnership \\
+12 Feb 2015 & Met Office & Poster presentation for Met Office Academic Partnership \\
 18 Jan 2015 & PhD group & Python and linux tips \\
 17 Dec 2014 & MPECDT jamboree & Poster presentation for Mathematics for Planet Earth Centre for Doctoral Training jamboree \\
 12 Sep 2014 & Lunchtime seminar  & Gain control of your documents and code: hands-on with revision control and build automation \\
