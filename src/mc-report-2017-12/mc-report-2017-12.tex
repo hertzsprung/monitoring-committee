@@ -68,6 +68,7 @@ Monitoring Committee Progress Report \#6\\
 
 \newcommand{\iu}{{i\mkern1mu}}
 \newcommand{\TODO}[1]{\textcolor{purple}{TODO: \emph{#1}}}
+\newcommand{\isep}{\mathrel{{.}\,{.}}\nobreak}
 
 \begin{document}
 \maketitle
@@ -76,7 +77,45 @@ Monitoring Committee Progress Report \#6\\
 
 \section{Generalising the Charney--Phillips staggering for arbitrary meshes}
 
+% MC5 talked about developing a more accurate scheme for transporting potential temperature
+% advective form is non-conservative and this has spoiled test results
+% but not obvious how to formulate a flux-form scheme, and would require averaging of winds, too
+
 \section{High-order transport for arbitrary meshes}
+
+The cubicFit transport scheme solves the transport equation by approximating fluxes through faces using a multidimensional polynomial reconstruction \citep{shaw2017}.
+The reconstruction fits a polynomial over known values stored at cell centre points, and this point-wise approach limits the cubicFit scheme to second-order convergence.
+\citet{devendran2017} have developed a high-order finite volume scheme for solving Poisson's equation, and we will apply their approach to obtain a transport scheme with high-order convergence.
+Since it has much in common with the cubicFit scheme, we name this high-order scheme `highOrderFit'. 
+
+Instead of a point-wise reconstruction that uses cell centre positions, the highOrderFit scheme constrains the polynomial fit so that the average of the polynomial integrated over a cell volume equals the cell average value.
+Applying this constraint to each cell in the reconstruction stencil produces an overdetermined linear system that is solved using a weighted least squares approach in a similar manner to the cubicFit scheme \citep{shaw2017}.
+Since we use the same reconstruction stencil, the highOrderFit scheme has the same computational cost per time-stage as the cubicFit scheme.
+
+We have verified that high-order convergence is obtained for a simple one-dimensional transport test.  The periodic domain is defined over the interval $[0,1]$ with a uniform velocity field $u = 1$ and an initial tracer field $\phi$ being defined as
+\begin{align}
+	\phi(x) = \exp \left( -b \left( x - x_0 \right)^2 \right)
+\end{align}
+where the Gaussian hill is centred at $x_0 = 0.5$ with $b = 80$.
+
+Since we are interested in achieving high-order convergence on arbitrary meshes, the one-dimensional domain is divided into $N$ unequal intervals such that $\Delta x_i, i = 1\isep N$ becomes coarser with increasing $i$.  The nonuniform mesh is smooth except for a discontinuity between $\Delta x_1$ and $\Delta x_N$ at the periodic boundary.
+
+\begin{figure}
+	\centering
+	\input{tracer}
+	\caption{One-dimensional transport of a Gaussian hill across a periodic domain using the highOrderFit scheme.  The initial tracer is transported in a uniform velocity field exactly once around the domain so that the analytic solution is equal to the initial solution marked by a dotted line.  The numerical solution is marked by a solid line and cell centre averages are marked by crosses.}
+	\label{fig:advect1D-tracer}
+\end{figure}
+
+The test is integrated forward by one time unit such that the tracer is transported exactly once around the periodic domain such that the analytic solution is equal to the initial solution.  A solution on a rather coarse mesh with $N = 32$ is illustrated in figure~\ref{fig:advect1D-tracer} with the initial solution marked by a dotted line and the final numerical solution marked by a solid line, with cell centre averages marked by crosses.
+
+\begin{figure}
+	\centering
+	\input{convergence}
+	\caption{Convergence of the cubicFit and highOrderFit schemes in the one-dimensional transport test.  \TODO{define error norms}}
+	\label{fig:advect1D-convergence}
+\end{figure}
+
 
 \section{Future research}
 
@@ -96,6 +135,7 @@ I was also interviewed for a postdoctoral position developing numerical methods 
 I have worked with David Dritschel at the University of St Andrews and Alan Blyth, Doug Parker and Steven B\"{o}ing at the University of Leeds to submit an EPSRC proposal that extends the Moist Parcel-in-a-Cell model \citep{boeing2017} for studying cloud turbulence.  We expect the EPSRC to reach a decision around March 2018.
 I am also a named postdoctoral researcher on a NERC proposal to study physics-dynamics coupling that Hilary submitted in collaboration with Jemma Shipton, Colin Cotter, Peter Clark and John Thuburn in July 2017.
 \TODO{what happens next to the NERC proposal?}
+I continue to monitor job boards for new vacancies.
 
 \bibliographystyle{ametsoc2014}                                                 
 \bibliography{src/mc-report-2017-12/references}
