@@ -83,28 +83,21 @@ These results were obtained on a uniform mesh using a low-accuracy advective-for
 
 \begin{figure}
 	\centering
-	\begin{subfigure}{0.38\textwidth}
-		\includegraphics{arakawaKonor-uniform-lorenz/0/theta_diff.pdf}
-		\caption{\TODO{initial}}
-		\label{fig:arakawaKonor:theta_diff:initial}
+	\begin{subfigure}{\textwidth}
+		\phantomsubcaption\label{fig:arakawaKonor:theta_diff:initial}
+		\phantomsubcaption\label{fig:arakawaKonor:theta_diff:lorenz}
+		\phantomsubcaption\label{fig:arakawaKonor:theta_diff:cp}
+		\includegraphics{mc-report-2017-12/fig-arakawaKonor-thetaDiff.pdf}
 	\end{subfigure}
-	\begin{subfigure}{0.3\textwidth}
-		\includegraphics{arakawaKonor-uniform-lorenz/172800/theta_diff.pdf}
-		\caption{\TODO{Lorenz}}
-		\label{fig:arakawaKonor:theta_diff:lorenz}
-	\end{subfigure}
-	\begin{subfigure}{0.3\textwidth}
-		\includegraphics{arakawaKonor-uniform-cp/172800/theta_diff.pdf}
-		\caption{\TODO{Charney--Phillips}}
-		\label{fig:arakawaKonor:theta_diff:cp}
-	\end{subfigure}
-	\caption{\TODO{}}
+	\caption{Potential temperature perturbations (\si{\kelvin}) from a stably stratified background profile.
+	(a) An initial wave-shaped perturbation is applied near the ground in the centre of the domain such that the integral of the perturbation over the whole domain is zero.
+	The perturbation after a two-day simulation is shown for (b) the Lorenz model, and (c) the Charney--Phillips model.
+	}
 	\label{fig:arakawaKonor:theta_diff}
 \end{figure}
 
 \TODO{
 \begin{itemize}
-\item plot: arakawaKonor Lorenz and C--P results on horizontal edgeGraded mesh
 \item plot: arakawaKonor energy conservation
 \item plot: arakawaKonorAdvect tracer conservation
 \end{itemize}
@@ -113,9 +106,6 @@ These results were obtained on a uniform mesh using a low-accuracy advective-for
 % however, I've been unable to concoct a more accurate transport scheme, and the low-accuracy scheme produces bad results on distorted meshes
 % advective form is non-conservative and this has spoiled test results
 % but not obvious how to formulate a flux-form scheme, and would require averaging of winds, too
-% I'll write up what we've achieved so far in the thesis (but not into a paper)
-% but I don't want to spend further time on C--P because it looks like a dead end
-% instead, I want to pursue work on highOrderFit, which has already been successful in 1D
 
 \section{High-order transport for arbitrary meshes}
 
@@ -185,8 +175,9 @@ Convergence tests are performed comparing cubicFit and highOrderFit transport sc
 
 \section{Future research}
 
-% Generalisation of Charney--Phillips staggering not going so well
-% but high-order transport scheme going much better
+Our attempts to develop a sufficiently accurate scheme for transporting potential temperature have been unsuccessful.
+As such, we have decided to spend no further effort researching a generalised Charney--Phillips staggering, but I will still document our initial findings in a thesis chapter.
+Instead, having recently achieved high-order convergence in a one-dimensional transport test case, I hope to invest the next few months developing, testing and documenting a two-dimensional implementation of highOrderFit.
 
 \section{Personal development}
 
