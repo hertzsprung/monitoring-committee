@@ -81,6 +81,27 @@ Monitoring committee progress report \#6\\
 Unlike the model with Lorenz staggering, the Lorenz computational mode was not present in the new Charney--Phillips model.
 These results were obtained on a uniform mesh using a low-accuracy advective-form scheme for transporting potential temperature.  We set out to design a more accurate transport scheme and perform tests using distorted meshes in order to exercise the generalised Charney--Phillips staggering more thoroughly.
 
+\begin{figure}
+	\centering
+	\begin{subfigure}{0.38\textwidth}
+		\includegraphics{arakawaKonor-uniform-lorenz/0/theta_diff.pdf}
+		\caption{\TODO{initial}}
+		\label{fig:arakawaKonor:theta_diff:initial}
+	\end{subfigure}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics{arakawaKonor-uniform-lorenz/172800/theta_diff.pdf}
+		\caption{\TODO{Lorenz}}
+		\label{fig:arakawaKonor:theta_diff:lorenz}
+	\end{subfigure}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics{arakawaKonor-uniform-cp/172800/theta_diff.pdf}
+		\caption{\TODO{Charney--Phillips}}
+		\label{fig:arakawaKonor:theta_diff:cp}
+	\end{subfigure}
+	\caption{\TODO{}}
+	\label{fig:arakawaKonor:theta_diff}
+\end{figure}
+
 \TODO{
 \begin{itemize}
 \item plot: arakawaKonor Lorenz and C--P results on horizontal edgeGraded mesh

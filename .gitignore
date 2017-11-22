@@ -16,3 +16,5 @@ legends
 colourScale.cpt
 build.ninja
 build.ninja.generated
+build.properties
+__pycache__

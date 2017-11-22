@@ -1,14 +1,19 @@
 #!/usr/bin/python3
 
+import generators
 from ninjaopenfoam import Build, PDFLaTeX, Shortcuts
 import os
 
 class MonitoringCommittee:
     def __init__(self):
-        self.build = Build()
+        self.build = Build([
+            'generators/arakawaKonor.py'
+        ])
 
     def write(self):
         build = self.build
+
+        arakawaKonor = generators.ArakawaKonor()
 
         report = PDFLaTeX(
                 'report',
@@ -19,11 +24,12 @@ class MonitoringCommittee:
                     'src/mc-report-2017-12/tracer.tex',
                     'src/mc-report-2017-12/tracer.eps',
                     'src/mc-report-2017-12/convergence.tex',
-                    'src/mc-report-2017-12/convergence.eps'
-        ])
+                    'src/mc-report-2017-12/convergence.eps']
+                    + arakawaKonor.outputs())
 
         shortcuts = Shortcuts([report.output])
 
+        arakawaKonor.addTo(build)
         build.add(report)
         build.add(shortcuts)
 
