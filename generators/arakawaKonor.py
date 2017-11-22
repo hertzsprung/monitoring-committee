@@ -1,4 +1,4 @@
-from ninjaopenfoam import Case, GmtPlot, GmtPlotCopyCase, PDFLaTeXFigure
+from ninjaopenfoam import Case, GmtPlot, GmtPlotCopyCase, Gnuplot, PDFLaTeXFigure
 
 import os
 
@@ -55,8 +55,16 @@ class ArakawaKonor:
                             self.charneyPhillipsThetaDiff.outputs()
         )
 
+        self.conservation = Gnuplot(
+                'arakawaKonor-conservation',
+                output=os.path.join('mc-report-2017-12/arakawaKonor-conservation'),
+                plot=os.path.join('src/mc-report-2017-12/arakawaKonor-conservation.plt'),
+                data=[]
+        )
+
     def outputs(self):
-        return self.thetaDiffFigure.outputs()
+        return self.thetaDiffFigure.outputs() + \
+                self.conservation.outputs()
 
     def addTo(self, build):
         build.add(self.lorenz)
@@ -65,3 +73,4 @@ class ArakawaKonor:
         build.add(self.lorenzThetaDiff)
         build.add(self.charneyPhillipsThetaDiff)
         build.add(self.thetaDiffFigure)
+        build.add(self.conservation)
