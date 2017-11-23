@@ -51,15 +51,18 @@ class ArakawaKonor:
                 output=os.path.join('mc-report-2017-12/fig-arakawaKonor-thetaDiff'),
                 figure=os.path.join('src/mc-report-2017-12/fig-arakawaKonor-thetaDiff'),
                 components=self.initialThetaDiff.outputs() + \
-                             self.lorenzThetaDiff.outputs() + \
-                            self.charneyPhillipsThetaDiff.outputs()
+                           self.lorenzThetaDiff.outputs() + \
+                           self.charneyPhillipsThetaDiff.outputs()
         )
 
         self.conservation = Gnuplot(
                 'arakawaKonor-conservation',
                 output=os.path.join('mc-report-2017-12/arakawaKonor-conservation'),
                 plot=os.path.join('src/mc-report-2017-12/arakawaKonor-conservation.plt'),
-                data=[]
+                data=[
+                    '$atmostests_builddir/arakawaKonor-uniform-lorenz/energy.dat',
+                    '$atmostests_builddir/arakawaKonor-uniform-cp/energy.dat'
+                ]
         )
 
     def outputs(self):
