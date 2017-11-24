@@ -103,7 +103,7 @@ Distorted meshes were constructed by tilting the horizontal mesh surfaces away f
 The cell edges are shown in figure~\ref{fig:arakawaKonor:theta_diff:initial} with the initial potential temperature perturbation shown in colour.
 
 A large-scale response to the initial perturbation is observed in the final potential temperature perturbation after the 2-day simulation using the Lorenz model (figure~\ref{fig:arakawaKonor:theta_diff:lorenz}) and the Charney--Phillips model (figure~\ref{fig:arakawaKonor:theta_diff:cp}).
-This response is very different from the fine-scale waves observed using a uniform mesh (see figure 2 in \href{http://www.datumedge.co.uk/publications/mc-report-2017-06.pdf}{monitoring committee report \#5}), and no evidence of the Lorenz computational mode is found.
+This response is very different from the fine-scale waves observed using a uniform mesh (see figure 2 in \href{http://www.datumedge.co.uk/publications/mc-report-2017-06.pdf}{monitoring committee report \#5}), and no evidence of the Lorenz computational mode is found using the distorted mesh.
 As seen in figure~\ref{fig:arakawaKonor:theta_diff:cp}, using the Charney--Phillips model, the internal energy gradually increases throughout the domain, and this error is larger for more highly-distorted meshes.
 This gradual increase in energy is clearly seen in figure~\ref{fig:arakawaKonor:conservation:exnerFoam}, and only occurs using the Charney--Phillips model with distorted meshes.
 In the other fully-compressible Euler tests, energy changes are of the order $10^{-7}$: three orders of magnitude smaller than those found using the Charney--Phillips model with distorted meshes.
@@ -199,9 +199,23 @@ Convergence tests are performed comparing cubicFit and highOrderFit transport sc
 
 \section{Future research}
 
-Our attempts to develop a sufficiently accurate scheme for transporting potential temperature have been unsuccessful.
-As such, we have decided to spend no further effort researching a generalised Charney--Phillips staggering, but I will still document our initial findings in a thesis chapter.
+Our attempts to develop a sufficiently conservative scheme for transporting potential temperature have been unsuccessful.
+As such, we have decided to spend no further effort researching a generalised Charney--Phillips staggering.
 Instead, having recently achieved high-order convergence in a one-dimensional transport test case, I hope to invest the next few months developing, testing and documenting a two-dimensional implementation of highOrderFit.
+
+\subsection*{Timeline of future work}
+
+A revised thesis plan is presented in Appendix A.
+Chapter 2 and chapter 4 are complete, requiring only minor changes following supervisor comments.
+If future work on two-dimensional highOrderFit is successful, this will likely form a new thesis chapter 3.  If unsuccessful, I will instead include additional sections in chapter 2 documenting the one-dimensional highOrderFit formulation and test results.
+I no longer intend to publish a third journal article, but I will still document our existing Charney--Phillips research in thesis chapter 5.
+
+\begin{description}
+	\item[December 2017]{Complete chapter 5 documenting existing Charney--Phillips research}
+	\item[January 2017]{Complete two-dimensional highOrderFit implementation}
+	\item[February 2017]{Complete chapter 3 documenting the highOrderFit formulation and test results}
+	\item[March 2017]{Complete introduction and discussion chapters}
+\end{description}
 
 \section{Personal development}
 
