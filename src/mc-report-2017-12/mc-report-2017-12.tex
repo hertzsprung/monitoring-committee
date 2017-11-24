@@ -99,7 +99,7 @@ These results were obtained on a uniform mesh using a low-accuracy advective-for
 \end{figure}
 
 We have performed the same tests using distorted meshes in order to exercise the generalised Charney--Phillips staggering more thoroughly.
-We chose to construct a distorted mesh by tilting the horizontal mesh surfaces away from the boundaries in order retain a rectangular domain and avoid introducing any orographic effects.
+Distorted meshes were constructed by tilting the horizontal mesh surfaces away from the boundaries in order retain a rectangular domain and avoid introducing any orographic effects.
 The cell edges are shown in figure~\ref{fig:arakawaKonor:theta_diff:initial} with the initial potential temperature perturbation shown in colour.
 
 A large-scale response to the initial perturbation is observed in the final potential temperature perturbation after the 2-day simulation using the Lorenz model (figure~\ref{fig:arakawaKonor:theta_diff:lorenz}) and the Charney--Phillips model (figure~\ref{fig:arakawaKonor:theta_diff:cp}).
@@ -115,7 +115,7 @@ In the other fully-compressible Euler tests, energy changes are of the order $10
 		\phantomsubcaption\label{fig:arakawaKonor:conservation:advection}
 		\input{arakawaKonor-conservation}
 	\end{subfigure}
-	\caption{Preliminary conservation diagnostics for (a) the fully-compressible Euler equation models and (b) the tracer transport models.  Energy changes are normalised by the total initial energy and total tracer changes are normalised by the total initial tracer.}
+	\caption{Conservation diagnostics for (a) the fully-compressible Euler equation models and (b) the tracer transport models.  Energy changes are normalised by the total initial energy and total tracer changes are normalised by the total initial tracer.}
 	\label{fig:arakawaKonor:conservation}
 \end{figure}
 
@@ -129,6 +129,7 @@ In both fully-compressible Euler and tracer transport tests, non-conservation is
 Interestingly, internal energy increases in the fully-compressible Euler test while total tracer decreases in the tracer transport test.  We do not know why these behaviours differ.
 
 We have developed some different advective-form transport schemes in an attempt to improve conservation.  Inspired by cubicFit, we tried using larger stencils and higher-order polynomials to approximate the gradient at temperature points on Charney--Phillips staggered meshes.  However, we have been unable to obtain a transport scheme that is stable, and more conservative than the existing low-accuracy transport scheme.
+While it has been difficult to make progress on this research, we have had more success developing a high-order flux-form transport scheme in collaboration with \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen} at Lawrence Berkley National Lab.  The next section documents these developments.
 
 \section{High-order transport for arbitrary meshes}
 
@@ -269,8 +270,9 @@ Not started & \quad\textbullet\enspace horizontal transport of a cosine bell tra
 \rowcolor{done} Complete & A two-dimensional test of a quiescent atmosphere above steep slopes, comparing terrain-following, cut cell and slanted cell meshes \\
 \end{tabularx}
 
-\subsubsection*{5. Generalising the Charney--Phillips staggering for arbitrary meshes}
-\noindent The Charney--Phillips staggering avoids the Lorenz computational mode, but it has only been formulated for structured quadrilateral meshes.  A generalised formulation will be suitable for arbitrary meshes.
+\subsubsection*{5. A new test case for exciting the Lorenz computational mode}
+\noindent Existing test cases that excite the Lorenz computational mode are unsuited for assessing modern dynamical cores.
+Based on the work of \citep{arakawa-konor1996}, we develop a new two-dimensional test case for evaluating dynamical cores with Lorenz or Charney--Phillips staggerings.
 \vspace*{0.5em}
 
 \begin{tabularx}{\linewidth}{>{\hsize=1.3in}X X}
@@ -278,7 +280,7 @@ Not started & \quad\textbullet\enspace horizontal transport of a cosine bell tra
 	In development & Document the necessary changes to the nonhydrostatic model including the advective-form transport scheme \\
 	In development & Compare the Charney--Phillips model variant with the Lorenz model using a standard mountain waves test case \citep{schaer2002} \\
 	Not started & Document the new two-dimensional standing waves test case \\
-	In development & Compare standing waves test results using Lorenz and Charney--Phillips model variants on a uniform mesh and rectangular meshes with sloping faces
+	In development & Compare standing waves test results using Lorenz and Charney--Phillips model variants on a uniform mesh and rectangular meshes with tilted faces
 \end{tabularx}
 
 \subsubsection*{6. Discussion}
