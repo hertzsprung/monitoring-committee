@@ -18,6 +18,7 @@ plotBoundaryDots false;
 
 FieldsToPlot (
     [theta_diff rawValues -1 1 0.1 "$GMTU/colours/red_white_blue.cpt"]
+    [none mesh "gray"]
 );
 
 region "-120e3/120e3/0/20e3";

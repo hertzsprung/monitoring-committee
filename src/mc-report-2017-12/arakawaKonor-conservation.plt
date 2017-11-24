@@ -1,48 +1,35 @@
-set term epslatex color size 6,4
+set term epslatex color size 6,2.5
 
 set style data lines
 
-
 set xlabel "Time (hours)"
-set ylabel "Normalised energy"
+set ylabel "Total energy change" offset 1
+set ytics format "$\\num{%2.1e}$"
 
 set xtics 6
 
-set multiplot layout 2,2
+set multiplot layout 1,2 margins 0.18, 0.98, 0.4, 0.94 spacing 0.2, 0.1
 
-set title 'Fully-compressible Euler, uniform mesh'
+set key outside bottom center
 
-set ytics 1e-7
-
-set xzeroaxis
+set title '(a) Fully-compressible Euler'
 
 set xrange [0:48]
-plot "`echo $atmostests_builddir`/arakawaKonor-uniform-lorenz/energy.dat" using ($1/3600):5 title "Lorenz", \
-     "`echo $atmostests_builddir`/arakawaKonor-uniform-cp/energy.dat" using ($1/3600):5 title "Charney--Phillips"
+plot "`echo $atmostests_builddir`/arakawaKonor-uniform-lorenz/energy.dat" using ($1/3600):5 lc 6 lw 1.5 title 'Lorenz', \
+     "`echo $atmostests_builddir`/arakawaKonor-uniform-cp/energy.dat" using ($1/3600):5 lc 7 lw 1.5 title 'Charney--Phillips', \
+     "`echo $atmostests_builddir`/arakawaKonor-horizontalGrading-lorenz/energy.dat" using ($1/3600):5 lc 6 dt 2 lw 1.5 notitle, \
+     "`echo $atmostests_builddir`/arakawaKonor-horizontalGrading-cp/energy.dat" using ($1/3600):5 lc 7 dt 2 lw 1.5 notitle
 
-set title 'Tracer transport, uniform mesh'
 
-set xrange [0:17]
-set yrange [-1e-4:1e-4]
-set ytics autofreq
+set title '(b) Tracer transport'
 
-plot "`echo $atmostests_builddir`/arakawaKonorAdvect-uniform-lorenz/energy.dat" using ($1/3600):2 title "Lorenz", \
-     "`echo $atmostests_builddir`/arakawaKonorAdvect-uniform-cp/energy.dat" using ($1/3600):2 title "Charney--Phillips"
+unset ylabel
+set xrange [0:12]
+set ylabel "Total tracer change" offset 1
 
-set title 'Fully-compressible Euler, distorted mesh'
-
-set xrange [0:48]
-set yrange [*:*]
-set ytics autofreq
-
-plot "`echo $atmostests_builddir`/arakawaKonor-horizontalGrading-lorenz/energy.dat" using ($1/3600):5 title "Lorenz", \
-     "`echo $atmostests_builddir`/arakawaKonor-horizontalGrading-cp/energy.dat" using ($1/3600):5 title "Charney--Phillips"
-
-set title 'Tracer transport, distorted mesh'
-
-set xrange [0:17]
-set yrange [*:*]
-set ytics autofreq
-
-plot "`echo $atmostests_builddir`/arakawaKonorAdvect-horizontalGrading-lorenz/energy.dat" using ($1/3600):2 title "Lorenz", \
-     "`echo $atmostests_builddir`/arakawaKonorAdvect-horizontalGrading-cp/energy.dat" using ($1/3600):2 title "Charney--Phillips"
+plot 0 lc 0 lw 1.5 title 'Uniform mesh', \
+     0 lc 0 dt 2 lw 1.5 title 'Distorted mesh', \
+     "`echo $atmostests_builddir`/arakawaKonorAdvect-uniform-lorenz/energy.dat" using ($1/3600):2 lc 6 lw 1.5 notitle, \
+     "`echo $atmostests_builddir`/arakawaKonorAdvect-uniform-cp/energy.dat" using ($1/3600):2 lc 7 lw 1.5 notitle, \
+     "`echo $atmostests_builddir`/arakawaKonorAdvect-horizontalGrading-lorenz/energy.dat" using ($1/3600):2 lc 6 dt 2 lw 1.5 notitle, \
+     "`echo $atmostests_builddir`/arakawaKonorAdvect-horizontalGrading-cp/energy.dat" using ($1/3600):2 lc 7 dt 2 lw 1.5 notitle

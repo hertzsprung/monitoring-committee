@@ -61,7 +61,13 @@ class ArakawaKonor:
                 plot=os.path.join('src/mc-report-2017-12/arakawaKonor-conservation.plt'),
                 data=[
                     '$atmostests_builddir/arakawaKonor-uniform-lorenz/energy.dat',
-                    '$atmostests_builddir/arakawaKonor-uniform-cp/energy.dat'
+                    '$atmostests_builddir/arakawaKonor-uniform-cp/energy.dat',
+                    '$atmostests_builddir/arakawaKonor-horizontalGrading-lorenz/energy.dat',
+                    '$atmostests_builddir/arakawaKonor-horizontalGrading-cp/energy.dat',
+                    '$atmostests_builddir/arakawaKonorAdvect-uniform-lorenz/energy.dat',
+                    '$atmostests_builddir/arakawaKonorAdvect-uniform-cp/energy.dat',
+                    '$atmostests_builddir/arakawaKonorAdvect-horizontalGrading-lorenz/energy.dat',
+                    '$atmostests_builddir/arakawaKonorAdvect-horizontalGrading-cp/energy.dat'
                 ]
         )
 

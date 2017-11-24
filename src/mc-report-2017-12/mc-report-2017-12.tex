@@ -77,9 +77,10 @@ Monitoring committee progress report \#6\\
 
 \section{Generalising the Charney--Phillips staggering for arbitrary meshes}
 
-\href{http://www.datumedge.co.uk/publications/mc-report-2017-06.pdf}{Monitoring committee report \#5} presented results of a new test case designed to excite the Lorenz computational mode.  A fully-compressible Euler model included a newly-formulated generalisation of the Charney--Phillips staggering for arbitrary meshes.
+\href{http://www.datumedge.co.uk/publications/mc-report-2017-06.pdf}{Monitoring committee report \#5} presented results of a new test case designed to excite the Lorenz computational mode.
+A fully-compressible Euler model included a newly-formulated generalisation of the Charney--Phillips staggering for arbitrary meshes.
 Unlike the model with Lorenz staggering, the Lorenz computational mode was not present in the new Charney--Phillips model.
-These results were obtained on a uniform mesh using a low-accuracy advective-form scheme for transporting potential temperature.  We set out to design a more accurate transport scheme and perform tests using distorted meshes in order to exercise the generalised Charney--Phillips staggering more thoroughly.
+These results were obtained on a uniform mesh using a low-accuracy advective-form scheme for transporting potential temperature.
 
 \begin{figure}
 	\centering
@@ -92,21 +93,42 @@ These results were obtained on a uniform mesh using a low-accuracy advective-for
 	\caption{Potential temperature perturbations (\si{\kelvin}) from a stably stratified background profile.
 	(a) An initial wave-shaped perturbation is applied near the ground in the centre of the domain such that the integral of the perturbation over the whole domain is zero.
 	The perturbation after a two-day simulation is shown for (b) the Lorenz model, and (c) the Charney--Phillips model.
+	Only the lowest \SI{20}{\kilo\meter} in the central region is shown.  The entire domain is \SI{800}{\kilo\meter} wide and \SI{30}{\kilo\meter} high.
 	}
 	\label{fig:arakawaKonor:theta_diff}
 \end{figure}
 
+We have performed the same tests using distorted meshes in order to exercise the generalised Charney--Phillips staggering more thoroughly.
+We chose to construct a distorted mesh by tilting the horizontal mesh surfaces away from the boundaries in order retain a rectangular domain and avoid introducing any orographic effects.
+The cell edges are shown in figure~\ref{fig:arakawaKonor:theta_diff:initial} with the initial potential temperature perturbation shown in colour.
+
+A large-scale response to the initial perturbation is observed in the final potential temperature perturbation after the 2-day simulation using the Lorenz model (figure~\ref{fig:arakawaKonor:theta_diff:lorenz}) and the Charney--Phillips model (figure~\ref{fig:arakawaKonor:theta_diff:cp}).
+This response is very different from the fine-scale waves observed using a uniform mesh (see figure 2 in \href{http://www.datumedge.co.uk/publications/mc-report-2017-06.pdf}{monitoring committee report \#5}), and no evidence of the Lorenz computational mode is found.
+As seen in figure~\ref{fig:arakawaKonor:theta_diff:cp}, using the Charney--Phillips model, the internal energy gradually increases throughout the domain, and this error is larger for more highly-distorted meshes.
+This gradual increase in energy is clearly seen in figure~\ref{fig:arakawaKonor:conservation:exnerFoam}, and only occurs using the Charney--Phillips model with distorted meshes.
+In the other fully-compressible Euler tests, energy changes are of the order $10^{-7}$: three orders of magnitude smaller than those found using the Charney--Phillips model with distorted meshes.
+
 \begin{figure}
 	\centering
-	\input{arakawaKonor-conservation}
-	\caption{\TODO{arakawaKonor energy/arakawaKonorAdvect tracer conservation time series}}
+	\begin{subfigure}{\textwidth}
+		\phantomsubcaption\label{fig:arakawaKonor:conservation:exnerFoam}
+		\phantomsubcaption\label{fig:arakawaKonor:conservation:advection}
+		\input{arakawaKonor-conservation}
+	\end{subfigure}
+	\caption{Preliminary conservation diagnostics for (a) the fully-compressible Euler equation models and (b) the tracer transport models.  Energy changes are normalised by the total initial energy and total tracer changes are normalised by the total initial tracer.}
 	\label{fig:arakawaKonor:conservation}
 \end{figure}
 
+The Charney--Phillips model transports potential temperature in advective-form, not flux-form, so we do not expect potential temperature to be conserved.  Hence, the non-conservative transport scheme is a likely cause for the increase in internal energy.
+To examine the transport scheme we perform another test case, transporting a tracer in a prescribed horizontal wind, using the same uniform and distorted meshes as before.  
+The advective-form potential temperature transport scheme was extracted from the fully-compressible Euler model in order to solve the transport equation on Charney--Phillips staggered meshes.  The results were compared to the flux-form multidimensional linear upwind transport scheme documented in \citet{shaw2017}.
 
-% however, I've been unable to concoct a more accurate transport scheme, and the low-accuracy scheme produces bad results on distorted meshes
-% advective form is non-conservative and this has spoiled test results
-% but not obvious how to formulate a flux-form scheme, and would require averaging of winds, too
+As expected, the flux-form scheme with Lorenz staggering conserves total tracer to machine precision (figure~\ref{fig:arakawaKonor:conservation:advection}).  Non-conservation errors are also small using the advective-form scheme with Charney--Phillips staggering and a uniform mesh.
+In contrast, total tracer is gradually lost with the Charney--Phillips staggering and a distorted mesh.
+In both fully-compressible Euler and tracer transport tests, non-conservation is evident using a Charney--Phillips staggering and distorted meshes.
+Interestingly, internal energy increases in the fully-compressible Euler test while total tracer decreases in the tracer transport test.  We do not know why these behaviours differ.
+
+We have developed some different advective-form transport schemes in an attempt to improve conservation.  Inspired by cubicFit, we tried using larger stencils and higher-order polynomials to approximate the gradient at temperature points on Charney--Phillips staggered meshes.  However, we have been unable to obtain a transport scheme that is stable, and more conservative than the existing low-accuracy transport scheme.
 
 \section{High-order transport for arbitrary meshes}
 
