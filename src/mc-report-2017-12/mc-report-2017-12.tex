@@ -75,7 +75,24 @@ Monitoring committee progress report \#6\\
 
 \section{Introduction}
 
-\section{Generalising the Charney--Phillips staggering for arbitrary meshes}
+Numerical weather and climate models are using increasingly fine meshes to resolve small-scale processes in order to improve forecasts.  As meshes become finer, traditional latitude-longitude meshes become computationally inefficient \citep{staniforth-thuburn2012}.
+Fine meshes also resolve small-scale, steeply-sloping terrain that are poorly represented by traditional terrain-following meshes \citep{schaer2002}.
+These difficulties have motivated research into alternative horizontal meshes \citep{staniforth-thuburn2012}, better vertical meshes including improved terrain-following meshes \citep{schaer2002,klemp2011} and cut cell meshes \citep{jaehn2015,yamazaki2016}, and improved numerical methods \citep{ullrich-jablonowski2012,steppeler-klemp2017}.
+
+This PhD project makes three contributions to improve numerical atmospheric simulations, particularly in the vicinity of steeply-sloping terrain.
+First, we have created the finite volume transport scheme, `cubicFit', which is stable and accurate over steep slopes represented by arbitrary meshes.
+We are currently developing an improved transport scheme which uses the method of \citet{devendran2017}, and which is expected to be more accurate than cubicFit in the domain interior.
+%
+Second, we have created a new type of mesh, the `slanted cell' mesh, in order to represent steeply-sloping terrain while avoiding severe meshes distortions associated with terrain-following meshes and avoiding severe time-step constraints associated with explicit numerical methods on cut cell meshes.
+%
+Third, we have created a new two-dimensional test case to excite the Lorenz computational mode, based on the work of \citet{arakawa-konor1996}.  The new test case is better suited for dynamical core evaluation than existing tests that are either very expensive to simulate \citep{untch-hortal2004} or have no horizontal discretisation \citep{arakawa-konor1996}.
+We use the new test case to compare results from a fully-compressible Euler model with Lorenz staggering \citep{weller-shahrokhi2014} with those from a newly-developed model variant with a Charney--Phillips staggering that has been generalised for arbitrary meshes.
+
+Since our fifth monitoring committee meeting, my supervisors and I have been pursuing two lines of research.  First, we have performed further experiments using the new, fully-compressible Euler model with a generalised Charney--Phillips staggering.  Most results have been unstable or inaccurate, likely because potential temperature is insufficiently conserved by the advective-form transport scheme.
+Given that this first line of research has been unpromising, we have begun developing a high-order flux-form transport scheme in collaboration with \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen} at Lawrence Berkley National Lab.
+We have already obtained high-order convergence using a one-dimensional test case, and we have just embarked upon a two-dimensional implementation.
+
+\section{A new test case for exciting the Lorenz computational mode}
 
 \href{http://www.datumedge.co.uk/publications/mc-report-2017-06.pdf}{Monitoring committee report \#5} presented results of a new test case designed to excite the Lorenz computational mode.
 A fully-compressible Euler model included a newly-formulated generalisation of the Charney--Phillips staggering for arbitrary meshes.
@@ -99,7 +116,7 @@ These results were obtained on a uniform mesh using a low-accuracy advective-for
 \end{figure}
 
 We have performed the same tests using distorted meshes in order to exercise the generalised Charney--Phillips staggering more thoroughly.
-Distorted meshes were constructed by tilting the horizontal mesh surfaces away from the boundaries in order retain a rectangular domain and avoid introducing any orographic effects.
+Distorted meshes were constructed by tilting the horizontal mesh surfaces in order to retain a rectangular domain and avoid introducing any orographic effects.
 The cell edges are shown in figure~\ref{fig:arakawaKonor:theta_diff:initial} with the initial potential temperature perturbation shown in colour.
 
 A large-scale response to the initial perturbation is observed in the final potential temperature perturbation after the 2-day simulation using the Lorenz model (figure~\ref{fig:arakawaKonor:theta_diff:lorenz}) and the Charney--Phillips model (figure~\ref{fig:arakawaKonor:theta_diff:cp}).
@@ -115,21 +132,21 @@ In the other fully-compressible Euler tests, energy changes are of the order $10
 		\phantomsubcaption\label{fig:arakawaKonor:conservation:advection}
 		\input{arakawaKonor-conservation}
 	\end{subfigure}
-	\caption{Conservation diagnostics for (a) the fully-compressible Euler equation models and (b) the tracer transport models.  Energy changes are normalised by the total initial energy and total tracer changes are normalised by the total initial tracer.}
+	\caption{Conservation diagnostics for (a) the fully-compressible Euler equation models and (b) the tracer transport models.  Energy changes are normalised by the total initial energy, and total tracer changes are normalised by the total initial tracer.}
 	\label{fig:arakawaKonor:conservation}
 \end{figure}
 
 The Charney--Phillips model transports potential temperature in advective-form, not flux-form, so we do not expect potential temperature to be conserved.  Hence, the non-conservative transport scheme is a likely cause for the increase in internal energy.
 To examine the transport scheme we perform another test case, transporting a tracer in a prescribed horizontal wind, using the same uniform and distorted meshes as before.  
-The advective-form potential temperature transport scheme was extracted from the fully-compressible Euler model in order to solve the transport equation on Charney--Phillips staggered meshes.  The results were compared to the flux-form multidimensional linear upwind transport scheme documented in \citet{shaw2017}.
+The advective-form potential temperature transport scheme was extracted from the fully-compressible Euler model in order to solve the transport equation on Charney--Phillips staggered meshes.  The results were compared to the flux-form multidimensional linear upwind transport scheme documented by \citet{shaw2017}.
 
-As expected, the flux-form scheme with Lorenz staggering conserves total tracer to machine precision (figure~\ref{fig:arakawaKonor:conservation:advection}).  Non-conservation errors are also small using the advective-form scheme with Charney--Phillips staggering and a uniform mesh.
-In contrast, total tracer is gradually lost with the Charney--Phillips staggering and a distorted mesh.
+As expected, the flux-form scheme with Lorenz staggering conserves total tracer to machine precision (figure~\ref{fig:arakawaKonor:conservation:advection}).  Non-conservation errors are also small using the advective-form scheme using the Charney--Phillips staggering and a uniform mesh.
+In contrast, total tracer is gradually lost using the Charney--Phillips staggering and a distorted mesh.
 In both fully-compressible Euler and tracer transport tests, non-conservation is evident using a Charney--Phillips staggering and distorted meshes.
 Interestingly, internal energy increases in the fully-compressible Euler test while total tracer decreases in the tracer transport test.  We do not know why these behaviours differ.
 
-We have developed some different advective-form transport schemes in an attempt to improve conservation.  Inspired by cubicFit, we tried using larger stencils and higher-order polynomials to approximate the gradient at temperature points on Charney--Phillips staggered meshes.  However, we have been unable to obtain a transport scheme that is stable, and more conservative than the existing low-accuracy transport scheme.
-While it has been difficult to make progress on this research, we have had more success developing a high-order flux-form transport scheme in collaboration with \href{http://crd.lbl.gov/departments/applied-mathematics/ANAG/about/staff-and-postdocs/hans-johansen/}{Hans Johansen} at Lawrence Berkley National Lab.  The next section documents these developments.
+We have developed some different advective-form transport schemes in an attempt to improve conservation.  Inspired by cubicFit, we tried using larger stencils and higher-order polynomials to approximate the gradient at temperature points on Charney--Phillips staggered meshes.  However, we have been unable to obtain a transport scheme that is stable with better conservation than the existing low-accuracy transport scheme.
+While it has been difficult to make progress on this research, we have had more success developing a high-order flux-form transport scheme in collaboration with Hans Johansen.  The next section documents these developments.
 
 \section{High-order transport for arbitrary meshes}
 
@@ -185,7 +202,7 @@ Since we are interested in achieving high-order convergence on arbitrary meshes,
 	\label{fig:advect1D-tracer}
 \end{figure}
 
-The test is integrated forward by one time unit such that the tracer is transported exactly once around the periodic domain such that the analytic solution is equal to the initial solution.  A solution on a rather coarse mesh with $N = 32$ is illustrated in figure~\ref{fig:advect1D-tracer} with the initial solution marked by a dotted line and the final numerical solution marked by a solid line, with cell centre averages marked by crosses.
+The test is integrated forward by one time unit, transporting the tracer exactly once around the periodic domain such that the analytic solution is equal to the initial solution.  A solution on a mesh with $N = 32$ is illustrated in figure~\ref{fig:advect1D-tracer} with the initial solution marked by a dotted line and the final numerical solution marked by a solid line, with cell centre averages marked by crosses.
 
 \begin{figure}
 	\centering
@@ -199,20 +216,22 @@ Convergence tests are performed comparing cubicFit and highOrderFit transport sc
 
 \section{Future research}
 
-Our attempts to develop a sufficiently conservative scheme for transporting potential temperature have been unsuccessful.
-As such, we have decided to spend no further effort researching a generalised Charney--Phillips staggering.
+Our attempts to develop a sufficiently conservative scheme for transporting potential temperature on meshes with a generalised Charney--Phillips staggering have been unsuccessful.
+As such, we have decided to invest no further effort researching a generalised Charney--Phillips staggering.
 Instead, having recently achieved high-order convergence in a one-dimensional transport test case, I hope to invest the next few months developing, testing and documenting a two-dimensional implementation of highOrderFit.
-
-\subsection*{Timeline of future work}
+In the interests of time, we will avoid any special boundary treatment as found in cubicFit by using periodic boundaries or tracers defined well away from boundaries.
 
 A revised thesis plan is presented in Appendix A.
-Chapter 2 and chapter 4 are complete, requiring only minor changes following supervisor comments.
-If future work on two-dimensional highOrderFit is successful, this will likely form a new thesis chapter 3.  If unsuccessful, I will instead include additional sections in chapter 2 documenting the one-dimensional highOrderFit formulation and test results.
+Chapter 2 and chapter 4 are complete, requiring only minor revisions following supervisor comments.
+If future work on two-dimensional highOrderFit is successful, this will likely form a new thesis chapter 3.
+If unsuccessful, I will instead include additional sections in chapter 2 documenting the one-dimensional highOrderFit formulation and test results.
 I no longer intend to publish a third journal article, but I will still document our existing Charney--Phillips research in thesis chapter 5.
+In our fifth monitoring committee we agreed to extend my submission date by three months from 12 January 2018 to mid-April 2018.
+The revised plan presented here does not alter this extended submission date.
 
 \begin{description}
 	\item[December 2017]{Complete chapter 5 documenting existing Charney--Phillips research}
-	\item[January 2017]{Complete two-dimensional highOrderFit implementation}
+	\item[January 2017]{Complete the two-dimensional highOrderFit implementation}
 	\item[February 2017]{Complete chapter 3 documenting the highOrderFit formulation and test results}
 	\item[March 2017]{Complete introduction and discussion chapters}
 \end{description}
@@ -220,15 +239,14 @@ I no longer intend to publish a third journal article, but I will still document
 \section{Personal development}
 
 I continue to give regular talks at group meetings and I have arranged to give a lunchtime seminar in January 2018.
-I have also been invited by \href{http://staff.southwales.ac.uk/users/8005-jkent}{James Kent} to speak at a mathematics departmental seminar at University of South Wales where Dr Kent lectures.
+I have also been invited by \href{http://staff.southwales.ac.uk/users/8005-jkent}{James Kent} to speak at a mathematics departmental seminar at the University of South Wales where Dr Kent lectures.
 
 I also continue searching for postdoctoral vacancies.
 I was unsuccessful in my application for a Mozilla science fellowship, though I was very happy to be placed amongst the top 5\% of more than 1000 applicants.
-I was offered a position as a scientific software engineer at the Met Office, but chose to decline since the role was focused on software development with few opportunities for scientific research.
-I was also interviewed for a postdoctoral position developing numerical methods for flood forecasts at the University of Sheffield, but the position was given to a more experienced candidate.
+I was offered a position as a scientific software engineer at the Met Office, but chose to decline since the role focused on software development with few opportunities for scientific research.
+I was also interviewed for a postdoctoral position developing numerical methods for flood forecasts at the University of Sheffield, but the position was given to the other, more experienced candidate.
 
 I have worked with David Dritschel at the University of St Andrews and Alan Blyth, Doug Parker and Steven B\"{o}ing at the University of Leeds to submit an EPSRC proposal that extends the Moist Parcel-in-a-Cell model \citep{boeing2017} for studying cloud turbulence.  We expect the EPSRC to reach a decision around March 2018.
-I am also a named postdoctoral researcher on a NERC proposal to study physics-dynamics coupling that Hilary submitted in collaboration with Jemma Shipton, Colin Cotter, Peter Clark and John Thuburn in July 2017.
 I continue to monitor job boards for new vacancies.
 
 \bibliographystyle{ametsoc2014}                                                 
